@@ -27,43 +27,71 @@ const LineCallback = () => {
           return;
         }
 
-        // Get LINE user info
+        // Get LINE user info from our Edge Function
         const lineUserInfo = await handleLineCallback(code, state || '');
+        
+        if (!lineUserInfo || !lineUserInfo.userId) {
+          throw new Error('ไม่สามารถรับข้อมูลผู้ใช้จาก LINE ได้');
+        }
 
-        // Try to sign in with Supabase using the LINE user ID as email
-        const lineEmail = `line_${lineUserInfo.userId}@baanpet.app`;
+        // Create a unique email using LINE user ID
+        const lineEmail = `line_${lineUserInfo.userId}@baanpet.local`;
 
-        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-          email: lineEmail,
-          password: lineUserInfo.userId, // Use LINE user ID as password
-        });
+        // Check if user already exists
+        const { data: existingUser, error: checkError } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('line_user_id', lineUserInfo.userId)
+          .single();
 
-        if (signInError && signInError.status === 400) {
+        if (existingUser) {
+          // User exists, sign in
+          const { data: { session }, error: signInError } = await supabase.auth.signInWithPassword({
+            email: lineEmail,
+            password: lineUserInfo.userId,
+          });
+
+          if (signInError) {
+            throw signInError;
+          }
+
+          toast.success('เข้าสู่ระบบสำเร็จ!', {
+            description: `ยินดีต้อนรับ ${lineUserInfo.displayName}`
+          });
+        } else {
           // User doesn't exist, create new account
           const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
             email: lineEmail,
             password: lineUserInfo.userId,
             options: {
+              emailRedirectTo: `${window.location.origin}/`,
               data: {
                 full_name: lineUserInfo.displayName,
                 picture_url: lineUserInfo.pictureUrl,
-                line_user_id: lineUserInfo.userId,
               }
             }
           });
 
-          if (signUpError) throw signUpError;
+          if (signUpError) {
+            throw signUpError;
+          }
+
+          // Store LINE user info in profiles table
+          if (signUpData.user) {
+            await supabase
+              .from('profiles')
+              .insert({
+                id: signUpData.user.id,
+                full_name: lineUserInfo.displayName,
+                avatar_url: lineUserInfo.pictureUrl,
+                line_user_id: lineUserInfo.userId,
+              });
+          }
 
           toast.success('สมัครสมาชิกสำเร็จ!', {
-            description: 'ยินดีต้อนรับสู่ CatHome'
+            description: 'ยินดีต้อนรับสู่ baanpet'
           });
-        } else if (signInError) {
-          throw signInError;
         }
-
-        toast.success('เข้าสู่ระบบสำเร็จ!', {
-          description: `ยินดีต้อนรับ ${lineUserInfo.displayName}`
-        });
 
         setRedirected(true);
       } catch (error: any) {
