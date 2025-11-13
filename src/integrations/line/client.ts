@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { supabase } from '@/integrations/supabase/client';
 
 const CHANNEL_ID = import.meta.env.VITE_LINE_CHANNEL_ID || '';
+const CHANNEL_SECRET = import.meta.env.VITE_LINE_CHANNEL_SECRET || '';
 const REDIRECT_URI = `${window.location.origin}/auth/line/callback`;
 
 // Function to initiate LINE login
@@ -27,29 +27,43 @@ export const handleLineCallback = async (code: string, state: string) => {
             throw new Error('State mismatch. Possible CSRF attack.');
         }
 
-        // Call Supabase function to exchange code for token
-        // This keeps the CHANNEL_SECRET safe on the backend
-        const { data, error } = await supabase.functions.invoke('line-oauth-callback', {
-            body: { 
+        // Exchange code for token with LINE
+        const tokenResponse = await axios.post(
+            'https://api.line.me/oauth2/v2.1/token',
+            new URLSearchParams({
+                grant_type: 'authorization_code',
                 code: code,
-                state: state,
-                redirectUri: REDIRECT_URI,
+                redirect_uri: REDIRECT_URI,
+                client_id: CHANNEL_ID,
+                client_secret: CHANNEL_SECRET,
+            }).toString(),
+            {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                }
+            }
+        );
+
+        const accessToken = tokenResponse.data.access_token;
+        const idToken = tokenResponse.data.id_token;
+
+        // Fetch user profile information
+        const profileResponse = await axios.get('https://api.line.me/v2/profile', {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
             },
         });
 
-        if (error) {
-            throw new Error(`LINE callback error: ${error.message}`);
-        }
-
-        const accessToken = data.access_token;
-        const idToken = data.id_token;
-        const userInfo = data.userInfo;
+        const userInfo = profileResponse.data;
 
         sessionStorage.removeItem('line_state');
         sessionStorage.removeItem('line_nonce');
 
         return {
-            ...userInfo,
+            userId: userInfo.userId,
+            displayName: userInfo.displayName,
+            pictureUrl: userInfo.pictureUrl,
+            statusMessage: userInfo.statusMessage,
             accessToken: accessToken,
             idToken: idToken,
         };
