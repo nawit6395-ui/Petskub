@@ -12,6 +12,7 @@ import Report from "./pages/Report";
 import Help from "./pages/Help";
 import Knowledge from "./pages/Knowledge";
 import Login from "./pages/Login";
+import LineCallback from "./pages/LineCallback";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import AddCat from "./pages/AddCat";
@@ -50,6 +51,7 @@ const App = () => (
             <Route path="/knowledge/create" element={<Layout><CreateArticle /></Layout>} />
             <Route path="/knowledge/:id" element={<Layout><ArticleDetail /></Layout>} />
             <Route path="/login" element={<Login />} />
+            <Route path="/auth/line/callback" element={<LineCallback />} />
             <Route path="/admin" element={<Layout><Admin /></Layout>} />
             <Route path="/add-cat" element={<Layout><AddCat /></Layout>} />
             <Route path="/add-urgent-case" element={<Layout><AddUrgentCase /></Layout>} />
