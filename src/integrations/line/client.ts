@@ -33,45 +33,59 @@ export const handleLineCallback = async (code: string, state: string) => {
         }
 
         // Exchange code for token with LINE
-        const tokenResponse = await axios.post(
-            'https://api.line.me/oauth2/v2.1/token',
-            new URLSearchParams({
-                grant_type: 'authorization_code',
-                code: code,
-                redirect_uri: REDIRECT_URI,
-                client_id: CHANNEL_ID,
-                client_secret: CHANNEL_SECRET,
-            }).toString(),
-            {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+        try {
+            const tokenResponse = await axios.post(
+                'https://api.line.me/oauth2/v2.1/token',
+                new URLSearchParams({
+                    grant_type: 'authorization_code',
+                    code: code,
+                    redirect_uri: REDIRECT_URI,
+                    client_id: CHANNEL_ID,
+                    client_secret: CHANNEL_SECRET,
+                }).toString(),
+                {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    }
                 }
-            }
-        );
+            );
 
-        const accessToken = tokenResponse.data.access_token;
-        const idToken = tokenResponse.data.id_token;
+            const accessToken = tokenResponse.data.access_token;
+            const idToken = tokenResponse.data.id_token;
 
-        // Fetch user profile information
-        const profileResponse = await axios.get('https://api.line.me/v2/profile', {
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-            },
-        });
+            // Fetch user profile information
+            const profileResponse = await axios.get('https://api.line.me/v2/profile', {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+            });
 
-        const userInfo = profileResponse.data;
+            const userInfo = profileResponse.data;
 
-        sessionStorage.removeItem('line_state');
-        sessionStorage.removeItem('line_nonce');
+            sessionStorage.removeItem('line_state');
+            sessionStorage.removeItem('line_nonce');
 
-        return {
-            userId: userInfo.userId,
-            displayName: userInfo.displayName,
-            pictureUrl: userInfo.pictureUrl,
-            statusMessage: userInfo.statusMessage,
-            accessToken: accessToken,
-            idToken: idToken,
-        };
+            return {
+                userId: userInfo.userId,
+                displayName: userInfo.displayName,
+                pictureUrl: userInfo.pictureUrl,
+                statusMessage: userInfo.statusMessage,
+                accessToken: accessToken,
+                idToken: idToken,
+            };
+        } catch (axiosError: any) {
+            console.error('Axios error details:', {
+                status: axiosError.response?.status,
+                statusText: axiosError.response?.statusText,
+                data: axiosError.response?.data,
+                message: axiosError.message,
+                config: {
+                    url: axiosError.config?.url,
+                    method: axiosError.config?.method,
+                }
+            });
+            throw axiosError;
+        }
     } catch (error) {
         console.error('Error during LINE login:', error);
         throw error;
