@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Card } from '@/components/ui/card';
 import { Heart } from 'lucide-react';
+import { buildAppUrl } from '@/lib/utils';
 
 const LineCallback = () => {
   const [searchParams] = useSearchParams();
@@ -161,7 +162,7 @@ const LineCallback = () => {
               email: lineEmail,
               password: canonicalPassword,
               options: {
-                emailRedirectTo: `${window.location.origin}/`,
+                emailRedirectTo: buildAppUrl('/'),
                 data: {
                   full_name: lineUserInfo.displayName,
                   picture_url: lineUserInfo.pictureUrl,

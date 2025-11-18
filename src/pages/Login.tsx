@@ -11,6 +11,7 @@ import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { initiateLineLogin } from "@/integrations/line/client";
+import { buildAppUrl } from "@/lib/utils";
 
 const loginSchema = z.object({
   email: z.string().email('กรุณากรอกอีเมลให้ถูกต้อง'),
@@ -43,7 +44,7 @@ const Login = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/`,
+          redirectTo: buildAppUrl('/'),
         },
       });
 

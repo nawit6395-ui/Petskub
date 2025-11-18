@@ -79,11 +79,16 @@ const ArticleDetail = () => {
     enabled: !!article,
   });
 
-  const shareUrl = window.location.href;
+  const shareOrigin = typeof window !== "undefined" ? window.location.origin : "";
+  const currentLocation = typeof window !== "undefined" ? window.location.href : "";
+  const articleId = article?.id || id;
+  const shareTargetUrl = articleId && shareOrigin
+    ? `${shareOrigin}/share/article?id=${encodeURIComponent(articleId)}`
+    : currentLocation;
   const shareTitle = article?.title || "";
 
   const handleShare = (platform: string) => {
-    const encodedUrl = encodeURIComponent(shareUrl);
+    const encodedUrl = encodeURIComponent(shareTargetUrl);
     const encodedTitle = encodeURIComponent(shareTitle);
 
     switch (platform) {
@@ -97,7 +102,7 @@ const ArticleDetail = () => {
         window.open(`https://social-plugins.line.me/lineit/share?url=${encodedUrl}`, "_blank");
         break;
       case "copy":
-        navigator.clipboard.writeText(shareUrl);
+        navigator.clipboard.writeText(shareTargetUrl);
         setCopied(true);
         toast.success("คัดลอกลิงก์แล้ว");
         setTimeout(() => setCopied(false), 2000);

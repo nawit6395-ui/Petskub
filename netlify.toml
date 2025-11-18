@@ -3,6 +3,11 @@
   publish = "dist"
 
 [[redirects]]
+  from = "/share/article"
+  to = "/.netlify/functions/article-share"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
