@@ -12,7 +12,7 @@ const LineCallback = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [redirected, setRedirected] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { user, refetch } = useAuth();
+  const { user, refreshUser } = useAuth();
 
   useEffect(() => {
     const processLineCallback = async () => {
@@ -133,8 +133,25 @@ const LineCallback = () => {
             description: `ยินดีต้อนรับ ${lineUserInfo.displayName}`
           });
 
+          // Ensure profile stays in sync with latest LINE data
+          const { data: authUser } = await supabase.auth.getUser();
+          if (authUser.user) {
+            const { error: profileUpsertError } = await supabase
+              .from('profiles')
+              .upsert({
+                id: authUser.user.id,
+                full_name: lineUserInfo.displayName,
+                avatar_url: lineUserInfo.pictureUrl,
+                line_user_id: lineUserInfo.userId,
+              });
+
+            if (profileUpsertError) {
+              console.error('Profile upsert error (existing user):', profileUpsertError);
+            }
+          }
+
           // Refetch user to update auth state
-          await refetch?.();
+          await refreshUser();
           setRedirected(true);
         } else {
           // User doesn't exist, create new account
@@ -193,7 +210,7 @@ const LineCallback = () => {
                   description: `ยินดีต้อนรับ ${lineUserInfo.displayName}`
                 });
 
-                await refetch?.();
+                await refreshUser();
                 setRedirected(true);
                 return;
               }
@@ -221,7 +238,7 @@ const LineCallback = () => {
               description: 'ยินดีต้อนรับสู่ baanpet'
             });
 
-            await refetch?.();
+            await refreshUser();
             setRedirected(true);
           } catch (signUpError: any) {
             console.error('Sign up error:', signUpError);
@@ -240,7 +257,7 @@ const LineCallback = () => {
     };
 
     processLineCallback();
-  }, [searchParams, refetch]);
+  }, [searchParams, refreshUser]);
 
   if (user && redirected) {
     return <Navigate to="/" replace />;

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Heart, Home, Search, MapPin, AlertCircle, BookOpen, LogIn, LogOut, User, Sparkles, MessageSquare, Menu } from "lucide-react";
+import { Heart, LogIn, LogOut, Menu } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useUserRole";
 import { useProfile } from "@/hooks/useProfile";
@@ -18,13 +18,13 @@ const Navbar = () => {
   const isActive = (path: string) => location.pathname === path;
   
   const navLinks = [
-    { path: "/", icon: Home, label: "หน้าแรก" },
-    { path: "/adopt", icon: Search, label: "หาบ้านให้แมว" },
-    { path: "/success-stories", icon: Sparkles, label: "เรื่องราวความสำเร็จ" },
-    { path: "/report", icon: MapPin, label: "แจ้งเจอแมวจร" },
-    { path: "/help", icon: AlertCircle, label: "ช่วยเหลือด่วน" },
-    { path: "/knowledge", icon: BookOpen, label: "ความรู้" },
-    { path: "/forum", icon: MessageSquare, label: "เว็บบอร์ด" },
+    { path: "/", iconClass: "fa-solid fa-house", color: "#2E8BFD", label: "หน้าแรก" },
+    { path: "/adopt", iconClass: "fa-solid fa-magnifying-glass", color: "#F472B6", label: "หาบ้านให้แมว" },
+    { path: "/success-stories", iconClass: "fa-solid fa-wand-magic-sparkles", color: "#F59E0B", label: "เรื่องราวความสำเร็จ" },
+    { path: "/report", iconClass: "fa-solid fa-location-dot", color: "#22C55E", label: "แจ้งเจอแมวจร" },
+    { path: "/help", iconClass: "fa-solid fa-triangle-exclamation", color: "#EF4444", label: "ช่วยเหลือด่วน" },
+    { path: "/knowledge", iconClass: "fa-solid fa-book-open", color: "#A855F7", label: "ความรู้" },
+    { path: "/forum", iconClass: "fa-regular fa-comments", color: "#F97316", label: "เว็บบอร์ด" },
   ];
 
   const adminLinks = isAdmin ? [{ path: "/admin", label: "Admin" }] : [];
@@ -43,20 +43,21 @@ const Navbar = () => {
               </SheetTrigger>
               <SheetContent side="left" className="w-[280px]">
                 <div className="flex flex-col gap-4 mt-8">
-                  {navLinks.map((link) => {
-                    const Icon = link.icon;
-                    return (
-                      <Link key={link.path} to={link.path} onClick={() => setMobileMenuOpen(false)}>
-                        <Button
-                          variant={isActive(link.path) ? "secondary" : "ghost"}
-                          className="w-full justify-start font-prompt gap-2"
-                        >
-                          <Icon className="w-4 h-4" />
-                          {link.label}
-                        </Button>
-                      </Link>
-                    );
-                  })}
+                  {navLinks.map((link) => (
+                    <Link key={link.path} to={link.path} onClick={() => setMobileMenuOpen(false)}>
+                      <Button
+                        variant={isActive(link.path) ? "secondary" : "ghost"}
+                        className="w-full justify-start font-prompt gap-2"
+                      >
+                        <i
+                          className={`${link.iconClass} text-base`}
+                          style={{ color: link.color, minWidth: "1rem" }}
+                          aria-hidden="true"
+                        />
+                        {link.label}
+                      </Button>
+                    </Link>
+                  ))}
                   {adminLinks.map((link) => (
                     <Link key={link.path} to={link.path} onClick={() => setMobileMenuOpen(false)}>
                       <Button
@@ -78,20 +79,21 @@ const Navbar = () => {
           </Link>
 
           <div className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => {
-              const Icon = link.icon;
-              return (
-                <Link key={link.path} to={link.path}>
-                  <Button
-                    variant={isActive(link.path) ? "secondary" : "ghost"}
-                    className="font-prompt gap-2"
-                  >
-                    <Icon className="w-4 h-4" />
-                    {link.label}
-                  </Button>
-                </Link>
-              );
-            })}
+            {navLinks.map((link) => (
+              <Link key={link.path} to={link.path}>
+                <Button
+                  variant={isActive(link.path) ? "secondary" : "ghost"}
+                  className="font-prompt gap-2"
+                >
+                  <i
+                    className={`${link.iconClass} text-base`}
+                    style={{ color: link.color, minWidth: "1rem" }}
+                    aria-hidden="true"
+                  />
+                  {link.label}
+                </Button>
+              </Link>
+            ))}
             {adminLinks.map((link) => (
               <Link key={link.path} to={link.path}>
                 <Button
