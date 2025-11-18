@@ -1,7 +1,4 @@
-import axios from 'axios';
-
 const CHANNEL_ID = import.meta.env.VITE_LINE_CHANNEL_ID || '';
-const CHANNEL_SECRET = import.meta.env.VITE_LINE_CHANNEL_SECRET || '';
 const REDIRECT_URI = `${window.location.origin}/auth/line/callback`;
 
 // Function to initiate LINE login
@@ -22,13 +19,12 @@ export const initiateLineLogin = () => {
 // Function to handle the callback from LINE
 export const handleLineCallback = async (code: string, state: string) => {
     try {
-        // Optional state validation
+        // Validate state to prevent CSRF attacks
         const savedState = sessionStorage.getItem('line_state');
-        if (savedState && state && state !== savedState) {
-            console.warn('State mismatch - could be from different session/tab', {
-                expected: savedState,
-                received: state
-            });
+        if (savedState && state) {
+            if (state !== savedState) {
+                throw new Error('State mismatch - possible CSRF attack');
+            }
         }
 
         console.log('Starting LINE token exchange with:', {
@@ -37,7 +33,9 @@ export const handleLineCallback = async (code: string, state: string) => {
             channelId: CHANNEL_ID,
         });
 
-        // Exchange code for token with LINE using fetch
+        // Exchange code for token directly with LINE
+        // Note: This is safe for localhost development
+        // For production, move to backend/Edge Function
         const tokenResponse = await fetch(
             'https://api.line.me/oauth2/v2.1/token',
             {
@@ -50,7 +48,8 @@ export const handleLineCallback = async (code: string, state: string) => {
                     code: code,
                     redirect_uri: REDIRECT_URI,
                     client_id: CHANNEL_ID,
-                    client_secret: CHANNEL_SECRET,
+                    // Note: For development only. Production should use backend
+                    client_secret: import.meta.env.VITE_LINE_CHANNEL_SECRET || '',
                 }).toString(),
             }
         );
@@ -64,7 +63,7 @@ export const handleLineCallback = async (code: string, state: string) => {
                 statusText: tokenResponse.statusText,
                 body: errorText,
             });
-            throw new Error(`Failed to exchange code for token: ${tokenResponse.status} ${errorText}`);
+            throw new Error(`Failed to exchange code for token: ${tokenResponse.status}`);
         }
 
         const tokenData = await tokenResponse.json();
@@ -92,6 +91,7 @@ export const handleLineCallback = async (code: string, state: string) => {
             displayName: userInfo.displayName,
         });
 
+        // Clean up session storage
         sessionStorage.removeItem('line_state');
         sessionStorage.removeItem('line_nonce');
 
