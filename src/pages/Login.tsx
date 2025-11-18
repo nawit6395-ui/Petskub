@@ -229,9 +229,7 @@ const Login = () => {
             type="button"
             onClick={handleLineSignIn}
           >
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="white" style={{ minWidth: '20px' }}>
-              <path d="M12 2C6.48 2 2 5.58 2 10c0 3.25 2.29 6.08 5.5 7.28-.18.72-.85 3.82-.99 4.46-.22 1.02.61 1.89 1.62 1.62l5.08-2.94c.4.05.81.08 1.22.08 5.52 0 10-3.58 10-8 0-4.42-4.48-8-10-8zm2.41 11.23h-3.67v2.89h-2.17v-2.89H4.97v-2.02h3.6v-2.78h2.17v2.78h3.67v2.02z"/>
-            </svg>
+            <i className="fa-brands fa-line text-lg" style={{ minWidth: '20px' }} aria-hidden="true"></i>
             <span className="text-[15px]">Log in with LINE</span>
           </Button>
         </div>

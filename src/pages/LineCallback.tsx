@@ -56,11 +56,50 @@ const LineCallback = () => {
 
         // Create a unique email using LINE user ID
         const lineEmail = `line_${lineUserInfo.userId}@baanpet.local`;
-        const linePassword = lineUserInfo.userId;
+        // Canonical password (short, deterministic)
+        const canonicalPassword = lineUserInfo.userId.substring(0, 20);
+
+        // Legacy password generators we used earlier during iteration
+        const legacyHexPassword = (() => {
+          try {
+            let hex = '';
+            for (let i = 0; i < 16; i++) {
+              hex += lineUserInfo.userId
+                .charCodeAt(i % lineUserInfo.userId.length)
+                .toString(16);
+            }
+            return `line_${hex.substring(0, 16)}`;
+          } catch {
+            return undefined;
+          }
+        })();
+
+        const passwordCandidates = [
+          canonicalPassword,
+          `line_${lineUserInfo.userId}`,
+          lineUserInfo.userId,
+          legacyHexPassword,
+        ].filter(Boolean) as string[];
+
+        const trySignInWithCandidates = async () => {
+          let lastError: any = null;
+          for (const pwd of passwordCandidates) {
+            const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+              email: lineEmail,
+              password: pwd,
+            });
+            if (!signInError) {
+              return { ok: true, usedPassword: pwd } as const;
+            }
+            lastError = signInError;
+          }
+          return { ok: false, error: lastError } as const;
+        };
 
         console.log('LINE user authenticated:', {
           userId: lineUserInfo.userId,
-          displayName: lineUserInfo.displayName
+          displayName: lineUserInfo.displayName,
+          email: lineEmail
         });
 
         // Check if user already exists in profiles
@@ -71,38 +110,39 @@ const LineCallback = () => {
           .single();
 
         if (existingUser) {
-          // User exists, try to sign in
-          console.log('Existing LINE user found, signing in...');
-          try {
-            const { data: { session }, error: signInError } = await supabase.auth.signInWithPassword({
-              email: lineEmail,
-              password: linePassword,
-            });
-
-            if (signInError) {
-              console.error('Sign in error:', signInError);
-              throw signInError;
-            }
-
-            console.log('Successfully signed in');
-            toast.success('เข้าสู่ระบบสำเร็จ!', {
-              description: `ยินดีต้อนรับ ${lineUserInfo.displayName}`
-            });
-
-            // Refetch user to update auth state
-            await refetch?.();
-            setRedirected(true);
-          } catch (signInError: any) {
-            console.error('Sign in failed:', signInError);
-            throw new Error(`ไม่สามารถเข้าสู่ระบบได้: ${signInError.message}`);
+          // User exists, try to sign in with multiple legacy passwords
+          console.log('Existing LINE user found, trying password candidates...');
+          const signInResult = await trySignInWithCandidates();
+          if (!signInResult.ok) {
+            console.error('Sign in failed with all candidates:', signInResult.error);
+            throw new Error(`ไม่สามารถเข้าสู่ระบบได้: ${signInResult.error?.message || 'Invalid credentials'}`);
           }
+
+          // If signed in with a non-canonical password, update to canonical for future logins
+          if (signInResult.usedPassword !== canonicalPassword) {
+            try {
+              await supabase.auth.updateUser({ password: canonicalPassword });
+              console.log('Normalized password to canonical pattern');
+            } catch (e) {
+              console.warn('Failed to normalize password, continuing:', e);
+            }
+          }
+
+          console.log('Successfully signed in');
+          toast.success('เข้าสู่ระบบสำเร็จ!', {
+            description: `ยินดีต้อนรับ ${lineUserInfo.displayName}`
+          });
+
+          // Refetch user to update auth state
+          await refetch?.();
+          setRedirected(true);
         } else {
           // User doesn't exist, create new account
           console.log('New LINE user, creating account...');
           try {
             const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
               email: lineEmail,
-              password: linePassword,
+              password: canonicalPassword,
               options: {
                 emailRedirectTo: `${window.location.origin}/`,
                 data: {
@@ -117,13 +157,9 @@ const LineCallback = () => {
               // If user already registered in auth, try to sign in
               if (signUpError.message?.includes('User already registered')) {
                 console.log('User already registered in auth, attempting to sign in');
-                const { data: { session }, error: signInError } = await supabase.auth.signInWithPassword({
-                  email: lineEmail,
-                  password: linePassword,
-                });
-
-                if (signInError) {
-                  throw signInError;
+                const signInResult2 = await trySignInWithCandidates();
+                if (!signInResult2.ok) {
+                  throw signInResult2.error;
                 }
 
                 // Update or insert profiles
@@ -140,6 +176,16 @@ const LineCallback = () => {
 
                   if (upsertError) {
                     console.error('Upsert error:', upsertError);
+                  }
+                }
+
+                // Normalize to canonical password after successful sign-in
+                if (signInResult2.usedPassword !== canonicalPassword) {
+                  try {
+                    await supabase.auth.updateUser({ password: canonicalPassword });
+                    console.log('Normalized password to canonical pattern (post sign-in)');
+                  } catch (e) {
+                    console.warn('Failed to normalize password (post sign-in):', e);
                   }
                 }
 
