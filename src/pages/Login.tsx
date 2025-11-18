@@ -33,7 +33,7 @@ const Login = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const { user, signIn, signUp } = useAuth();
+  const { user, signIn, signUp, syncProfileFromUser } = useAuth();
 
   if (user) {
     return <Navigate to="/" replace />;
@@ -49,6 +49,10 @@ const Login = () => {
       });
 
       if (error) throw error;
+      // หลังจาก OAuth redirect กลับมา Supabase จะจัดการ session ให้
+      // แต่เราสามารถ sync โปรไฟล์อีกครั้งเมื่อผู้ใช้กลับเข้าหน้าเว็บ
+      // (auth state listener ใน AuthProvider จะดึง user ให้แล้ว)
+      await syncProfileFromUser();
     } catch (error: any) {
       toast.error('ไม่สามารถเข้าสู่ระบบด้วย Google ได้', {
         description: error.message

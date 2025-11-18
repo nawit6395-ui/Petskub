@@ -13,6 +13,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   refreshUser: () => Promise<void>;
+  syncProfileFromUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -26,6 +27,35 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const refreshUser = useCallback(async () => {
     const { data } = await supabase.auth.getUser();
     setUser(data.user ?? null);
+  }, []);
+
+  const syncProfileFromUser = useCallback(async () => {
+    const { data } = await supabase.auth.getUser();
+    const currentUser = data.user;
+    if (!currentUser) return;
+
+    const fullName =
+      (currentUser.user_metadata as any)?.full_name ||
+      (currentUser.user_metadata as any)?.name ||
+      currentUser.email?.split('@')[0] ||
+      'ผู้ใช้';
+
+    const avatarUrl =
+      (currentUser.user_metadata as any)?.avatar_url ||
+      (currentUser.user_metadata as any)?.picture ||
+      null;
+
+    const { error } = await supabase
+      .from('profiles')
+      .upsert({
+        id: currentUser.id,
+        full_name: fullName,
+        avatar_url: avatarUrl,
+      });
+
+    if (error) {
+      console.error('syncProfileFromUser error:', error);
+    }
   }, []);
 
   useEffect(() => {
@@ -88,6 +118,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         description: 'ยินดีต้อนรับกลับ'
       });
 
+      await syncProfileFromUser();
+
       navigate('/');
       return { error: null };
     } catch (error: any) {
@@ -113,7 +145,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signUp, signIn, signOut, refreshUser }}>
+    <AuthContext.Provider value={{ user, session, loading, signUp, signIn, signOut, refreshUser, syncProfileFromUser }}>
       {children}
     </AuthContext.Provider>
   );
