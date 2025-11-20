@@ -92,7 +92,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (error) throw error;
 
       toast.success('สมัครสมาชิกสำเร็จ!', {
-        description: 'ยินดีต้อนรับสู่ CatHome Community'
+        description: 'ยินดีต้อนรับสู่ Petskub Community'
       });
 
       navigate('/');

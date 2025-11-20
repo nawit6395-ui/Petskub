@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { useCreatePost } from '@/hooks/useForumPosts';
+import { useCreatePost, useForumPost, useUpdatePost } from '@/hooks/useForumPosts';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import { useUserRole } from '@/hooks/useUserRole';
 
 const postSchema = z.object({
   title: z.string().min(5, 'หัวข้อต้องมีอย่างน้อย 5 ตัวอักษร').max(200, 'หัวข้อต้องไม่เกิน 200 ตัวอักษร'),
@@ -28,8 +29,17 @@ const categories = [
 
 const CreateForumPost = () => {
   const navigate = useNavigate();
+  const { id: editablePostId } = useParams<{ id?: string }>();
+  const isEditMode = Boolean(editablePostId);
   const { user } = useAuth();
+  const { data: roles, isLoading: rolesLoading } = useUserRole();
+  const isAdmin = roles?.some((role) => role.role === 'admin');
   const createPost = useCreatePost();
+  const updatePost = useUpdatePost();
+  const { data: editablePost, isLoading: loadingEditablePost } = useForumPost(editablePostId, {
+    skipViewIncrement: true,
+    enabled: Boolean(isEditMode && editablePostId),
+  });
 
   const [formData, setFormData] = useState({
     title: '',
@@ -37,11 +47,40 @@ const CreateForumPost = () => {
     category: '',
   });
 
+  useEffect(() => {
+    if (isEditMode && !user) {
+      navigate('/login');
+    }
+  }, [isEditMode, user, navigate]);
+
+  useEffect(() => {
+    if (!isEditMode) return;
+    if (loadingEditablePost || rolesLoading) return;
+
+    if (!editablePost) {
+      toast.error('ไม่พบกระทู้ที่ต้องการแก้ไข');
+      navigate('/forum');
+      return;
+    }
+
+    if (user && user.id !== editablePost.user_id && !isAdmin) {
+      toast.error('คุณไม่มีสิทธิ์แก้ไขกระทู้นี้');
+      navigate(`/forum/${editablePost.id}`);
+      return;
+    }
+
+    setFormData({
+      title: editablePost.title,
+      content: editablePost.content,
+      category: editablePost.category,
+    });
+  }, [isEditMode, editablePost, user, isAdmin, loadingEditablePost, navigate, rolesLoading]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!user) {
-      toast.error('กรุณาเข้าสู่ระบบก่อนสร้างกระทู้');
+      toast.error('กรุณาเข้าสู่ระบบก่อนใช้งาน');
       navigate('/login');
       return;
     }
@@ -58,24 +97,52 @@ const CreateForumPost = () => {
       }
     }
 
-    createPost.mutate(
-      {
-        ...formData,
-        user_id: user.id,
-      },
-      {
-        onSuccess: () => {
-          navigate('/forum');
+    if (isEditMode && editablePostId) {
+      updatePost.mutate(
+        {
+          id: editablePostId,
+          ...formData,
         },
-      }
-    );
+        {
+          onSuccess: () => {
+            navigate(`/forum/${editablePostId}`);
+          },
+        }
+      );
+    } else {
+      createPost.mutate(
+        {
+          ...formData,
+          user_id: user.id,
+        },
+        {
+          onSuccess: () => {
+            navigate('/forum');
+          },
+        }
+      );
+    }
   };
+
+  const heading = isEditMode ? 'แก้ไขกระทู้' : 'สร้างกระทู้ใหม่';
+  const description = isEditMode ? 'ปรับแก้ไขรายละเอียดกระทู้ของคุณ' : 'แบ่งปันความคิดเห็นหรือถามคำถามกับชุมชน';
+  const submitLabel = isEditMode ? 'บันทึกการแก้ไข' : 'สร้างกระทู้';
+  const isSubmitting = isEditMode ? updatePost.isPending : createPost.isPending;
+  const backTarget = isEditMode && editablePostId ? `/forum/${editablePostId}` : '/forum';
+
+  if (isEditMode && (loadingEditablePost || rolesLoading || !editablePost)) {
+    return (
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <p className="text-center text-muted-foreground">กำลังโหลดข้อมูลกระทู้...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <Button
         variant="ghost"
-        onClick={() => navigate('/forum')}
+        onClick={() => navigate(backTarget)}
         className="mb-6"
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
@@ -84,8 +151,8 @@ const CreateForumPost = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl sm:text-3xl">สร้างกระทู้ใหม่</CardTitle>
-          <CardDescription>แบ่งปันความคิดเห็นหรือถามคำถามกับชุมชน</CardDescription>
+          <CardTitle className="text-2xl sm:text-3xl">{heading}</CardTitle>
+          <CardDescription>{description}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -148,16 +215,16 @@ const CreateForumPost = () => {
               <Button
                 type="submit"
                 size="lg"
-                disabled={createPost.isPending}
+                disabled={isSubmitting}
                 className="flex-1"
               >
-                {createPost.isPending ? 'กำลังสร้างกระทู้...' : 'สร้างกระทู้'}
+                {isSubmitting ? 'กำลังบันทึก...' : submitLabel}
               </Button>
               <Button
                 type="button"
                 variant="outline"
                 size="lg"
-                onClick={() => navigate('/forum')}
+                onClick={() => navigate(backTarget)}
                 className="flex-1"
               >
                 ยกเลิก

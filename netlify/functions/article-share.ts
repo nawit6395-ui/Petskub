@@ -44,9 +44,9 @@ const handler: Handler = async (event) => {
 
   if (error || !data) {
     const html = generateHtml({
-      title: "CatHome - บทความ",
+      title: "Petskub - บทความ",
       description:
-        "อ่านบทความจากชุมชนคนรักแมว CatHome รวมเทคนิคและความรู้ในการดูแลน้องแมว",
+        "อ่านบทความจากชุมชนคนรักแมว Petskub รวมเทคนิคและความรู้ในการดูแลน้องแมว",
       image:
         "https://images.unsplash.com/photo-1543852786-1cf6624b9987?auto=format&fit=crop&w=1200&q=80",
       articleUrl,
@@ -63,14 +63,14 @@ const handler: Handler = async (event) => {
   }
 
   const html = generateHtml({
-    title: data.title || "CatHome - บทความ",
+    title: data.title || "Petskub - บทความ",
     description:
       data.meta_description ||
-      "สำรวจบทความแมวจากชุมชน CatHome ช่วยกันดูแลน้องแมวให้มีชีวิตที่ดีขึ้น",
+      "สำรวจบทความแมวจากชุมชน Petskub ช่วยกันดูแลน้องแมวให้มีชีวิตที่ดีขึ้น",
     image:
       data.image_url ||
       "https://images.unsplash.com/photo-1543852786-1cf6624b9987?auto=format&fit=crop&w=1200&q=80",
-    imageAlt: data.image_alt || data.title || "CatHome Article",
+    imageAlt: data.image_alt || data.title || "Petskub Article",
     articleUrl,
   });
 

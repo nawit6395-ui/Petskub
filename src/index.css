@@ -112,3 +112,52 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  @keyframes float-slow {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-16px);
+    }
+  }
+
+  @keyframes float-delayed {
+    0% {
+      transform: translateY(12px);
+    }
+    50% {
+      transform: translateY(-12px);
+    }
+    100% {
+      transform: translateY(12px);
+    }
+  }
+
+  @keyframes shimmer-soft {
+    0% {
+      transform: translateX(-20%);
+      opacity: 0.35;
+    }
+    50% {
+      opacity: 0.6;
+    }
+    100% {
+      transform: translateX(120%);
+      opacity: 0.35;
+    }
+  }
+
+  .animate-float-slow {
+    animation: float-slow 10s ease-in-out infinite;
+  }
+
+  .animate-float-delayed {
+    animation: float-delayed 12s ease-in-out infinite;
+  }
+
+  .animate-shimmer-soft {
+    animation: shimmer-soft 8s linear infinite;
+  }
+}

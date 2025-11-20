@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useForumPosts } from '@/hooks/useForumPosts';
+import { useForumPosts, useTogglePostReaction, useTrendingPosts } from '@/hooks/useForumPosts';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MessageSquare, Eye, Pin, Lock, Plus } from 'lucide-react';
+import { MessageSquare, Eye, Pin, Lock, Plus, Flame, Heart } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import { th } from 'date-fns/locale';
 
@@ -21,8 +23,11 @@ const categories = [
 
 const Forum = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const { data: posts, isLoading } = useForumPosts(selectedCategory);
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const { data: posts, isLoading } = useForumPosts(selectedCategory, { userId: user?.id });
+  const { data: trendingPosts } = useTrendingPosts(6, user?.id);
+  const toggleReaction = useTogglePostReaction();
 
   const getCategoryColor = (category: string) => {
     const colors: Record<string, string> = {
@@ -33,6 +38,19 @@ const Forum = () => {
       nutrition: 'bg-orange-500/10 text-orange-700 dark:text-orange-300',
     };
     return colors[category] || colors.general;
+  };
+
+  const handleToggleLike = (event: React.MouseEvent, postId: string, isLiked?: boolean) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!user) {
+      toast.error('กรุณาเข้าสู่ระบบเพื่อกดถูกใจ');
+      navigate('/login');
+      return;
+    }
+
+    toggleReaction.mutate({ postId, userId: user.id, isLiked: Boolean(isLiked) });
   };
 
   return (
@@ -53,11 +71,55 @@ const Forum = () => {
         )}
       </div>
 
+      {trendingPosts && trendingPosts.length > 0 && (
+        <Card className="mb-8 border-primary/20 bg-primary/5">
+          <CardHeader className="pb-4">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Flame className="h-5 w-5 text-primary" />
+              โพสต์กำลังมาแรง
+            </CardTitle>
+            <CardDescription>อิงจากการกดถูกใจ ความคิดเห็น และยอดเข้าชมล่าสุด</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-4 overflow-x-auto pb-2">
+              {trendingPosts.map((post) => (
+                <Link key={post.id} to={`/forum/${post.id}`} className="min-w-[240px]">
+                  <div className="rounded-2xl border border-primary/20 bg-white/70 p-4 shadow-card transition hover:-translate-y-1 hover:shadow-lg">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                      <Badge className="bg-primary/10 text-primary">{categories.find((c) => c.value === post.category)?.label || post.category}</Badge>
+                      <span className="text-xs">คะแนน {post.trend_score.toFixed(1)}</span>
+                    </div>
+                    <p className="font-semibold line-clamp-2 mb-3">{post.title}</p>
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                      <button
+                        className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs transition ${post.is_liked ? 'border-rose-200 bg-rose-50 text-rose-600' : 'border-border'}`}
+                        onClick={(e) => handleToggleLike(e, post.id, post.is_liked)}
+                      >
+                        <Heart className={`h-3.5 w-3.5 ${post.is_liked ? 'fill-rose-500 text-rose-500' : ''}`} />
+                        {post.like_count}
+                      </button>
+                      <span className="flex items-center gap-1 text-xs">
+                        <MessageSquare className="h-3.5 w-3.5" />
+                        {post.comment_count}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Categories */}
       <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="mb-6">
-        <TabsList className="flex flex-wrap h-auto gap-2 bg-muted/50 p-2">
+        <TabsList className="flex flex-wrap h-auto gap-2 rounded-2xl border border-rose-100 bg-gradient-to-r from-rose-50 via-orange-50 to-amber-50 p-2 shadow-inner">
           {categories.map((cat) => (
-            <TabsTrigger key={cat.value} value={cat.value} className="flex-shrink-0">
+            <TabsTrigger
+              key={cat.value}
+              value={cat.value}
+              className="flex-shrink-0 rounded-full border border-transparent bg-white/70 px-4 py-2 text-sm font-medium text-muted-foreground shadow-sm transition-all hover:border-rose-200 hover:text-rose-500 data-[state=active]:border-transparent data-[state=active]:bg-gradient-to-r data-[state=active]:from-rose-400 data-[state=active]:to-orange-300 data-[state=active]:text-white data-[state=active]:shadow-md"
+            >
               {cat.label}
             </TabsTrigger>
           ))}
@@ -115,7 +177,14 @@ const Forum = () => {
                           <MessageSquare className="h-4 w-4" />
                           {post.comment_count || 0}
                         </span>
-                        <span className="ml-auto">
+                        <button
+                          className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs transition ${post.is_liked ? 'border-rose-200 bg-rose-50 text-rose-600' : 'border-border'}`}
+                          onClick={(e) => handleToggleLike(e, post.id, post.is_liked)}
+                        >
+                          <Heart className={`h-3.5 w-3.5 ${post.is_liked ? 'fill-rose-500 text-rose-500' : ''}`} />
+                          {post.like_count}
+                        </button>
+                        <span className="ml-auto text-xs text-muted-foreground">
                           {formatDistanceToNow(new Date(post.created_at), {
                             addSuffix: true,
                             locale: th,

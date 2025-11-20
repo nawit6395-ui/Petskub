@@ -6,13 +6,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./hooks/useAuth";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import CookieConsent from "./components/CookieConsent";
 import Home from "./pages/Home";
 import Adopt from "./pages/Adopt";
 import Report from "./pages/Report";
 import Help from "./pages/Help";
 import Knowledge from "./pages/Knowledge";
 import Login from "./pages/Login";
-import LineCallback from "./pages/LineCallback";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import AddCat from "./pages/AddCat";
@@ -24,6 +24,8 @@ import ForumPost from "./pages/ForumPost";
 import Profile from "./pages/Profile";
 import CreateArticle from "./pages/CreateArticle";
 import ArticleDetail from "./pages/ArticleDetail";
+import Chat from "./pages/Chat";
+import Privacy from "./pages/Privacy";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +34,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => (
     <Navbar />
     <main className="flex-1">{children}</main>
     <Footer />
+    <CookieConsent />
   </div>
 );
 
@@ -51,15 +54,17 @@ const App = () => (
             <Route path="/knowledge/create" element={<Layout><CreateArticle /></Layout>} />
             <Route path="/knowledge/:id" element={<Layout><ArticleDetail /></Layout>} />
             <Route path="/login" element={<Login />} />
-            <Route path="/auth/line/callback" element={<LineCallback />} />
             <Route path="/admin" element={<Layout><Admin /></Layout>} />
             <Route path="/add-cat" element={<Layout><AddCat /></Layout>} />
             <Route path="/add-urgent-case" element={<Layout><AddUrgentCase /></Layout>} />
             <Route path="/success-stories" element={<Layout><SuccessStories /></Layout>} />
             <Route path="/forum" element={<Layout><Forum /></Layout>} />
             <Route path="/forum/create" element={<Layout><CreateForumPost /></Layout>} />
+            <Route path="/forum/:id/edit" element={<Layout><CreateForumPost /></Layout>} />
             <Route path="/forum/:id" element={<Layout><ForumPost /></Layout>} />
+            <Route path="/chat" element={<Layout><Chat /></Layout>} />
             <Route path="/profile" element={<Layout><Profile /></Layout>} />
+            <Route path="/privacy" element={<Layout><Privacy /></Layout>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </TooltipProvider>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { useForumPost, useDeletePost } from '@/hooks/useForumPosts';
+import { useForumPost, useDeletePost, useTogglePostReaction } from '@/hooks/useForumPosts';
 import { useForumComments, useCreateComment, useDeleteComment } from '@/hooks/useForumComments';
 import { useIsAdmin } from '@/hooks/useUserRole';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { ArrowLeft, Eye, Pin, Lock, Trash2, MessageSquare } from 'lucide-react';
+import { ArrowLeft, Eye, Pin, Lock, Trash2, MessageSquare, Pencil, Heart } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { th } from 'date-fns/locale';
 import { toast } from 'sonner';
@@ -35,10 +35,11 @@ const ForumPost = () => {
   const { user } = useAuth();
   const isAdmin = useIsAdmin();
 
-  const { data: post, isLoading: postLoading } = useForumPost(id!);
+  const { data: post, isLoading: postLoading } = useForumPost(id!, { userId: user?.id });
   const { data: comments, isLoading: commentsLoading } = useForumComments(id!);
   const createComment = useCreateComment();
   const deletePost = useDeletePost();
+  const toggleReaction = useTogglePostReaction();
   const deleteComment = useDeleteComment();
 
   const [commentContent, setCommentContent] = useState('');
@@ -90,6 +91,16 @@ const ForumPost = () => {
     deleteComment.mutate({ commentId, postId: id! });
   };
 
+  const handleToggleLike = () => {
+    if (!post || !user) {
+      toast.error('กรุณาเข้าสู่ระบบเพื่อกดถูกใจ');
+      navigate('/login');
+      return;
+    }
+
+    toggleReaction.mutate({ postId: post.id, userId: user.id, isLiked: Boolean(post.is_liked) });
+  };
+
   if (postLoading) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -109,7 +120,7 @@ const ForumPost = () => {
     );
   }
 
-  const canDeletePost = user && (user.id === post.user_id || isAdmin);
+  const canManagePost = user && (user.id === post.user_id || isAdmin);
   const getCategoryColor = (category: string) => {
     const colors: Record<string, string> = {
       general: 'bg-blue-500/10 text-blue-700 dark:text-blue-300',
@@ -152,28 +163,50 @@ const ForumPost = () => {
               </div>
               <CardTitle className="text-2xl sm:text-3xl">{post.title}</CardTitle>
             </div>
-            {canDeletePost && (
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant="destructive" size="sm">
-                    <Trash2 className="h-4 w-4 sm:mr-2" />
-                    <span className="hidden sm:inline">ลบกระทู้</span>
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>ยืนยันการลบกระทู้</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      คุณแน่ใจหรือไม่ที่จะลบกระทู้นี้? การดำเนินการนี้ไม่สามารถย้อนกลับได้
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>ยกเลิก</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleDeletePost}>ลบกระทู้</AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant={post.is_liked ? 'default' : 'outline'}
+                size="sm"
+                onClick={handleToggleLike}
+                className={post.is_liked ? 'bg-rose-500 hover:bg-rose-600' : ''}
+              >
+                <Heart className={`h-4 w-4 sm:mr-2 ${post.is_liked ? 'fill-white text-white' : ''}`} />
+                <span className="hidden sm:inline">ถูกใจ ({post.like_count})</span>
+                <span className="sm:hidden">{post.like_count}</span>
+              </Button>
+            {canManagePost && (
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate(`/forum/${post.id}/edit`)}
+                >
+                  <Pencil className="h-4 w-4 sm:mr-2" />
+                  <span className="hidden sm:inline">แก้ไข</span>
+                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" size="sm">
+                      <Trash2 className="h-4 w-4 sm:mr-2" />
+                      <span className="hidden sm:inline">ลบ</span>
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>ยืนยันการลบกระทู้</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        คุณแน่ใจหรือไม่ที่จะลบกระทู้นี้? การดำเนินการนี้ไม่สามารถย้อนกลับได้
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>ยกเลิก</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDeletePost}>ลบกระทู้</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
             )}
+            </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -194,6 +227,10 @@ const ForumPost = () => {
             <div className="ml-auto flex items-center gap-2 text-sm text-muted-foreground">
               <Eye className="h-4 w-4" />
               {post.views}
+            </div>
+            <div className="flex items-center gap-1 text-sm text-muted-foreground">
+              <MessageSquare className="h-4 w-4" />
+              {post.comment_count}
             </div>
           </div>
 

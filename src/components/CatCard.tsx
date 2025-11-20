@@ -8,6 +8,8 @@ import { ImageGallery } from "@/components/ImageGallery";
 import { useUpdateCat } from "@/hooks/useCats";
 import { useIsAdmin } from "@/hooks/useUserRole";
 import { toast } from "sonner";
+import { useCreateConversation } from "@/hooks/useConversations";
+import { useNavigate } from "react-router-dom";
 
 interface CatCardProps {
   id?: string;
@@ -35,9 +37,12 @@ const CatCard = ({ id, name, age, province, district, image, images, story, gend
   const [galleryOpen, setGalleryOpen] = useState(false);
   const updateCat = useUpdateCat();
   const isAdmin = useIsAdmin();
+  const navigate = useNavigate();
+  const createConversation = useCreateConversation();
 
   const isOwner = user?.id === userId;
   const canManageStatus = isOwner || isAdmin;
+  const canStartChat = Boolean(id && userId && !isOwner && !isAdopted);
 
   const handleMarkAsAdopted = async () => {
     if (!id || !canManageStatus) return;
@@ -226,13 +231,38 @@ const CatCard = ({ id, name, age, province, district, image, images, story, gend
                   </a>
                 </Button>
               )}
-              <Button 
-                variant="outline" 
-                size="icon"
-                className="h-7 w-7 sm:h-9 sm:w-9"
-              >
-                <Heart className="w-3 h-3 sm:w-4 sm:h-4" />
-              </Button>
+              {canStartChat && (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="flex-1 font-prompt gap-1 text-xs sm:text-sm h-7 sm:h-9"
+                  disabled={createConversation.isPending}
+                  onClick={() => {
+                    if (!user) {
+                      toast.error('กรุณาเข้าสู่ระบบเพื่อเริ่มแชท');
+                      navigate('/login');
+                      return;
+                    }
+                    if (!id || !userId) {
+                      toast.error('ไม่พบข้อมูลเจ้าของแมว');
+                      return;
+                    }
+                    createConversation.mutate(
+                      { catId: id, ownerId: userId, adopterId: user.id },
+                      {
+                        onSuccess: (conversation) => {
+                          toast.success('เปิดห้องแชทกับเจ้าของแล้ว');
+                          navigate(`/chat?conversationId=${conversation.id}`);
+                        },
+                      }
+                    );
+                  }}
+                >
+                  <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">แชทกับเจ้าของ</span>
+                  <span className="sm:hidden">แชท</span>
+                </Button>
+              )}
             </div>
           )}
 

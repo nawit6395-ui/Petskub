@@ -1,6 +1,6 @@
 # 🔐 Social Login Setup Guide
 
-This guide explains how to enable Google and Facebook authentication for the CatHome Community platform.
+This guide explains how to enable Google and Facebook authentication for the Petskub Community platform.
 
 ---
 
@@ -13,7 +13,7 @@ This guide explains how to enable Google and Facebook authentication for the Cat
 3. Navigate to **APIs & Services** > **Credentials**
 4. Click **Create Credentials** > **OAuth Client ID**
 5. Configure the consent screen:
-   - Add your app name: "CatHome Community"
+   - Add your app name: "Petskub Community"
    - Add authorized domains: `<YOUR_PROJECT_ID>.lovable.app`
    - Add scopes: `email`, `profile`, `openid`
 
@@ -41,7 +41,7 @@ This guide explains how to enable Google and Facebook authentication for the Cat
 1. Go to [Facebook Developers](https://developers.facebook.com/)
 2. Click **My Apps** > **Create App**
 3. Choose **Consumer** as the app type
-4. Enter your app name: "CatHome Community"
+4. Enter your app name: "Petskub Community"
 5. Add **Facebook Login** product to your app
 
 ### 2. Configure Facebook Login

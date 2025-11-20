@@ -4,14 +4,14 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Heart, Mail, Lock } from "lucide-react";
+import { Mail, Lock } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { initiateLineLogin } from "@/integrations/line/client";
 import { buildAppUrl } from "@/lib/utils";
+import Logo from "@/assets/Logo.png";
 
 const loginSchema = z.object({
   email: z.string().email('กรุณากรอกอีเมลให้ถูกต้อง'),
@@ -60,18 +60,20 @@ const Login = () => {
     }
   };
 
-  const handleLineSignIn = () => {
+  const handleFacebookSignIn = async () => {
     try {
-      if (!import.meta.env.VITE_LINE_CHANNEL_ID) {
-        toast.error('ไม่สามารถเข้าสู่ระบบด้วย LINE ได้', {
-          description: 'ค่า LINE Channel ID ยังไม่ถูกตั้งค่า โปรดติดต่อผู้ดูแลระบบ'
-        });
-        return;
-      }
-      initiateLineLogin();
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'facebook',
+        options: {
+          redirectTo: buildAppUrl('/'),
+        },
+      });
+
+      if (error) throw error;
+      await syncProfileFromUser();
     } catch (error: any) {
-      toast.error('ไม่สามารถเข้าสู่ระบบด้วย LINE ได้', {
-        description: error.message || 'เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ'
+      toast.error('ไม่สามารถเข้าสู่ระบบด้วย Facebook ได้', {
+        description: error.message,
       });
     }
   };
@@ -117,9 +119,16 @@ const Login = () => {
     <div className="min-h-screen bg-gradient-soft flex items-center justify-center py-12 px-4">
       <Card className="max-w-md w-full p-8 shadow-hover">
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Heart className="w-8 h-8 fill-primary text-primary" />
-            <span className="text-2xl font-bold font-prompt">CatHome</span>
+          <div className="flex items-center justify-center gap-4 sm:gap-5 mb-4">
+            <img
+              src={Logo}
+              alt="Petskub logo"
+              className="h-14 sm:h-16 w-auto drop-shadow-[0_8px_22px_rgba(249,115,22,0.4)]"
+              loading="lazy"
+            />
+            <span className="text-3xl sm:text-4xl font-bold font-prompt bg-gradient-to-r from-rose-500 via-orange-400 to-amber-400 text-transparent bg-clip-text">
+              Petskub
+            </span>
           </div>
           <h1 className="text-2xl font-bold mb-2 font-prompt">
             {isLogin ? "เข้าสู่ระบบ" : "สมัครสมาชิก"}
@@ -229,14 +238,18 @@ const Login = () => {
             <span className="text-[15px] text-gray-700">ดำเนินการต่อด้วย Google</span>
           </Button>
 
-          <Button 
-            className="w-full font-prompt flex items-center justify-center gap-3 h-12 px-6 bg-[#00B900] hover:bg-[#00A000] text-white"
+          <Button
+            variant="outline"
+            className="w-full font-prompt flex items-center justify-center gap-3 h-12 px-6 border border-blue-100 bg-blue-50/50 hover:bg-blue-50"
             type="button"
-            onClick={handleLineSignIn}
+            onClick={handleFacebookSignIn}
           >
-            <i className="fa-brands fa-line text-lg" style={{ minWidth: '20px' }} aria-hidden="true"></i>
-            <span className="text-[15px]">Log in with LINE</span>
+            <svg viewBox="0 0 24 24" className="w-5 h-5 text-blue-600" fill="currentColor" style={{ minWidth: '20px' }}>
+              <path d="M22 12.07C22 6.55 17.52 2.07 12 2.07S2 6.55 2 12.07c0 4.99 3.66 9.13 8.44 9.93v-7.03H7.9v-2.9h2.54V9.64c0-2.5 1.5-3.89 3.79-3.89 1.1 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.9h-2.34V22c4.78-.8 8.42-4.94 8.42-9.93z" />
+            </svg>
+            <span className="text-[15px] text-blue-700">ดำเนินการต่อด้วย Facebook</span>
           </Button>
+
         </div>
 
         <p className="text-center mt-6 text-sm text-muted-foreground font-prompt">

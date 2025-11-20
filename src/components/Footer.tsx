@@ -1,5 +1,6 @@
-import { Heart, Facebook, Instagram, Mail } from "lucide-react";
+import { Facebook, Instagram, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
+import Logo from "@/assets/Logo.png";
 
 const Footer = () => {
   return (
@@ -7,9 +8,16 @@ const Footer = () => {
       <div className="container mx-auto px-4 py-6 sm:py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           <div>
-            <div className="flex items-center gap-2 font-bold text-xl text-primary mb-4">
-              <Heart className="w-6 h-6 fill-primary" />
-              <span className="font-prompt">CatHome Community</span>
+            <div className="flex items-center gap-3 sm:gap-4 font-bold text-xl sm:text-2xl text-primary mb-4">
+              <img
+                src={Logo}
+                alt="Petskub logo"
+                className="h-12 sm:h-14 lg:h-16 w-auto drop-shadow-[0_8px_20px_rgba(249,115,22,0.4)]"
+                loading="lazy"
+              />
+              <span className="font-prompt bg-gradient-to-r from-rose-500 via-orange-400 to-amber-400 text-transparent bg-clip-text">
+                Petskub Community
+              </span>
             </div>
             <p className="text-sm text-muted-foreground font-prompt">
               ชุมชนช่วยเหลือแมวจรในประเทศไทย<br />
@@ -63,7 +71,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-border mt-8 pt-6 text-center text-sm text-muted-foreground font-prompt">
-          © 2024 CatHome Community. ทำด้วยความรักเพื่อน้องแมวทุกตัว ❤️
+          © 2024 Petskub Community. ทำด้วยความรักเพื่อน้องแมวทุกตัว ❤️
         </div>
       </div>
     </footer>

@@ -3,10 +3,11 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Heart, LogIn, LogOut, Menu } from "lucide-react";
+import { LogIn, LogOut, Menu } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useUserRole";
 import { useProfile } from "@/hooks/useProfile";
+import Logo from "@/assets/Logo.png";
 
 const Navbar = () => {
   const location = useLocation();
@@ -32,13 +33,17 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 bg-card shadow-card border-b border-border backdrop-blur-sm bg-card/95">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex flex-wrap md:flex-nowrap items-center justify-between gap-3 py-3">
           {/* Mobile Hamburger Menu */}
           <div className="md:hidden">
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Menu className="w-6 h-6" />
+                <Button
+                  size="icon"
+                  className="h-10 w-10 rounded-2xl border-2 border-emerald-100 bg-emerald-500/90 shadow-[0_5px_15px_rgba(16,185,129,0.35)] transition hover:scale-105 hover:bg-emerald-500"
+                  aria-label="เปิดเมนูนำทาง"
+                >
+                  <Menu className="w-5 h-5 text-white" strokeWidth={2.2} />
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-[280px]">
@@ -73,17 +78,28 @@ const Navbar = () => {
             </Sheet>
           </div>
 
-          <Link to="/" className="flex items-center gap-2 font-bold text-xl text-primary">
-            <Heart className="w-6 h-6 fill-primary" />
-            <span className="font-prompt">CatHome</span>
+          <Link
+            to="/"
+            className="flex items-center gap-3 sm:gap-4 font-bold text-xl text-primary shrink-0"
+            aria-label="Petskub homepage"
+          >
+            <img
+              src={Logo}
+              alt="Petskub logo"
+              className="h-12 w-auto drop-shadow-[0_6px_18px_rgba(249,115,22,0.4)] sm:h-14 lg:h-16"
+              loading="eager"
+            />
+            <span className="font-prompt text-xl sm:text-2xl bg-gradient-to-r from-rose-500 via-orange-400 to-amber-400 text-transparent bg-clip-text hidden lg:inline">
+              Petskub
+            </span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden md:flex flex-1 flex-wrap items-center justify-center gap-1.5 px-3 min-w-0">
             {navLinks.map((link) => (
               <Link key={link.path} to={link.path}>
                 <Button
                   variant={isActive(link.path) ? "secondary" : "ghost"}
-                  className="font-prompt gap-2"
+                  className="font-prompt gap-1.5 text-sm px-3"
                 >
                   <i
                     className={`${link.iconClass} text-base`}
@@ -121,8 +137,12 @@ const Navbar = () => {
                   </span>
                 </Button>
               </Link>
-              <Button onClick={signOut} variant="outline" size="sm" className="font-prompt gap-1 sm:gap-2">
-                <LogOut className="w-4 h-4" />
+              <Button
+                onClick={signOut}
+                size="sm"
+                className="font-prompt gap-1 sm:gap-2 rounded-full border-2 border-emerald-100 bg-emerald-500/90 text-white hover:bg-emerald-500 shadow-[0_4px_12px_rgba(16,185,129,0.35)]"
+              >
+                <LogOut className="w-4 h-4 text-white" />
                 <span className="hidden sm:inline">ออกจากระบบ</span>
               </Button>
             </div>

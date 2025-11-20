@@ -66,6 +66,9 @@ export const useCreateComment = () => {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['forum-comments', variables.post_id] });
+      queryClient.invalidateQueries({ queryKey: ['forum-posts'] });
+      queryClient.invalidateQueries({ queryKey: ['forum-post', variables.post_id] });
+      queryClient.invalidateQueries({ queryKey: ['forum-trending'] });
       toast.success('แสดงความคิดเห็นสำเร็จ!');
     },
     onError: (error: any) => {
@@ -91,6 +94,9 @@ export const useDeleteComment = () => {
     },
     onSuccess: (postId) => {
       queryClient.invalidateQueries({ queryKey: ['forum-comments', postId] });
+      queryClient.invalidateQueries({ queryKey: ['forum-posts'] });
+      queryClient.invalidateQueries({ queryKey: ['forum-post', postId] });
+      queryClient.invalidateQueries({ queryKey: ['forum-trending'] });
       toast.success('ลบความคิดเห็นสำเร็จ');
     },
     onError: (error: any) => {
