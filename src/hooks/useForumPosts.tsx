@@ -131,7 +131,7 @@ const calculateFallbackTrendScore = ({
   return likeCount * 2 + commentCount + (Number(views) || 0) * 0.2;
 };
 
-const withStatsFallback = async <T>(primary: () => Promise<T>, fallback: () => Promise<T>) => {
+const withStatsFallback = async <T,>(primary: () => Promise<T>, fallback: () => Promise<T>) => {
   try {
     return await primary();
   } catch (error) {
