@@ -29,6 +29,34 @@ export const defaultMapCenter: L.LatLngLiteral = {
 
 export type Coordinates = L.LatLngLiteral;
 
-export const tileLayerUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+const mapTilerApiKey = import.meta.env.VITE_MAPTILER_API_KEY;
+const hasMapTilerKey = Boolean(mapTilerApiKey);
 
-export const tileLayerAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+if (import.meta.env.DEV && !hasMapTilerKey) {
+  console.warn("VITE_MAPTILER_API_KEY is missing. Falling back to OpenStreetMap tiles.");
+}
+
+const mapTilerAttribution =
+  '© <a href="https://www.maptiler.com/copyright/" target="_blank" rel="noreferrer">MapTiler</a> ' +
+  '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap contributors</a>';
+
+const openStreetMapAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+
+export const tileLayerUrl = hasMapTilerKey
+  ? `https://api.maptiler.com/maps/bright/{z}/{x}/{y}.png?key=${mapTilerApiKey}`
+  : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+
+export const tileLayerAttribution = hasMapTilerKey ? mapTilerAttribution : openStreetMapAttribution;
+
+export const tileLayerOptions: L.TileLayerOptions = hasMapTilerKey
+  ? {
+      attribution: tileLayerAttribution,
+      tileSize: 512,
+      zoomOffset: -1,
+      minZoom: 2,
+      maxZoom: 19,
+      detectRetina: true,
+    }
+  : {
+      attribution: tileLayerAttribution,
+    };

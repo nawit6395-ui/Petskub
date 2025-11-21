@@ -1,7 +1,7 @@
 import { memo, useMemo } from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import type { Report } from "@/hooks/useReports";
-import { locationMarkerIcon, defaultMapCenter, tileLayerAttribution, tileLayerUrl } from "@/lib/leaflet";
+import { locationMarkerIcon, defaultMapCenter, tileLayerUrl, tileLayerOptions } from "@/lib/leaflet";
 
 interface ReportMapOverviewProps {
   reports?: Report[];
@@ -44,7 +44,7 @@ const ReportMapOverview = ({
       scrollWheelZoom={scrollWheelZoom}
       className={`w-full rounded-3xl ${heightClass}`}
     >
-      <TileLayer url={tileLayerUrl} attribution={tileLayerAttribution} />
+      <TileLayer url={tileLayerUrl} {...tileLayerOptions} />
       {points.map((report) => (
         <Marker
           key={report.id}

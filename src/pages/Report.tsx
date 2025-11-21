@@ -13,7 +13,7 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
 import type { Coordinates } from "@/lib/leaflet";
-import { defaultMapCenter, tileLayerUrl, tileLayerAttribution, locationMarkerIcon } from "@/lib/leaflet";
+import { defaultMapCenter, tileLayerUrl, tileLayerOptions, locationMarkerIcon } from "@/lib/leaflet";
 import ReportMapOverview from "@/components/ReportMapOverview";
 
 const reportSchema = z.object({
@@ -220,7 +220,7 @@ const Report = () => {
                   scrollWheelZoom
                   className="h-full w-full"
                 >
-                  <TileLayer url={tileLayerUrl} attribution={tileLayerAttribution} />
+                  <TileLayer url={tileLayerUrl} {...tileLayerOptions} />
                   {coordinates && (
                     <Marker icon={locationMarkerIcon} position={coordinates}>
                       <Popup>
@@ -336,7 +336,7 @@ const ReportPreviewMap = ({ latitude, longitude }: { latitude: number; longitude
     zoomControl={false}
     className="h-36 w-full rounded-2xl"
   >
-    <TileLayer url={tileLayerUrl} attribution={tileLayerAttribution} />
+    <TileLayer url={tileLayerUrl} {...tileLayerOptions} />
     <Marker icon={locationMarkerIcon} position={{ lat: latitude, lng: longitude }} />
   </MapContainer>
 );

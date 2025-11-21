@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, PlusCircle } from "lucide-react";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
-import { defaultMapCenter, tileLayerAttribution, tileLayerUrl, locationMarkerIcon } from "@/lib/leaflet";
+import { defaultMapCenter, tileLayerUrl, tileLayerOptions, locationMarkerIcon } from "@/lib/leaflet";
 import type { Coordinates } from "@/lib/leaflet";
 import { useReports } from "@/hooks/useReports";
 import type { Report } from "@/hooks/useReports";
@@ -69,7 +69,7 @@ const ReportMap = () => {
               scrollWheelZoom
               className="h-full w-full"
             >
-              <TileLayer url={tileLayerUrl} attribution={tileLayerAttribution} />
+              <TileLayer url={tileLayerUrl} {...tileLayerOptions} />
               <MapFocus coordinates={activeReport ? { lat: activeReport.latitude, lng: activeReport.longitude } : null} />
               {reportsWithCoordinates.map((report) => (
                 <Marker
