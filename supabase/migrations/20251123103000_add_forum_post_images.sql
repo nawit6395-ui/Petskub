@@ -4,8 +4,9 @@ ADD COLUMN IF NOT EXISTS image_urls text[] NOT NULL DEFAULT ARRAY[]::text[];
 
 COMMENT ON COLUMN public.forum_posts.image_urls IS 'Public Supabase Storage URLs for images attached to the post';
 
--- Refresh the stats view so new column is exposed to the frontend
-CREATE OR REPLACE VIEW public.forum_post_stats AS
+DROP VIEW IF EXISTS public.forum_post_stats;
+
+CREATE VIEW public.forum_post_stats AS
 SELECT
   fp.id,
   fp.user_id,

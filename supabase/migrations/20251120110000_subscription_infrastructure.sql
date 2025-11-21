@@ -1,5 +1,14 @@
 -- Subscription & monetization schema
 
+-- Helper function (needed by multiple triggers below)
+CREATE OR REPLACE FUNCTION public.set_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = now();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
 -- Plans catalog
 CREATE TABLE IF NOT EXISTS public.plans (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -243,12 +252,3 @@ CREATE POLICY "Owners can update request status"
   FOR UPDATE
   USING (auth.uid() = owner_id)
   WITH CHECK (auth.uid() = owner_id);
-
--- Helper function to ensure set_updated_at exists
-CREATE OR REPLACE FUNCTION public.set_updated_at()
-RETURNS TRIGGER AS $$
-BEGIN
-  NEW.updated_at = now();
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
