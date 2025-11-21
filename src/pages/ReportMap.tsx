@@ -5,12 +5,10 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, PlusCircle } from "lucide-react";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
-import { defaultMapCenter, defaultMarkerIcon } from "@/lib/leaflet";
+import { defaultMapCenter, defaultMarkerIcon, tileLayerAttribution, tileLayerUrl } from "@/lib/leaflet";
 import type { Coordinates } from "@/lib/leaflet";
 import { useReports } from "@/hooks/useReports";
 import type { Report } from "@/hooks/useReports";
-
-const tileLayerUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 
 const statusConfig: Record<Report["status"], { label: string; variant: "secondary" | "outline" | "default" }> = {
   pending: { label: "รอดำเนินการ", variant: "secondary" },
@@ -71,7 +69,7 @@ const ReportMap = () => {
               scrollWheelZoom
               className="h-full w-full"
             >
-              <TileLayer url={tileLayerUrl} attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' />
+              <TileLayer url={tileLayerUrl} attribution={tileLayerAttribution} />
               <MapFocus coordinates={activeReport ? { lat: activeReport.latitude, lng: activeReport.longitude } : null} />
               {reportsWithCoordinates.map((report) => (
                 <Marker

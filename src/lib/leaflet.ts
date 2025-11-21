@@ -20,3 +20,7 @@ export const defaultMapCenter: L.LatLngLiteral = {
 };
 
 export type Coordinates = L.LatLngLiteral;
+
+export const tileLayerUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+
+export const tileLayerAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';

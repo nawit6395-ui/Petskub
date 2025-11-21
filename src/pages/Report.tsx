@@ -13,7 +13,8 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
 import type { Coordinates } from "@/lib/leaflet";
-import { defaultMarkerIcon, defaultMapCenter } from "@/lib/leaflet";
+import { defaultMarkerIcon, defaultMapCenter, tileLayerUrl, tileLayerAttribution } from "@/lib/leaflet";
+import ReportMapOverview from "@/components/ReportMapOverview";
 
 const reportSchema = z.object({
   province: z.string().min(1, "กรุณาเลือกจังหวัด"),
@@ -21,8 +22,6 @@ const reportSchema = z.object({
   location: z.string().trim().min(1, "กรุณากรอกสถานที่").max(200, "สถานที่ต้องไม่เกิน 200 ตัวอักษร"),
   description: z.string().max(1000, "รายละเอียดต้องไม่เกิน 1000 ตัวอักษร").optional(),
 });
-
-const tileLayerUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 
 const Report = () => {
   const { user } = useAuth();
@@ -220,7 +219,7 @@ const Report = () => {
                   scrollWheelZoom
                   className="h-full w-full"
                 >
-                  <TileLayer url={tileLayerUrl} attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' />
+                  <TileLayer url={tileLayerUrl} attribution={tileLayerAttribution} />
                   {coordinates && (
                     <Marker icon={defaultMarkerIcon} position={coordinates}>
                       <Popup>
@@ -247,6 +246,24 @@ const Report = () => {
             </Button>
           </form>
         </Card>
+
+        {reports && reports.length > 0 && (
+          <Card className="p-6 shadow-card mb-8 space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-sm text-muted-foreground font-prompt">ภาพรวมจาก {reports.length} รายงาน</p>
+                <h2 className="text-xl sm:text-2xl font-bold font-prompt">แผนที่จุดพบแมวจรล่าสุด</h2>
+              </div>
+              <Button asChild variant="outline" className="gap-2 font-prompt">
+                <Link to="/reports/map">
+                  <MapIcon className="h-4 w-4" />
+                  ดูแผนที่เต็ม
+                </Link>
+              </Button>
+            </div>
+            <ReportMapOverview reports={reports} heightClass="h-[420px]" limit={80} />
+          </Card>
+        )}
 
         {reports && reports.length > 0 && (
           <div>
@@ -318,7 +335,7 @@ const ReportPreviewMap = ({ latitude, longitude }: { latitude: number; longitude
     zoomControl={false}
     className="h-36 w-full rounded-2xl"
   >
-    <TileLayer url={tileLayerUrl} attribution="&copy; OpenStreetMap contributors" />
+    <TileLayer url={tileLayerUrl} attribution={tileLayerAttribution} />
     <Marker icon={defaultMarkerIcon} position={{ lat: latitude, lng: longitude }} />
   </MapContainer>
 );

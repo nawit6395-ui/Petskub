@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Plus, MapPin, Heart, TrendingUp } from "lucide-react";
@@ -9,6 +9,7 @@ import heroImage from "@/assets/hero-cat-pastel.jpg";
 import heroImageCozy from "@/assets/hero-cat.jpg";
 import { useCats } from "@/hooks/useCats";
 import { useReports } from "@/hooks/useReports";
+import ReportMapOverview from "@/components/ReportMapOverview";
 
 const heroSlides = [
   {
@@ -30,6 +31,10 @@ const Home = () => {
   const totalAdopted = cats?.filter(cat => cat.is_adopted).length || 0;
   const totalAvailable = cats?.filter(cat => !cat.is_adopted).length || 0;
   const totalReports = reports?.length || 0;
+  const reportsWithCoordinates = useMemo(
+    () => (reports ?? []).filter((report) => typeof report.latitude === "number" && typeof report.longitude === "number"),
+    [reports]
+  );
 
   const statCards = [
     {
@@ -292,21 +297,35 @@ const Home = () => {
             <p className="text-muted-foreground font-prompt">ช่วยกันดูแลแมวจรในพื้นที่ของคุณ</p>
           </div>
           
-          <Card className="overflow-hidden shadow-hover">
-            <div className="bg-muted h-96 flex items-center justify-center relative">
-              <div className="text-center space-y-4">
-                <MapPin className="w-16 h-16 text-primary mx-auto" />
-                <div>
-                  <h3 className="text-xl font-semibold mb-2 font-prompt">แผนที่แบบโต้ตอบ</h3>
-                  <p className="text-muted-foreground mb-4 font-prompt">แสดงจุดพบเจอแมวจรทั่วประเทศ</p>
-                  <Link to="/report">
-                    <Button className="font-prompt">
+          <Card className="overflow-hidden shadow-hover p-6">
+            {reportsWithCoordinates.length > 0 ? (
+              <div className="space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="text-left">
+                    <p className="text-sm text-muted-foreground font-prompt">อัปเดตจาก {reportsWithCoordinates.length} พิกัดล่าสุด</p>
+                    <h3 className="text-2xl font-bold font-prompt">ภาพรวมจุดแมวจรทั่วประเทศ</h3>
+                  </div>
+                  <Button asChild variant="secondary" className="gap-2 font-prompt">
+                    <Link to="/reports/map">
+                      <MapPin className="w-4 h-4" />
                       ดูแผนที่เต็ม
-                    </Button>
+                    </Link>
+                  </Button>
+                </div>
+                <ReportMapOverview reports={reports} heightClass="h-[420px]" />
+              </div>
+            ) : (
+              <div className="bg-muted/50 h-80 flex flex-col items-center justify-center gap-4 rounded-3xl">
+                <MapPin className="w-16 h-16 text-primary" />
+                <div className="text-center">
+                  <h3 className="text-xl font-semibold mb-2 font-prompt">ยังไม่มีพิกัดให้แสดง</h3>
+                  <p className="text-muted-foreground mb-4 font-prompt">เริ่มแจ้งจุดแมวจรเพื่อดูแผนที่ภาพรวม</p>
+                  <Link to="/report">
+                    <Button className="font-prompt">แจ้งจุดพบแมวจร</Button>
                   </Link>
                 </div>
               </div>
-            </div>
+            )}
           </Card>
         </div>
       </section>
