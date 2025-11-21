@@ -9,8 +9,8 @@ export interface Report {
   location: string;
   description?: string;
   photo_urls?: string[];
-  latitude?: number;
-  longitude?: number;
+  latitude: number | null;
+  longitude: number | null;
   cat_count: number;
   status: 'pending' | 'in_progress' | 'resolved';
   user_id: string;
