@@ -10,6 +10,7 @@ import CookieConsent from "./components/CookieConsent";
 import Home from "./pages/Home";
 import Adopt from "./pages/Adopt";
 import Report from "./pages/Report";
+import ReportMap from "./pages/ReportMap";
 import Help from "./pages/Help";
 import Knowledge from "./pages/Knowledge";
 import Login from "./pages/Login";
@@ -49,6 +50,7 @@ const App = () => (
             <Route path="/" element={<Layout><Home /></Layout>} />
             <Route path="/adopt" element={<Layout><Adopt /></Layout>} />
             <Route path="/report" element={<Layout><Report /></Layout>} />
+            <Route path="/reports/map" element={<Layout><ReportMap /></Layout>} />
             <Route path="/help" element={<Layout><Help /></Layout>} />
             <Route path="/knowledge" element={<Layout><Knowledge /></Layout>} />
             <Route path="/knowledge/create" element={<Layout><CreateArticle /></Layout>} />
