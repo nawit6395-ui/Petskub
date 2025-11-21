@@ -26,6 +26,7 @@ const Home = () => {
   const { data: cats } = useCats();
   const { data: reports } = useReports();
   const [activeHeroIndex, setActiveHeroIndex] = useState(0);
+  const mapButtonClass = "bg-[#fb8b24] text-white hover:bg-[#f97316] shadow-md hover:shadow-lg border-transparent";
 
   const urgentCats = cats?.filter(cat => cat.is_urgent && !cat.is_adopted).slice(0, 3) || [];
   const totalAdopted = cats?.filter(cat => cat.is_adopted).length || 0;
@@ -305,7 +306,7 @@ const Home = () => {
                     <p className="text-sm text-muted-foreground font-prompt">อัปเดตจาก {reportsWithCoordinates.length} พิกัดล่าสุด</p>
                     <h3 className="text-2xl font-bold font-prompt">ภาพรวมจุดแมวจรทั่วประเทศ</h3>
                   </div>
-                  <Button asChild variant="secondary" className="gap-2 font-prompt">
+                  <Button asChild className={`gap-2 font-prompt ${mapButtonClass}`}>
                     <Link to="/reports/map">
                       <MapPin className="w-4 h-4" />
                       ดูแผนที่เต็ม

@@ -27,6 +27,7 @@ const Report = () => {
   const { user } = useAuth();
   const { data: reports } = useReports();
   const createReport = useCreateReport();
+  const mapButtonClass = "bg-[#fb8b24] text-white hover:bg-[#f97316] shadow-md hover:shadow-lg border-transparent";
   
   const [province, setProvince] = useState("");
   const [district, setDistrict] = useState("");
@@ -156,7 +157,7 @@ const Report = () => {
           <h1 className="text-4xl font-bold mb-2 font-prompt">แจ้งเจอแมวจร 📍</h1>
           <p className="text-muted-foreground font-prompt">ช่วยกันบันทึกข้อมูลแมวจรในพื้นที่</p>
           <div className="mt-4 flex flex-wrap gap-3">
-            <Button asChild variant="outline" className="gap-2 font-prompt">
+            <Button asChild className={`gap-2 font-prompt ${mapButtonClass}`}>
               <Link to="/reports/map">
                 <MapIcon className="h-4 w-4" />
                 ดูรายงานบนแผนที่
@@ -254,14 +255,14 @@ const Report = () => {
                 <p className="text-sm text-muted-foreground font-prompt">ภาพรวมจาก {reports.length} รายงาน</p>
                 <h2 className="text-xl sm:text-2xl font-bold font-prompt">แผนที่จุดพบแมวจรล่าสุด</h2>
               </div>
-              <Button asChild variant="outline" className="gap-2 font-prompt">
+              <Button asChild className={`gap-2 font-prompt ${mapButtonClass}`}>
                 <Link to="/reports/map">
                   <MapIcon className="h-4 w-4" />
                   ดูแผนที่เต็ม
                 </Link>
               </Button>
             </div>
-            <ReportMapOverview reports={reports} heightClass="h-[420px]" limit={80} />
+            <ReportMapOverview reports={reports} heightClass="h-[420px]" />
           </Card>
         )}
 

@@ -13,7 +13,7 @@ interface ReportMapOverviewProps {
 const ReportMapOverview = ({
   reports,
   heightClass = "h-96",
-  limit = 60,
+  limit,
   scrollWheelZoom = true,
 }: ReportMapOverviewProps) => {
   const points = useMemo(
@@ -22,7 +22,7 @@ const ReportMapOverview = ({
         .filter((report): report is Report & { latitude: number; longitude: number } =>
           typeof report.latitude === "number" && typeof report.longitude === "number"
         )
-        .slice(0, limit),
+        .slice(0, typeof limit === "number" ? limit : undefined),
     [reports, limit]
   );
 
