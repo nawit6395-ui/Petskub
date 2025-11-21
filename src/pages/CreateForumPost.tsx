@@ -346,7 +346,7 @@ const CreateForumPost = () => {
           }
 
           const extension = file.name.split('.').pop() || 'jpg';
-          const filePath = `forum-posts/${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${extension}`;
+          const filePath = `${user.id}/forum-posts/${Date.now()}-${Math.random().toString(36).slice(2)}.${extension}`;
           const { data, error } = await supabase.storage.from(BUCKET_ID).upload(filePath, file);
           if (error) throw error;
 
@@ -378,7 +378,7 @@ const CreateForumPost = () => {
     setImageUrls((prev) => prev.filter((item) => item !== url));
 
     try {
-      const [_, path] = url.split(`${BUCKET_ID}/`);
+      const path = url.split(`${BUCKET_ID}/`).pop()?.split('?')[0];
       if (path) {
         await supabase.storage.from(BUCKET_ID).remove([path]);
       }
