@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { ShieldCheck, X } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 
 const STORAGE_KEY = "petskub.cookie-consent";
 
 const CookieConsent = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isBannerVisible, setIsBannerVisible] = useState(false);
+  const [isPeekVisible, setIsPeekVisible] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -12,11 +13,12 @@ const CookieConsent = () => {
     try {
       const stored = window.localStorage.getItem(STORAGE_KEY);
       if (!stored) {
-        setIsOpen(true);
+        const timer = window.setTimeout(() => setIsBannerVisible(true), 900);
+        return () => window.clearTimeout(timer);
       }
     } catch (error) {
       // Fallback to showing the banner if storage is unavailable
-      setIsOpen(true);
+      setIsBannerVisible(true);
     }
   }, []);
 
@@ -32,72 +34,72 @@ const CookieConsent = () => {
       }
     }
 
-    setIsOpen(false);
+    setIsBannerVisible(false);
+    setIsPeekVisible(false);
   };
 
-  if (!isOpen) {
-    return null;
-  }
+  const handleLater = () => {
+    setIsBannerVisible(false);
+    setIsPeekVisible(true);
+  };
+
+  const handlePeek = () => {
+    setIsPeekVisible(false);
+    setIsBannerVisible(true);
+  };
 
   return (
-    <div
-      role="dialog"
-      aria-live="polite"
-      aria-label="Cookie policy notification"
-      className="fixed inset-x-0 bottom-4 z-50 flex justify-center px-4"
-    >
-      <div className="relative w-full max-w-4xl rounded-3xl border border-emerald-100 bg-white/95 p-5 shadow-2xl shadow-emerald-100/70 backdrop-blur supports-[backdrop-filter]:backdrop-blur-md md:p-7">
-        <button
-          type="button"
-          onClick={() => setIsOpen(false)}
-          aria-label="Dismiss cookie notice"
-          className="absolute right-4 top-4 rounded-full p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+    <>
+      {isBannerVisible && (
+        <div
+          role="dialog"
+          aria-live="polite"
+          aria-label="Cookie policy notification"
+          className="fixed bottom-5 right-5 z-50 max-w-md rounded-3xl border border-slate-200 bg-white/95 p-5 shadow-[0_15px_60px_rgba(15,23,42,0.15)] backdrop-blur"
         >
-          <X className="h-4 w-4" />
-        </button>
-
-        <div className="flex flex-col gap-6 md:flex-row md:items-center">
-          <div className="flex flex-1 items-start gap-4">
-            <span className="rounded-2xl bg-emerald-50 p-3 text-emerald-600 shadow-inner shadow-white">
-              <ShieldCheck className="h-6 w-6" />
+          <div className="flex items-start gap-3">
+            <span className="rounded-2xl bg-emerald-50 p-3 text-emerald-600">
+              <ShieldCheck className="h-5 w-5" />
             </span>
-            <div className="space-y-2">
-              <p className="text-lg font-semibold text-slate-900">Cookies & Privacy</p>
-              <p className="text-sm leading-relaxed text-slate-600">
-                Petskub ใช้คุกกี้เพื่อจดจำการเข้าสู่ระบบ ปรับเนื้อหาให้ตรงกับบริบท และรักษาความปลอดภัยของบัญชีผู้ใช้
-                การใช้งานเว็บไซต์ต่อถือว่าคุณยินยอมตาม {" "}
+            <div className="flex-1">
+              <p className="text-base font-semibold text-slate-900">เราดูแลความเป็นส่วนตัวของคุณ</p>
+              <p className="mt-1 text-sm leading-relaxed text-slate-600">
+                เราใช้คุกกี้จำเป็นเพื่อให้คุณเข้าสู่ระบบและปกป้องบัญชี คุณสามารถอ่านรายละเอียดสั้น ๆ ใน {""}
                 <a href="/privacy" className="font-semibold text-emerald-600 underline-offset-4 hover:underline">
                   นโยบายคุกกี้
-                </a>{" "}
-                ของเรา ซึ่งสรุปว่ามีคุกกี้ประเภทใดบ้างและวิธีถอนความยินยอมเมื่อไหร่ก็ได้
+                </a>
               </p>
-              <div className="flex flex-wrap gap-2 text-xs text-slate-500">
-                <span className="rounded-full bg-slate-100 px-3 py-1">จำเป็นต่อระบบ</span>
-                <span className="rounded-full bg-slate-100 px-3 py-1">บันทึกตัวเลือกผู้ใช้</span>
-                <span className="rounded-full bg-slate-100 px-3 py-1">สถิติเชิงรวม</span>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={handleAccept}
+                  className="rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-500"
+                >
+                  ยอมรับและดำเนินการต่อ
+                </button>
+                <button
+                  type="button"
+                  onClick={handleLater}
+                  className="rounded-full border border-slate-200 bg-white/70 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+                >
+                  เตือนฉันภายหลัง
+                </button>
               </div>
             </div>
           </div>
-
-          <div className="flex w-full flex-col gap-3 md:w-auto md:min-w-[240px]">
-            <button
-              type="button"
-              onClick={handleAccept}
-              className="w-full rounded-full bg-emerald-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-200 transition hover:bg-emerald-500"
-            >
-              ยอมรับคุกกี้
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsOpen(false)}
-              className="w-full rounded-full border border-emerald-100 bg-white px-5 py-3 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-50"
-            >
-              แสดงอีกครั้งในภายหลัง
-            </button>
-          </div>
         </div>
-      </div>
-    </div>
+      )}
+
+      {isPeekVisible && (
+        <button
+          type="button"
+          onClick={handlePeek}
+          className="fixed bottom-4 right-4 z-40 rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-xs font-semibold text-slate-600 shadow-lg shadow-slate-200 transition hover:bg-white"
+        >
+          การตั้งค่าคุกกี้
+        </button>
+      )}
+    </>
   );
 };
 

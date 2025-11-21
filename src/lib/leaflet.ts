@@ -3,7 +3,7 @@ import L from "leaflet";
 const iconRetinaUrl = new URL("leaflet/dist/images/marker-icon-2x.png", import.meta.url).toString();
 const iconUrl = new URL("leaflet/dist/images/marker-icon.png", import.meta.url).toString();
 const shadowUrl = new URL("leaflet/dist/images/marker-shadow.png", import.meta.url).toString();
-const customMarkerUrl = "https://img5.pic.in.th/file/secure-sv1/location-5.png";
+const customMarkerUrl = "https://img2.pic.in.th/pic/paw.png";
 
 export const defaultMarkerIcon = L.icon({
   iconRetinaUrl,
@@ -43,7 +43,7 @@ const mapTilerAttribution =
 const openStreetMapAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
 export const tileLayerUrl = hasMapTilerKey
-  ? `https://api.maptiler.com/maps/bright/{z}/{x}/{y}.png?key=${mapTilerApiKey}`
+  ? `https://api.maptiler.com/maps/pastel/{z}/{x}/{y}.png?key=${mapTilerApiKey}`
   : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 
 export const tileLayerAttribution = hasMapTilerKey ? mapTilerAttribution : openStreetMapAttribution;
