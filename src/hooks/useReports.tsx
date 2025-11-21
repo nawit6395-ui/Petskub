@@ -50,7 +50,7 @@ export const useCreateReport = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reports'] });
       toast.success('ส่งรายงานสำเร็จ!', {
-        description: 'ขอบคุณที่ช่วยแจ้งจุดพบเจอแมวจร'
+        description: 'ขอบคุณที่ช่วยแจ้งจุดพบสัตว์จร'
       });
     },
     onError: (error: any) => {

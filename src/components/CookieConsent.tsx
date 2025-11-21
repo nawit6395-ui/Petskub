@@ -83,7 +83,7 @@ const CookieConsent = () => {
             <button
               type="button"
               onClick={handleAccept}
-              className="w-full rounded-full bg-emerald-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-200 transition hover:bg-emerald-600"
+              className="w-full rounded-full bg-emerald-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-200 transition hover:bg-emerald-500"
             >
               ยอมรับคุกกี้
             </button>

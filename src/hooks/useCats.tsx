@@ -54,7 +54,7 @@ export const useCreateCat = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cats'] });
-      toast.success('เพิ่มข้อมูลแมวสำเร็จ');
+      toast.success('เพิ่มข้อมูลสัตว์เลี้ยงสำเร็จ');
     },
     onError: (error: any) => {
       toast.error('เกิดข้อผิดพลาด', {

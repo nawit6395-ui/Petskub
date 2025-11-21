@@ -15,7 +15,7 @@ import { z } from "zod";
 import { toast } from "sonner";
 
 const catSchema = z.object({
-  name: z.string().trim().min(1, "กรุณากรอกชื่อแมว").max(100, "ชื่อต้องไม่เกิน 100 ตัวอักษร"),
+  name: z.string().trim().min(1, "กรุณากรอกชื่อสัตว์เลี้ยง").max(100, "ชื่อต้องไม่เกิน 100 ตัวอักษร"),
   age: z.string().min(1, "กรุณากรอกอายุ").max(50, "อายุต้องไม่เกิน 50 ตัวอักษร"),
   gender: z.string().min(1, "กรุณาเลือกเพศ"),
   province: z.string().min(1, "กรุณาเลือกจังหวัด"),
@@ -51,7 +51,7 @@ const AddCat = () => {
       <div className="min-h-screen bg-background py-16">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4 font-prompt">กรุณาเข้าสู่ระบบ</h2>
-          <p className="text-muted-foreground mb-6 font-prompt">คุณต้องเข้าสู่ระบบก่อนเพื่อลงประกาศหาบ้านให้แมว</p>
+          <p className="text-muted-foreground mb-6 font-prompt">คุณต้องเข้าสู่ระบบก่อนเพื่อลงประกาศหาบ้านให้สัตว์เลี้ยง</p>
           <Link to="/login"><Button className="font-prompt">เข้าสู่ระบบ</Button></Link>
         </div>
       </div>
@@ -107,15 +107,15 @@ const AddCat = () => {
     <div className="min-h-screen bg-background py-8">
       <div className="container mx-auto px-4 max-w-3xl">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 font-prompt">ลงประกาศหาบ้านให้แมว 🏠</h1>
-          <p className="text-muted-foreground font-prompt">ช่วยน้องแมวหาบ้านที่อบอุ่น</p>
+          <h1 className="text-4xl font-bold mb-2 font-prompt">ลงประกาศหาบ้านให้สัตว์เลี้ยง 🏠</h1>
+          <p className="text-muted-foreground font-prompt">ช่วยน้องแมวและสุนัขหาบ้านที่อบอุ่น</p>
         </div>
 
         <Card className="p-6 shadow-card">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="name" className="font-prompt">ชื่อแมว *</Label>
+                <Label htmlFor="name" className="font-prompt">ชื่อสัตว์เลี้ยง *</Label>
                 <Input value={name} onChange={(e) => setName(e.target.value)} required className="font-prompt" />
               </div>
 
@@ -169,8 +169,8 @@ const AddCat = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="story" className="font-prompt">เรื่องราวของน้องแมว</Label>
-              <Textarea value={story} onChange={(e) => setStory(e.target.value)} rows={4} className="font-prompt" placeholder="บอกเล่าเรื่องราวของน้องแมว..." />
+              <Label htmlFor="story" className="font-prompt">เรื่องราวของน้อง ๆ</Label>
+              <Textarea value={story} onChange={(e) => setStory(e.target.value)} rows={4} className="font-prompt" placeholder="บอกเล่าเรื่องราวของน้องแมวหรือสุนัข..." />
             </div>
 
             <div className="space-y-2">
@@ -212,7 +212,7 @@ const AddCat = () => {
 
             <Button type="submit" className="w-full font-prompt gap-2" size="lg" disabled={createCat.isPending}>
               <Heart className="w-5 h-5" />
-              {createCat.isPending ? "กำลังลงประกาศ..." : "ลงประกาศหาบ้านให้แมว"}
+              {createCat.isPending ? "กำลังลงประกาศ..." : "ลงประกาศหาบ้านให้สัตว์เลี้ยง"}
             </Button>
           </form>
         </Card>

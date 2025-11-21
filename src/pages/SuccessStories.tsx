@@ -36,7 +36,7 @@ const SuccessStories = () => {
             <Heart className="w-8 h-8 text-success fill-success animate-pulse" />
           </div>
           <p className="text-muted-foreground font-prompt text-lg max-w-2xl mx-auto">
-            แมวน้อยที่ได้บ้านใหม่แล้ว 🏡 ขอบคุณทุกท่านที่ให้ความรักและโอกาสครั้งใหม่กับน้องๆ
+            น้องแมวและสุนัขที่ได้บ้านใหม่แล้ว 🏡 ขอบคุณทุกท่านที่ให้ความรักและโอกาสครั้งใหม่กับพวกเขา
           </p>
           {adoptedCats.length > 0 && (
             <p className="text-success font-prompt font-semibold mt-2">
@@ -50,7 +50,7 @@ const SuccessStories = () => {
           <div className="mb-8 max-w-4xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input
-                placeholder="🔍 ค้นหาชื่อแมว..."
+                placeholder="🔍 ค้นหาชื่อสัตว์เลี้ยง..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="font-prompt"
@@ -85,7 +85,7 @@ const SuccessStories = () => {
             <Heart className="w-16 h-16 mx-auto mb-4 text-muted-foreground/30" />
             <h3 className="text-xl font-semibold mb-2 font-prompt">ยังไม่มีเรื่องราวความสำเร็จ</h3>
             <p className="text-muted-foreground font-prompt">
-              เมื่อมีแมวได้บ้านใหม่ เรื่องราวจะปรากฏที่นี่
+              เมื่อมีสัตว์เลี้ยงได้บ้านใหม่ เรื่องราวจะปรากฏที่นี่
             </p>
           </div>
         )}

@@ -27,12 +27,12 @@ const Adopt = () => {
     <div className="min-h-screen bg-background py-8">
       <div className="container mx-auto px-4">
         <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold mb-2 font-prompt">หาบ้านให้แมว 🏠</h1>
+          <h1 className="text-4xl font-bold mb-2 font-prompt">หาบ้านให้สัตว์เลี้ยง 🏠</h1>
           <p className="text-muted-foreground font-prompt mb-4">
-            ดูข้อมูลแมวทั้งหมดได้เลย ไม่ต้องสมัครสมาชิก
+            ดูข้อมูลแมวและสุนัขทั้งหมดได้เลย ไม่ต้องสมัครสมาชิก
           </p>
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent/10 rounded-full">
-            <span className="text-sm font-prompt">💡 ต้องการโพสต์หาบ้านให้แมว?</span>
+            <span className="text-sm font-prompt">💡 ต้องการโพสต์หาบ้านให้แมวหรือสุนัข?</span>
             <a href="/login" className="text-sm font-semibold text-primary hover:underline font-prompt">
               เข้าสู่ระบบ
             </a>
@@ -40,8 +40,8 @@ const Adopt = () => {
         </div>
 
         <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-4 font-prompt">ค้นหาและกรองแมว</h2>
-          <p className="text-muted-foreground font-prompt">พบกับน้องแมวที่รอคุณอยู่</p>
+          <h2 className="text-2xl font-bold mb-4 font-prompt">ค้นหาและกรองสัตว์เลี้ยง</h2>
+          <p className="text-muted-foreground font-prompt">พบกับน้องแมวและสุนัขที่รอคุณอยู่</p>
         </div>
 
         {/* Filter Section */}
@@ -55,7 +55,7 @@ const Adopt = () => {
             <div className="relative sm:col-span-2">
               <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
               <Input
-                placeholder="ค้นหาชื่อแมว..."
+                placeholder="ค้นหาชื่อสัตว์เลี้ยง..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 font-prompt"
@@ -110,9 +110,9 @@ const Adopt = () => {
           </div>
         ) : !cats || cats.length === 0 ? (
           <div className="text-center py-12 bg-card rounded-2xl p-8">
-            <p className="text-muted-foreground font-prompt mb-4">ยังไม่มีข้อมูลแมวในระบบ</p>
+            <p className="text-muted-foreground font-prompt mb-4">ยังไม่มีข้อมูลสัตว์เลี้ยงในระบบ</p>
             <a href="/add-cat">
-              <Button className="font-prompt">เพิ่มข้อมูลแมวตัวแรก</Button>
+              <Button className="font-prompt">เพิ่มข้อมูลสัตว์เลี้ยงตัวแรก</Button>
             </a>
           </div>
         ) : (
@@ -147,7 +147,7 @@ const Adopt = () => {
               </div>
             ) : (
               <div className="text-center py-12">
-                <p className="text-muted-foreground font-prompt">ไม่พบแมวที่ตรงกับเงื่อนไขการค้นหา</p>
+                <p className="text-muted-foreground font-prompt">ไม่พบสัตว์เลี้ยงที่ตรงกับเงื่อนไขการค้นหา</p>
               </div>
             )}
           </>

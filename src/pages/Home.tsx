@@ -5,7 +5,6 @@ import { Plus, MapPin, Heart, TrendingUp } from "lucide-react";
 import { FaHeart, FaCat, FaMapMarkerAlt, FaExclamationTriangle } from "react-icons/fa";
 import CatCard from "@/components/CatCard";
 import { Link } from "react-router-dom";
-import heroImage from "@/assets/hero-cat-pastel.jpg";
 import heroImageCozy from "@/assets/hero-cat.jpg";
 import { useCats } from "@/hooks/useCats";
 import { useReports } from "@/hooks/useReports";
@@ -13,8 +12,8 @@ import ReportMapOverview from "@/components/ReportMapOverview";
 
 const heroSlides = [
   {
-    src: heroImage,
-    alt: "น้องแมวน่ารักในบ้านที่อบอุ่น",
+    src: "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=1400&q=80",
+    alt: "น้องหมานั่งอยู่ริมหน้าต่างแสงแดดอ่อน",
   },
   {
     src: heroImageCozy,
@@ -26,7 +25,7 @@ const Home = () => {
   const { data: cats } = useCats();
   const { data: reports } = useReports();
   const [activeHeroIndex, setActiveHeroIndex] = useState(0);
-  const mapButtonClass = "bg-[#fb8b24] text-white hover:bg-[#f97316] shadow-md hover:shadow-lg border-transparent";
+  const mapButtonClass = "bg-gradient-sunrise text-white shadow-soft hover:shadow-hover border-0";
 
   const urgentCats = cats?.filter(cat => cat.is_urgent && !cat.is_adopted).slice(0, 3) || [];
   const totalAdopted = cats?.filter(cat => cat.is_adopted).length || 0;
@@ -39,36 +38,36 @@ const Home = () => {
 
   const statCards = [
     {
-      label: "แมวหาบ้านเจอแล้ว",
+      label: "สัตว์ได้บ้านแล้ว",
       value: totalAdopted,
       icon: FaHeart,
-      accent: "from-rose-50 via-rose-100 to-amber-100",
-      iconBg: "bg-rose-100 text-rose-500",
-      valueColor: "text-rose-600",
+      accent: "from-blush/60 via-white/90 to-surface-sand",
+      iconBg: "bg-blush/20 text-blush",
+      valueColor: "text-blush",
     },
     {
-      label: "แมวรอรับเลี้ยง",
+      label: "สัตว์รอรับเลี้ยง",
       value: totalAvailable,
       icon: FaCat,
-      accent: "from-amber-50 via-orange-100 to-rose-100",
-      iconBg: "bg-orange-100 text-orange-500",
-      valueColor: "text-orange-600",
+      accent: "from-sunrise/50 via-white/90 to-surface-warm",
+      iconBg: "bg-sunrise/20 text-sunrise",
+      valueColor: "text-sunrise",
     },
     {
-      label: "จุดแมวจร",
+      label: "จุดสัตว์จร",
       value: totalReports,
       icon: FaMapMarkerAlt,
-      accent: "from-emerald-50 via-teal-100 to-cyan-100",
-      iconBg: "bg-emerald-100 text-emerald-500",
-      valueColor: "text-emerald-600",
+      accent: "from-mint/40 via-surface-mint to-white",
+      iconBg: "bg-mint/20 text-mint",
+      valueColor: "text-mint",
     },
     {
       label: "กรณีด่วน",
       value: urgentCats.length,
       icon: FaExclamationTriangle,
-      accent: "from-purple-50 via-fuchsia-100 to-rose-100",
-      iconBg: "bg-purple-100 text-purple-500",
-      valueColor: "text-purple-600",
+      accent: "from-lilac/50 via-white/90 to-surface-lilac",
+      iconBg: "bg-lilac/25 text-lilac",
+      valueColor: "text-lilac",
     },
   ];
 
@@ -88,65 +87,74 @@ const Home = () => {
       value: `${totalAdopted}+`,
       icon: FaHeart,
       className: "top-8 -left-6 animate-float-slow",
+      background: "from-blush/70 to-white/80",
+      iconBg: "bg-blush/20 text-blush",
     },
     {
-      label: "จุดพบแมวจร",
+      label: "จุดพบสัตว์จร",
       value: totalReports,
       icon: FaMapMarkerAlt,
       className: "-bottom-4 left-10 animate-float-delayed",
+      background: "from-mint/70 to-white/80",
+      iconBg: "bg-mint/20 text-mint",
     },
     {
       label: "เคสเร่งด่วน",
       value: urgentCats.length,
       icon: FaExclamationTriangle,
       className: "top-4 -right-4 animate-float-delayed",
+      background: "from-coral/70 to-white/80",
+      iconBg: "bg-coral/20 text-coral",
     },
   ];
 
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-soft">
-        <div className="absolute inset-0 bg-gradient-warm opacity-5"></div>
-        <div className="pointer-events-none absolute -top-16 -right-10 hidden lg:block">
-          <div className="h-52 w-52 rounded-full bg-rose-200/50 blur-3xl animate-float-slow"></div>
+      <section className="relative overflow-hidden bg-surface-warm">
+        <div className="absolute inset-0 bg-gradient-sunrise opacity-[0.08]"></div>
+        <div className="pointer-events-none absolute -top-20 -right-16 hidden lg:block">
+          <div className="h-64 w-64 rounded-full bg-gradient-mint opacity-40 blur-3xl animate-float-slow"></div>
         </div>
-        <div className="pointer-events-none absolute bottom-0 left-8 hidden lg:block">
-          <div className="h-40 w-40 rounded-full bg-amber-200/40 blur-3xl animate-float-delayed"></div>
+        <div className="pointer-events-none absolute bottom-0 left-0 hidden md:block w-1/2 opacity-60">
+          <div className="h-96 w-full bg-gradient-lilac blur-3xl animate-shimmer-soft"></div>
         </div>
-        <div className="pointer-events-none absolute inset-y-12 left-0 hidden md:block w-1/3 opacity-50">
-          <div className="h-full w-full bg-gradient-to-r from-white/50 via-white/10 to-transparent animate-shimmer-soft"></div>
+        <div className="pointer-events-none absolute inset-y-12 left-0 hidden lg:block w-1/3 opacity-50">
+          <div className="h-full w-full bg-gradient-to-r from-white/60 via-white/20 to-transparent animate-shimmer-soft"></div>
         </div>
         <div className="container relative z-10 mx-auto px-4 py-20 md:py-28">
           <div className="grid items-center gap-12 md:grid-cols-2">
             <div className="space-y-8">
               <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 shadow-sm">
                 <Heart className="h-4 w-4 fill-primary text-primary" />
-                <span className="font-prompt text-sm font-medium text-primary">ชุมชนคนรักแมว</span>
+                <span className="font-prompt text-sm font-medium text-primary">ชุมชนคนรักสัตว์</span>
               </div>
               <h1 className="font-prompt text-5xl font-bold leading-tight text-foreground md:text-6xl">
-                ช่วยแมวจร
+                ช่วยแมวและสุนัขจร
                 <span className="text-primary"> ให้ได้บ้าน</span>
                 ที่อบอุ่น 🐾
               </h1>
               <p className="font-prompt text-xl leading-relaxed text-muted-foreground">
-                ร่วมเป็นส่วนหนึ่งของชุมชนที่ใส่ใจแมวจร ช่วยกันหาบ้านที่อบอุ่น ลดปัญหาแมวจรจัดในเมือง
+                ร่วมเป็นส่วนหนึ่งของชุมชนที่ใส่ใจแมวและสุนัขจร ช่วยกันหาบ้านที่อบอุ่น ลดปัญหาสัตว์จรจัดในเมือง
               </p>
               <div className="flex flex-wrap gap-4 pt-4">
                 <Link to="/adopt">
-                  <Button size="lg" className="h-14 gap-2 px-8 text-base font-prompt shadow-hover transition-transform hover:scale-105">
+                  <Button
+                    size="lg"
+                    className="h-14 gap-2 px-8 text-base font-prompt bg-primary text-primary-foreground shadow-soft border-0 transition-transform hover:scale-105 hover:bg-primary-hover"
+                  >
                     <Heart className="h-5 w-5" />
-                    หาแมวรับเลี้ยง
+                    หาสัตว์เลี้ยงรับเลี้ยง
                   </Button>
                 </Link>
                 <Link to="/add-cat">
                   <Button
                     size="lg"
                     variant="outline"
-                    className="h-14 gap-2 px-8 text-base font-prompt transition-transform hover:scale-105"
+                    className="h-14 gap-2 px-8 text-base font-prompt border-mint/60 text-foreground bg-white/70 hover:bg-mint/20 transition-transform hover:scale-105"
                   >
                     <Plus className="h-5 w-5" />
-                    ลงประกาศหาบ้านให้แมว
+                    ลงประกาศหาบ้านให้สัตว์เลี้ยง
                   </Button>
                 </Link>
               </div>
@@ -183,8 +191,8 @@ const Home = () => {
                     <TrendingUp className="h-6 w-6 text-success" />
                   </div>
                   <div>
-                    <div className="font-prompt text-2xl font-bold text-foreground">{totalAdopted}+</div>
-                    <div className="font-prompt text-sm text-muted-foreground">แมวหาบ้านเจอแล้ว</div>
+                                        <div className="font-prompt text-2xl font-bold text-foreground">{totalAdopted}+</div>
+                                        <div className="font-prompt text-sm text-muted-foreground">สัตว์ได้บ้านแล้ว</div>
                   </div>
                 </div>
               </div>
@@ -194,13 +202,13 @@ const Home = () => {
                 return (
                   <div
                     key={chip.label}
-                    className={`absolute hidden lg:flex items-center gap-3 rounded-2xl border border-white/50 bg-white/70 px-5 py-3 shadow-card backdrop-blur-md ${chip.className}`}
+                    className={`absolute hidden lg:flex items-center gap-3 rounded-2xl border border-white/40 bg-gradient-to-r ${chip.background} px-5 py-3 shadow-soft backdrop-blur-lg ${chip.className}`}
                   >
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${chip.iconBg}`}>
                       <Icon className="h-5 w-5" />
                     </div>
                     <div>
-                      <p className="font-prompt text-xs text-muted-foreground">{chip.label}</p>
+                      <p className="font-prompt text-sm font-semibold text-foreground">{chip.label}</p>
                       <p className="font-prompt text-lg font-semibold text-foreground">{chip.value}</p>
                     </div>
                   </div>
@@ -212,15 +220,15 @@ const Home = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-8 sm:py-12 bg-card">
+      <section className="py-8 sm:py-12 bg-surface-cool">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {statCards.map(({ label, value, icon: Icon, accent, iconBg, valueColor }) => (
               <Card
                 key={label}
-                className={`relative overflow-hidden rounded-3xl border-none p-4 sm:p-6 text-center shadow-card transition-all hover:-translate-y-1 hover:shadow-xl`}
+                className="relative overflow-hidden rounded-3xl border border-white/60 bg-white/80 p-4 text-center shadow-soft transition-all hover:-translate-y-1 hover:shadow-hover"
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${accent} opacity-70`}></div>
+                <div className={`absolute inset-0 bg-gradient-to-br ${accent} opacity-80`}></div>
                 <div className="relative flex flex-col items-center gap-3">
                   <div className={`flex h-12 w-12 items-center justify-center rounded-full shadow-inner ${iconBg}`}>
                     <Icon className="h-5 w-5" />
@@ -235,12 +243,12 @@ const Home = () => {
       </section>
 
       {/* Urgent Adoption Section */}
-      <section className="py-16 bg-background">
+      <section className="py-16 bg-surface-sand">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-3xl font-bold mb-2 font-prompt">แมวหาบ้านด่วน 🆘</h2>
-              <p className="text-muted-foreground font-prompt">น้องแมวเหล่านี้กำลังรอคุณอยู่</p>
+              <h2 className="text-3xl font-bold mb-2 font-prompt">สัตว์หาบ้านด่วน 🆘</h2>
+              <p className="text-muted-foreground font-prompt">น้องแมวและสุนัขเหล่านี้กำลังรอคุณอยู่</p>
             </div>
             <Link to="/adopt">
               <Button variant="outline" className="font-prompt gap-2">
@@ -275,15 +283,15 @@ const Home = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12 bg-card rounded-2xl p-8">
+            <div className="text-center py-12 bg-white/80 rounded-2xl p-8 shadow-card">
               <p className="text-lg text-muted-foreground font-prompt mb-4">
                 🐾 ยังไม่มีกรณีด่วนในขณะนี้
               </p>
               <p className="text-sm text-muted-foreground font-prompt mb-6">
-                ดูแมวทั้งหมดที่รอรับเลี้ยงได้ในหน้าหาบ้านให้แมว
+                ดูสัตว์ทั้งหมดที่รอรับเลี้ยงได้ในหน้าหาบ้านให้สัตว์เลี้ยง
               </p>
               <a href="/adopt">
-                <Button className="font-prompt">ดูแมวทั้งหมด</Button>
+                <Button className="font-prompt">ดูสัตว์ทั้งหมด</Button>
               </a>
             </div>
           )}
@@ -291,20 +299,20 @@ const Home = () => {
       </section>
 
       {/* Map Preview Section */}
-      <section className="py-16 bg-secondary/30">
+      <section className="py-16 bg-surface-lilac">
         <div className="container mx-auto px-4">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-2 font-prompt">แผนที่จุดพบเจอแมวจร 🗺️</h2>
-            <p className="text-muted-foreground font-prompt">ช่วยกันดูแลแมวจรในพื้นที่ของคุณ</p>
+            <h2 className="text-3xl font-bold mb-2 font-prompt">แผนที่จุดพบสัตว์จร 🗺️</h2>
+            <p className="text-muted-foreground font-prompt">ช่วยกันดูแลทั้งแมวและสุนัขในพื้นที่ของคุณ</p>
           </div>
           
-          <Card className="overflow-hidden shadow-hover p-6">
+          <Card className="overflow-hidden shadow-soft p-6 bg-white/85 border border-white/60">
             {reportsWithCoordinates.length > 0 ? (
               <div className="space-y-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div className="text-left">
                     <p className="text-sm text-muted-foreground font-prompt">อัปเดตจาก {reportsWithCoordinates.length} พิกัดล่าสุด</p>
-                    <h3 className="text-2xl font-bold font-prompt">ภาพรวมจุดแมวจรทั่วประเทศ</h3>
+                    <h3 className="text-2xl font-bold font-prompt">ภาพรวมจุดสัตว์จรทั่วประเทศ</h3>
                   </div>
                   <Button asChild className={`gap-2 font-prompt ${mapButtonClass}`}>
                     <Link to="/reports/map">
@@ -316,13 +324,13 @@ const Home = () => {
                 <ReportMapOverview reports={reports} heightClass="h-[420px]" />
               </div>
             ) : (
-              <div className="bg-muted/50 h-80 flex flex-col items-center justify-center gap-4 rounded-3xl">
+               <div className="bg-surface-mint h-80 flex flex-col items-center justify-center gap-4 rounded-3xl">
                 <MapPin className="w-16 h-16 text-primary" />
                 <div className="text-center">
                   <h3 className="text-xl font-semibold mb-2 font-prompt">ยังไม่มีพิกัดให้แสดง</h3>
-                  <p className="text-muted-foreground mb-4 font-prompt">เริ่มแจ้งจุดแมวจรเพื่อดูแผนที่ภาพรวม</p>
+                   <p className="text-muted-foreground mb-4 font-prompt">เริ่มแจ้งจุดพบสัตว์จรเพื่อดูแผนที่ภาพรวม</p>
                   <Link to="/report">
-                    <Button className="font-prompt">แจ้งจุดพบแมวจร</Button>
+                     <Button className="font-prompt">แจ้งจุดพบสัตว์จร</Button>
                   </Link>
                 </div>
               </div>
@@ -336,13 +344,13 @@ const Home = () => {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4 font-prompt">พร้อมที่จะเริ่มต้นแล้วหรือยัง?</h2>
           <p className="text-lg mb-8 opacity-90 font-prompt">
-            ร่วมเป็นส่วนหนึ่งในการช่วยเหลือแมวจร สร้างความเปลี่ยนแปลงที่ดีต่อชีวิตน้องแมว
+            ร่วมเป็นส่วนหนึ่งในการช่วยเหลือแมวและสุนัขจร สร้างความเปลี่ยนแปลงที่ดีต่อชีวิตของพวกเขา
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link to="/adopt">
               <Button size="lg" variant="secondary" className="font-prompt gap-2">
                 <Heart className="w-5 h-5" />
-                เริ่มหาแมวรับเลี้ยง
+                เริ่มหาสัตว์เลี้ยงรับเลี้ยง
               </Button>
             </Link>
             <Link to="/add-cat">

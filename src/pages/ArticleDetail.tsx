@@ -341,7 +341,7 @@ const ArticleDetail = () => {
                 </span>
                 <div>
                   <p className="text-sm uppercase tracking-wide text-slate-500">แชร์บทความนี้</p>
-                  <p className="text-lg font-semibold">ชวนเพื่อนช่วยเหลือแมวด้วยกัน</p>
+                  <p className="text-lg font-semibold">ชวนเพื่อนช่วยเหลือแมวและสุนัขด้วยกัน</p>
                 </div>
               </div>
               <div className="grid w-full grid-cols-2 gap-3 sm:w-auto sm:grid-cols-4">

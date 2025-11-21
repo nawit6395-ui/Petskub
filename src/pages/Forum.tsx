@@ -80,7 +80,7 @@ const Forum = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
           <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">เว็บบอร์ด</h1>
-          <p className="text-muted-foreground">แบ่งปันประสบการณ์และถามตอบเกี่ยวกับแมว</p>
+          <p className="text-muted-foreground">แบ่งปันประสบการณ์และถามตอบเกี่ยวกับแมวและสุนัข</p>
         </div>
         {user && (
           <Link to="/forum/create">

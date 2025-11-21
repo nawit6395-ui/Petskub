@@ -27,7 +27,7 @@ const Report = () => {
   const { user } = useAuth();
   const { data: reports } = useReports();
   const createReport = useCreateReport();
-  const mapButtonClass = "bg-[#fb8b24] text-white hover:bg-[#f97316] shadow-md hover:shadow-lg border-transparent";
+  const mapButtonClass = "bg-[#b54708] text-white hover:bg-[#93310a] shadow-md hover:shadow-lg border-transparent";
   
   const [province, setProvince] = useState("");
   const [district, setDistrict] = useState("");
@@ -154,8 +154,8 @@ const Report = () => {
     <div className="min-h-screen bg-background py-8">
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 font-prompt">แจ้งเจอแมวจร 📍</h1>
-          <p className="text-muted-foreground font-prompt">ช่วยกันบันทึกข้อมูลแมวจรในพื้นที่</p>
+          <h1 className="text-4xl font-bold mb-2 font-prompt">แจ้งเจอสัตว์จร 📍</h1>
+          <p className="text-muted-foreground font-prompt">ช่วยกันบันทึกข้อมูลการพบแมวและสุนัขจรในพื้นที่</p>
           <div className="mt-4 flex flex-wrap gap-3">
             <Button asChild className={`gap-2 font-prompt ${mapButtonClass}`}>
               <Link to="/reports/map">
@@ -174,7 +174,7 @@ const Report = () => {
           {!user && (
             <div className="mb-4 p-4 bg-accent/10 border border-accent rounded-lg">
               <p className="text-sm font-prompt text-center">
-                🐾 <Link to="/login" className="font-semibold text-primary hover:underline">เข้าสู่ระบบ</Link> เพื่อแจ้งเจอแมวจรในพื้นที่ของคุณ
+                🐾 <Link to="/login" className="font-semibold text-primary hover:underline">เข้าสู่ระบบ</Link> เพื่อแจ้งเจอสัตว์จรในพื้นที่ของคุณ
               </p>
             </div>
           )}
@@ -224,7 +224,7 @@ const Report = () => {
                   {coordinates && (
                     <Marker icon={locationMarkerIcon} position={coordinates}>
                       <Popup>
-                        จุดที่พบแมวจร <br /> {coordinates.lat.toFixed(5)}, {coordinates.lng.toFixed(5)}
+                        จุดที่พบสัตว์จร <br /> {coordinates.lat.toFixed(5)}, {coordinates.lng.toFixed(5)}
                       </Popup>
                     </Marker>
                   )}
@@ -232,7 +232,7 @@ const Report = () => {
                 </MapContainer>
               </div>
               <p className="text-xs text-muted-foreground font-prompt">
-                แตะที่แผนที่หรือใช้ปุ่มจับตำแหน่งเพื่อระบุจุดที่พบแมวจร หากไม่อนุญาต GPS สามารถลาก pin เพื่อเลือกตำแหน่งได้เอง
+                แตะที่แผนที่หรือใช้ปุ่มจับตำแหน่งเพื่อระบุจุดที่พบสัตว์จร หากไม่อนุญาต GPS สามารถลาก pin เพื่อเลือกตำแหน่งได้เอง
               </p>
             </div>
 
@@ -253,7 +253,7 @@ const Report = () => {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-sm text-muted-foreground font-prompt">ภาพรวมจาก {reports.length} รายงาน</p>
-                <h2 className="text-xl sm:text-2xl font-bold font-prompt">แผนที่จุดพบแมวจรล่าสุด</h2>
+                <h2 className="text-xl sm:text-2xl font-bold font-prompt">แผนที่จุดพบสัตว์จรล่าสุด</h2>
               </div>
               <Button asChild className={`gap-2 font-prompt ${mapButtonClass}`}>
                 <Link to="/reports/map">
@@ -290,7 +290,7 @@ const Report = () => {
                   <div className="flex items-start gap-3">
                     <MapPin className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
                     <div>
-                      <h3 className="font-semibold mb-1 font-prompt">พบแมวจร {report.cat_count} ตัว</h3>
+                      <h3 className="font-semibold mb-1 font-prompt">พบสัตว์จร {report.cat_count} ตัว</h3>
                       <p className="text-sm text-muted-foreground font-prompt">{report.location}</p>
                       {report.latitude && report.longitude && (
                         <p className="text-xs text-muted-foreground font-prompt">

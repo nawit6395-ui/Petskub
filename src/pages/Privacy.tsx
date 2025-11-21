@@ -58,7 +58,7 @@ const Privacy = () => (
                 window.alert("ไม่สามารถล้างการตั้งค่าคุกกี้ได้ กรุณาลองใหม่");
               }
             }}
-            className="mt-4 rounded-full bg-emerald-500 px-5 py-2 text-sm font-semibold text-white shadow hover:bg-emerald-600"
+            className="mt-4 rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white shadow hover:bg-emerald-500"
           >
             ล้างการตั้งค่าคุกกี้
           </button>

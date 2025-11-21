@@ -70,7 +70,7 @@ const Chat = () => {
       return (
         <div className="text-center text-muted-foreground">
           <p>ยังไม่มีการสนทนา</p>
-          <p className="text-sm">เริ่มแชทจากการ์ดประกาศแมวเพื่อคุยกับเจ้าของ</p>
+          <p className="text-sm">เริ่มแชทจากการ์ดประกาศสัตว์เลี้ยงเพื่อคุยกับเจ้าของ</p>
         </div>
       );
     }
@@ -149,7 +149,7 @@ const Chat = () => {
         <Link to="/adopt">
           <Button variant="outline" className="gap-2">
             <MessageCircle className="h-4 w-4" />
-            ค้นหาแมวเพิ่ม
+            ค้นหาสัตว์เลี้ยงเพิ่ม
           </Button>
         </Link>
       </div>

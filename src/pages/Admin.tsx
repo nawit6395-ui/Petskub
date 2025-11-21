@@ -58,7 +58,7 @@ const Admin = () => {
       <div className="container mx-auto px-4 max-w-6xl">
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2 font-prompt">ระบบจัดการ Admin 🛡️</h1>
-          <p className="text-muted-foreground font-prompt">จัดการข้อมูลแมว รายงาน และกรณีฉุกเฉิน</p>
+          <p className="text-muted-foreground font-prompt">จัดการข้อมูลสัตว์เลี้ยง รายงาน และกรณีฉุกเฉิน</p>
         </div>
 
         {/* Stats Overview */}
@@ -68,7 +68,7 @@ const Admin = () => {
               <Heart className="w-8 h-8 text-primary" />
               <div>
                 <div className="text-2xl font-bold font-prompt">{pendingCats.length}</div>
-                <div className="text-sm text-muted-foreground font-prompt">แมวรอรับเลี้ยง</div>
+                <div className="text-sm text-muted-foreground font-prompt">สัตว์เลี้ยงรอรับเลี้ยง</div>
               </div>
             </div>
           </Card>
@@ -104,13 +104,13 @@ const Admin = () => {
         {/* Management Tabs */}
         <Tabs defaultValue="cats" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="cats" className="font-prompt">แมวรับเลี้ยง</TabsTrigger>
+            <TabsTrigger value="cats" className="font-prompt">สัตว์เลี้ยงรับเลี้ยง</TabsTrigger>
             <TabsTrigger value="reports" className="font-prompt">รายงานจุดพบเจอ</TabsTrigger>
             <TabsTrigger value="urgent" className="font-prompt">กรณีฉุกเฉิน</TabsTrigger>
           </TabsList>
 
           <TabsContent value="cats" className="space-y-4">
-            <h2 className="text-2xl font-bold font-prompt">จัดการแมวรับเลี้ยง</h2>
+            <h2 className="text-2xl font-bold font-prompt">จัดการสัตว์เลี้ยงที่รับเลี้ยง</h2>
             {pendingCats.length > 0 ? (
               <div className="space-y-4">
                 {pendingCats.map((cat) => (
@@ -151,13 +151,13 @@ const Admin = () => {
               </div>
             ) : (
               <Card className="p-8 text-center shadow-card">
-                <p className="text-muted-foreground font-prompt">ไม่มีแมวรอรับเลี้ยง</p>
+                <p className="text-muted-foreground font-prompt">ไม่มีสัตว์เลี้ยงรอรับเลี้ยง</p>
               </Card>
             )}
           </TabsContent>
 
           <TabsContent value="reports" className="space-y-4">
-            <h2 className="text-2xl font-bold font-prompt">รายงานจุดพบเจอแมวจร</h2>
+            <h2 className="text-2xl font-bold font-prompt">รายงานจุดพบสัตว์จร</h2>
             {pendingReports.length > 0 ? (
               <div className="space-y-4">
                 {pendingReports.map((report) => (
@@ -166,7 +166,7 @@ const Admin = () => {
                       <MapPin className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
                       <div className="flex-1">
                         <h3 className="font-semibold mb-1 font-prompt">
-                          พบแมวจร {report.cat_count} ตัว
+                          พบสัตว์จร {report.cat_count} ตัว
                         </h3>
                         <p className="text-sm text-muted-foreground font-prompt mb-2">
                           📍 {report.location}, {report.district}, {report.province}

@@ -275,7 +275,7 @@ const LineCallback = () => {
             className="h-14 sm:h-16 w-auto drop-shadow-[0_8px_22px_rgba(249,115,22,0.4)]"
             loading="lazy"
           />
-          <span className="text-3xl sm:text-4xl font-bold font-prompt bg-gradient-to-r from-rose-500 via-orange-400 to-amber-400 text-transparent bg-clip-text">
+          <span className="text-3xl sm:text-4xl font-bold font-prompt bg-gradient-to-r from-rose-600 via-orange-500 to-amber-500 text-transparent bg-clip-text">
             Petskub
           </span>
         </div>

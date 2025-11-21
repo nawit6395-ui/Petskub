@@ -95,7 +95,7 @@ const AddUrgentCase = () => {
       <div className="container mx-auto px-4 max-w-3xl">
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2 font-prompt text-urgent">แจ้งกรณีฉุกเฉิน 🆘</h1>
-          <p className="text-muted-foreground font-prompt">แจ้งเหตุแมวบาดเจ็บ ป่วย หรือต้องการความช่วยเหลือทันที</p>
+          <p className="text-muted-foreground font-prompt">แจ้งเหตุแมวหรือสุนัขบาดเจ็บ ป่วย หรือต้องการความช่วยเหลือทันที</p>
         </div>
 
         <Card className="p-6 shadow-card border-l-4 border-l-urgent">
@@ -105,7 +105,7 @@ const AddUrgentCase = () => {
               <Input 
                 value={title} 
                 onChange={(e) => setTitle(e.target.value)} 
-                placeholder="เช่น แมวบาดเจ็บจากอุบัติเหตุ"
+                placeholder="เช่น สุนัขถูกรถชน, เจอแมวจรป่วยหนัก"
                 required 
                 className="font-prompt" 
               />
@@ -120,7 +120,7 @@ const AddUrgentCase = () => {
                 <SelectContent>
                   <SelectItem value="injured" className="font-prompt">บาดเจ็บ</SelectItem>
                   <SelectItem value="sick" className="font-prompt">ป่วย</SelectItem>
-                  <SelectItem value="kitten" className="font-prompt">ลูกแมวเล็ก</SelectItem>
+                  <SelectItem value="kitten" className="font-prompt">ลูกสัตว์เลี้ยงเล็ก</SelectItem>
                   <SelectItem value="other" className="font-prompt">อื่นๆ</SelectItem>
                 </SelectContent>
               </Select>

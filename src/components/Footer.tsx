@@ -15,13 +15,13 @@ const Footer = () => {
                 className="h-12 sm:h-14 lg:h-16 w-auto drop-shadow-[0_8px_20px_rgba(249,115,22,0.4)]"
                 loading="lazy"
               />
-              <span className="font-prompt bg-gradient-to-r from-rose-500 via-orange-400 to-amber-400 text-transparent bg-clip-text">
+              <span className="font-prompt bg-gradient-to-r from-rose-600 via-orange-500 to-amber-500 text-transparent bg-clip-text">
                 Petskub Community
               </span>
             </div>
             <p className="text-sm text-muted-foreground font-prompt">
-              ชุมชนช่วยเหลือแมวจรในประเทศไทย<br />
-              ร่วมกันหาบ้านให้แมว ลดปัญหาแมวจรจัด
+              ชุมชนช่วยเหลือแมวและสุนัขจรในประเทศไทย<br />
+              ร่วมกันหาบ้านให้สัตว์ เลี้ยง ลดปัญหาสัตว์จรจัดในเมือง
             </p>
           </div>
 
@@ -35,12 +35,12 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/adopt" className="text-muted-foreground hover:text-primary transition-colors">
-                  หาบ้านให้แมว
+                  หาบ้านให้สัตว์เลี้ยง
                 </Link>
               </li>
               <li>
                 <Link to="/report" className="text-muted-foreground hover:text-primary transition-colors">
-                  แจ้งเจอแมวจร
+                  แจ้งเจอสัตว์จร
                 </Link>
               </li>
               <li>
@@ -71,7 +71,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-border mt-8 pt-6 text-center text-sm text-muted-foreground font-prompt">
-          © 2024 Petskub Community. ทำด้วยความรักเพื่อน้องแมวทุกตัว ❤️
+          © 2024 Petskub Community. ทำด้วยความรักเพื่อน้องแมวและสุนัขทุกตัว ❤️
         </div>
       </div>
     </footer>

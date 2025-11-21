@@ -42,9 +42,9 @@ const ReportMap = () => {
     <div className="space-y-8 pb-12">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <p className="text-sm uppercase tracking-wider text-primary font-prompt">รายงานแมวจร</p>
+          <p className="text-sm uppercase tracking-wider text-primary font-prompt">รายงานสัตว์จร</p>
           <h1 className="text-3xl font-bold font-prompt">แผนที่รายงานทั้งหมด</h1>
-          <p className="text-muted-foreground font-prompt">ดูจุดที่พบแมวจรและติดตามการดำเนินงานแบบเรียลไทม์</p>
+          <p className="text-muted-foreground font-prompt">ดูจุดที่พบแมวและสุนัขจรและติดตามการดำเนินงานแบบเรียลไทม์</p>
         </div>
         <Button asChild className="gap-2 font-prompt">
           <Link to="/report">
@@ -59,7 +59,7 @@ const ReportMap = () => {
           <div className="h-64 flex flex-col items-center justify-center gap-2 text-center">
             <MapPin className="h-10 w-10 text-muted-foreground" />
             <p className="font-semibold font-prompt">ยังไม่มีพิกัดสำหรับแสดง</p>
-            <p className="text-sm text-muted-foreground font-prompt">เริ่มแจ้งแมวจรเพื่อแสดงผลบนแผนที่</p>
+            <p className="text-sm text-muted-foreground font-prompt">เริ่มแจ้งสัตว์จรเพื่อแสดงผลบนแผนที่</p>
           </div>
         ) : (
           <div className="h-[480px]">
@@ -136,7 +136,7 @@ const ReportMap = () => {
                 <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm font-prompt">
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <MapPin className="h-4 w-4" />
-                    <span>พบแมวจร {report.cat_count} ตัว</span>
+                    <span>พบสัตว์จร {report.cat_count} ตัว</span>
                   </div>
                   {typeof report.latitude === "number" && typeof report.longitude === "number" ? (
                     <Button

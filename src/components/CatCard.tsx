@@ -49,7 +49,7 @@ const CatCard = ({ id, name, age, province, district, image, images, story, gend
     try {
       await updateCat.mutateAsync({ id, is_adopted: true });
       toast.success('🎉 ยินดีด้วย!', {
-        description: `${name} ได้บ้านใหม่แล้ว ขอบคุณที่ให้ความรักกับน้องแมว`
+        description: `${name} ได้บ้านใหม่แล้ว ขอบคุณที่ให้ความรักกับน้อง ๆ`
       });
     } catch (error) {
       toast.error('เกิดข้อผิดพลาด', {
@@ -244,7 +244,7 @@ const CatCard = ({ id, name, age, province, district, image, images, story, gend
                       return;
                     }
                     if (!id || !userId) {
-                      toast.error('ไม่พบข้อมูลเจ้าของแมว');
+                      toast.error('ไม่พบข้อมูลเจ้าของสัตว์เลี้ยง');
                       return;
                     }
                     createConversation.mutate(

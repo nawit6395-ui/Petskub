@@ -8,8 +8,8 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 30 40% 98%;
-    --foreground: 20 10% 20%;
+    --background: 28 55% 98%;
+    --foreground: 22 12% 18%;
 
     --card: 0 0% 100%;
     --card-foreground: 20 10% 20%;
@@ -17,14 +17,14 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 20 10% 20%;
 
-    --primary: 28 90% 55%;
+    --primary: 24 88% 46%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 28 90% 48%;
+    --primary-hover: 24 88% 40%;
 
-    --secondary: 30 60% 92%;
+    --secondary: 34 65% 94%;
     --secondary-foreground: 20 10% 20%;
 
-    --muted: 30 30% 94%;
+    --muted: 32 30% 93%;
     --muted-foreground: 20 8% 45%;
 
     --accent: 38 95% 65%;
@@ -43,11 +43,27 @@ All colors MUST be HSL.
     --success: 142 71% 45%;
     --warning: 38 92% 50%;
 
-    --gradient-warm: linear-gradient(135deg, hsl(28 90% 55%), hsl(38 95% 65%));
-    --gradient-soft: linear-gradient(180deg, hsl(30 40% 98%), hsl(30 60% 96%));
+    --brand-warm: 24 88% 44%;
+    --brand-coral: 15 85% 45%;
+    --brand-blush: 343 70% 52%;
+    --brand-mint: 156 55% 72%;
+    --brand-sky: 204 80% 78%;
+    --brand-lilac: 268 60% 78%;
+    --surface-warm: 33 65% 96%;
+    --surface-cool: 198 55% 96%;
+    --surface-mint: 152 55% 95%;
+    --surface-lilac: 278 45% 94%;
+    --surface-sand: 28 55% 95%;
+
+    --gradient-warm: linear-gradient(135deg, hsl(24 88% 42%), hsl(32 80% 48%));
+    --gradient-soft: linear-gradient(180deg, hsl(32 55% 97%), hsl(28 60% 95%));
+    --gradient-sunrise: linear-gradient(130deg, hsl(var(--brand-coral)), hsl(var(--brand-blush)));
+    --gradient-mint: linear-gradient(140deg, hsl(var(--brand-mint)), hsl(var(--brand-sky)));
+    --gradient-lilac: linear-gradient(145deg, hsl(var(--brand-lilac)), hsl(var(--brand-blush)));
     
-    --shadow-card: 0 2px 8px -2px hsl(20 10% 20% / 0.08);
-    --shadow-hover: 0 8px 24px -4px hsl(20 10% 20% / 0.12);
+    --shadow-card: 0 2px 8px -2px hsl(22 15% 20% / 0.08);
+    --shadow-hover: 0 8px 24px -4px hsl(22 15% 20% / 0.14);
+    --shadow-soft: 0 15px 45px -20px hsl(22 15% 20% / 0.4);
 
     --sidebar-background: 30 40% 98%;
     --sidebar-foreground: 20 10% 20%;
@@ -69,9 +85,9 @@ All colors MUST be HSL.
     --popover: 20 15% 12%;
     --popover-foreground: 30 40% 95%;
 
-    --primary: 28 90% 55%;
+    --primary: 24 88% 46%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 28 90% 62%;
+    --primary-hover: 24 88% 52%;
 
     --secondary: 20 20% 18%;
     --secondary-foreground: 30 40% 95%;
@@ -91,6 +107,7 @@ All colors MUST be HSL.
 
     --shadow-card: 0 2px 8px -2px hsl(0 0% 0% / 0.3);
     --shadow-hover: 0 8px 24px -4px hsl(0 0% 0% / 0.4);
+    --shadow-soft: 0 15px 45px -20px hsl(0 0% 0% / 0.5);
 
     --sidebar-background: 20 15% 10%;
     --sidebar-foreground: 30 40% 95%;
@@ -147,6 +164,26 @@ All colors MUST be HSL.
       transform: translateX(120%);
       opacity: 0.35;
     }
+  }
+
+  .bg-surface-warm {
+    background-color: hsl(var(--surface-warm));
+  }
+
+  .bg-surface-cool {
+    background-color: hsl(var(--surface-cool));
+  }
+
+  .bg-surface-mint {
+    background-color: hsl(var(--surface-mint));
+  }
+
+  .bg-surface-lilac {
+    background-color: hsl(var(--surface-lilac));
+  }
+
+  .bg-surface-sand {
+    background-color: hsl(var(--surface-sand));
   }
 
   .animate-float-slow {

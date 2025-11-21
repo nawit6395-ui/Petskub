@@ -3,11 +3,12 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { LogIn, LogOut, Menu } from "lucide-react";
+import { LogIn, LogOut, Menu, MapPin, Sparkles } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useUserRole";
 import { useProfile } from "@/hooks/useProfile";
 import Logo from "@/assets/Logo.png";
+import { cn } from "@/lib/utils";
 
 const Navbar = () => {
   const location = useLocation();
@@ -20,27 +21,37 @@ const Navbar = () => {
   
   const navLinks = [
     { path: "/", iconClass: "fa-solid fa-house", color: "#2E8BFD", label: "หน้าแรก" },
-    { path: "/adopt", iconClass: "fa-solid fa-magnifying-glass", color: "#F472B6", label: "หาบ้านให้แมว" },
+    { path: "/adopt", iconClass: "fa-solid fa-magnifying-glass", color: "#F472B6", label: "หาบ้านให้สัตว์เลี้ยง" },
     { path: "/success-stories", iconClass: "fa-solid fa-wand-magic-sparkles", color: "#F59E0B", label: "เรื่องราวความสำเร็จ" },
-    { path: "/report", iconClass: "fa-solid fa-location-dot", color: "#22C55E", label: "แจ้งเจอแมวจร" },
+    { path: "/report", iconClass: "fa-solid fa-location-dot", color: "#22C55E", label: "แจ้งเจอสัตว์จร" },
     { path: "/help", iconClass: "fa-solid fa-triangle-exclamation", color: "#EF4444", label: "ช่วยเหลือด่วน" },
     { path: "/knowledge", iconClass: "fa-solid fa-book-open", color: "#A855F7", label: "ความรู้" },
     { path: "/forum", iconClass: "fa-regular fa-comments", color: "#F97316", label: "เว็บบอร์ด" },
   ];
 
   const adminLinks = isAdmin ? [{ path: "/admin", label: "Admin" }] : [];
+  const quickAction = { path: "/report", label: "แจ้งสัตว์จรทันที" };
+
+  const getNavClasses = (path: string) =>
+    cn(
+      "group flex items-center gap-2 rounded-2xl px-3 py-2 text-sm font-prompt transition-all",
+      isActive(path)
+        ? "bg-white text-foreground shadow-sm border border-primary/10"
+        : "text-muted-foreground hover:bg-white/60 hover:text-foreground"
+    );
 
   return (
-    <nav className="sticky top-0 z-50 bg-card shadow-card border-b border-border backdrop-blur-sm bg-card/95">
+    <nav className="sticky top-0 z-50 bg-gradient-to-b from-white/95 to-white/80 backdrop-blur-md border-b border-border/70">
       <div className="container mx-auto px-4">
-        <div className="flex flex-wrap md:flex-nowrap items-center justify-between gap-3 py-3">
+        <div className="flex flex-col gap-3 py-3">
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-white/60 bg-white/80 px-4 py-3 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
           {/* Mobile Hamburger Menu */}
           <div className="md:hidden">
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button
                   size="icon"
-                  className="h-10 w-10 rounded-2xl border-2 border-emerald-100 bg-emerald-500/90 shadow-[0_5px_15px_rgba(16,185,129,0.35)] transition hover:scale-105 hover:bg-emerald-500"
+                  className="h-10 w-10 rounded-2xl border-2 border-emerald-100 bg-emerald-600 text-white shadow-[0_5px_15px_rgba(16,185,129,0.35)] transition hover:scale-105 hover:bg-emerald-500"
                   aria-label="เปิดเมนูนำทาง"
                 >
                   <Menu className="w-5 h-5 text-white" strokeWidth={2.2} />
@@ -73,6 +84,20 @@ const Navbar = () => {
                       </Button>
                     </Link>
                   ))}
+                  <div className="pt-4 border-t">
+                    <Button
+                      asChild
+                      className="w-full rounded-2xl bg-gradient-to-r from-rose-600 via-orange-500 to-amber-500 font-prompt text-white shadow-[0_10px_25px_rgba(234,88,12,0.4)]"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <Link to={quickAction.path}>
+                        <div className="flex items-center justify-center gap-2">
+                          <Sparkles className="h-4 w-4" />
+                          {quickAction.label}
+                        </div>
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>
@@ -89,17 +114,18 @@ const Navbar = () => {
               className="h-12 w-auto drop-shadow-[0_6px_18px_rgba(249,115,22,0.4)] sm:h-14 lg:h-16"
               loading="eager"
             />
-            <span className="font-prompt text-xl sm:text-2xl bg-gradient-to-r from-rose-500 via-orange-400 to-amber-400 text-transparent bg-clip-text hidden lg:inline">
+            <span className="font-prompt text-xl sm:text-2xl bg-gradient-to-r from-rose-600 via-orange-500 to-amber-500 text-transparent bg-clip-text hidden lg:inline">
               Petskub
             </span>
           </Link>
 
-          <div className="hidden md:flex flex-1 flex-wrap items-center justify-center gap-1.5 px-3 min-w-0">
+          <div className="hidden md:flex flex-1 flex-wrap items-center justify-center gap-2 px-3 min-w-0">
             {navLinks.map((link) => (
               <Link key={link.path} to={link.path}>
                 <Button
-                  variant={isActive(link.path) ? "secondary" : "ghost"}
-                  className="font-prompt gap-1.5 text-sm px-3"
+                  variant="ghost"
+                  className={getNavClasses(link.path)}
+                  aria-current={isActive(link.path) ? "page" : undefined}
                 >
                   <i
                     className={`${link.iconClass} text-base`}
@@ -113,14 +139,25 @@ const Navbar = () => {
             {adminLinks.map((link) => (
               <Link key={link.path} to={link.path}>
                 <Button
-                  variant={isActive(link.path) ? "secondary" : "ghost"}
-                  className="font-prompt"
+                  variant="ghost"
+                  className={getNavClasses(link.path)}
+                  aria-current={isActive(link.path) ? "page" : undefined}
                 >
                   {link.label}
                 </Button>
               </Link>
             ))}
           </div>
+
+          <Button
+            asChild
+            className="hidden md:inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-rose-600 via-orange-500 to-amber-500 px-4 py-2 font-prompt text-white shadow-[0_10px_25px_rgba(234,88,12,0.4)] hover:scale-[1.02]"
+          >
+            <Link to={quickAction.path}>
+              <MapPin className="h-4 w-4" />
+              {quickAction.label}
+            </Link>
+          </Button>
 
           {user ? (
             <div className="flex items-center gap-2">
@@ -140,7 +177,7 @@ const Navbar = () => {
               <Button
                 onClick={signOut}
                 size="sm"
-                className="font-prompt gap-1 sm:gap-2 rounded-full border-2 border-emerald-100 bg-emerald-500/90 text-white hover:bg-emerald-500 shadow-[0_4px_12px_rgba(16,185,129,0.35)]"
+                className="font-prompt gap-1 sm:gap-2 rounded-full border-2 border-emerald-100 bg-emerald-600 text-white hover:bg-emerald-500 shadow-[0_4px_12px_rgba(16,185,129,0.35)]"
               >
                 <LogOut className="w-4 h-4 text-white" />
                 <span className="hidden sm:inline">ออกจากระบบ</span>
@@ -154,8 +191,36 @@ const Navbar = () => {
               </Button>
             </Link>
           )}
-        </div>
+          </div>
 
+          <div className="md:hidden flex flex-col gap-2">
+            <div className="flex items-center gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+              {navLinks.map((link) => (
+                <Link key={link.path} to={link.path} className="flex-shrink-0 w-[140px]">
+                  <Button
+                    variant="ghost"
+                    className={cn(getNavClasses(link.path), "w-full justify-center text-xs")}
+                    aria-current={isActive(link.path) ? "page" : undefined}
+                  >
+                    <i className={`${link.iconClass} text-sm`} style={{ color: link.color }} aria-hidden="true" />
+                    {link.label}
+                  </Button>
+                </Link>
+              ))}
+            </div>
+            <Button
+              asChild
+              className="w-full rounded-2xl bg-gradient-to-r from-rose-600 via-orange-500 to-amber-500 font-prompt text-white shadow-[0_10px_25px_rgba(234,88,12,0.4)]"
+            >
+              <Link to={quickAction.path}>
+                <div className="flex items-center justify-center gap-2">
+                  <Sparkles className="h-4 w-4" />
+                  {quickAction.label}
+                </div>
+              </Link>
+            </Button>
+          </div>
+        </div>
       </div>
     </nav>
   );

@@ -30,7 +30,7 @@ const ReportMapOverview = ({
     return (
       <div className="flex h-64 flex-col items-center justify-center gap-2 rounded-3xl border bg-muted/40 text-center">
         <p className="font-semibold font-prompt">ยังไม่มีพิกัดสำหรับแสดงผล</p>
-        <p className="text-sm text-muted-foreground font-prompt">เริ่มแจ้งจุดแมวจรเพื่อดูแผนที่ภาพรวม</p>
+        <p className="text-sm text-muted-foreground font-prompt">เริ่มแจ้งจุดพบสัตว์จรเพื่อดูแผนที่ภาพรวม</p>
       </div>
     );
   }
