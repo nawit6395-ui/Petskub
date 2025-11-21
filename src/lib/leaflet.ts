@@ -1,9 +1,9 @@
 import L from "leaflet";
+import locationMarker from "@/assets/location.png";
 
 const iconRetinaUrl = new URL("leaflet/dist/images/marker-icon-2x.png", import.meta.url).toString();
 const iconUrl = new URL("leaflet/dist/images/marker-icon.png", import.meta.url).toString();
 const shadowUrl = new URL("leaflet/dist/images/marker-shadow.png", import.meta.url).toString();
-const locationIconUrl = new URL("../assets/location.png", import.meta.url).toString();
 
 export const defaultMarkerIcon = L.icon({
   iconRetinaUrl,
@@ -16,7 +16,7 @@ export const defaultMarkerIcon = L.icon({
 });
 
 export const locationMarkerIcon = L.icon({
-  iconUrl: locationIconUrl,
+  iconUrl: locationMarker,
   iconSize: [48, 48],
   iconAnchor: [24, 44],
   popupAnchor: [0, -34],
