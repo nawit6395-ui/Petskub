@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, PlusCircle } from "lucide-react";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
-import { defaultMapCenter, defaultMarkerIcon, tileLayerAttribution, tileLayerUrl } from "@/lib/leaflet";
+import { defaultMapCenter, tileLayerAttribution, tileLayerUrl, locationMarkerIcon } from "@/lib/leaflet";
 import type { Coordinates } from "@/lib/leaflet";
 import { useReports } from "@/hooks/useReports";
 import type { Report } from "@/hooks/useReports";
@@ -74,7 +74,7 @@ const ReportMap = () => {
               {reportsWithCoordinates.map((report) => (
                 <Marker
                   key={report.id}
-                  icon={defaultMarkerIcon}
+                  icon={locationMarkerIcon}
                   position={{ lat: report.latitude, lng: report.longitude }}
                   eventHandlers={{
                     click: () => setActiveReportId(report.id),

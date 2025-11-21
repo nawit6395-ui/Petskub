@@ -13,7 +13,7 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
 import type { Coordinates } from "@/lib/leaflet";
-import { defaultMarkerIcon, defaultMapCenter, tileLayerUrl, tileLayerAttribution } from "@/lib/leaflet";
+import { defaultMapCenter, tileLayerUrl, tileLayerAttribution, locationMarkerIcon } from "@/lib/leaflet";
 import ReportMapOverview from "@/components/ReportMapOverview";
 
 const reportSchema = z.object({
@@ -222,7 +222,7 @@ const Report = () => {
                 >
                   <TileLayer url={tileLayerUrl} attribution={tileLayerAttribution} />
                   {coordinates && (
-                    <Marker icon={defaultMarkerIcon} position={coordinates}>
+                    <Marker icon={locationMarkerIcon} position={coordinates}>
                       <Popup>
                         จุดที่พบแมวจร <br /> {coordinates.lat.toFixed(5)}, {coordinates.lng.toFixed(5)}
                       </Popup>
@@ -337,6 +337,6 @@ const ReportPreviewMap = ({ latitude, longitude }: { latitude: number; longitude
     className="h-36 w-full rounded-2xl"
   >
     <TileLayer url={tileLayerUrl} attribution={tileLayerAttribution} />
-    <Marker icon={defaultMarkerIcon} position={{ lat: latitude, lng: longitude }} />
+    <Marker icon={locationMarkerIcon} position={{ lat: latitude, lng: longitude }} />
   </MapContainer>
 );
