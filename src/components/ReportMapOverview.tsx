@@ -1,7 +1,7 @@
 import { memo, useMemo } from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import type { Report } from "@/hooks/useReports";
-import { defaultMapCenter, defaultMarkerIcon, tileLayerAttribution, tileLayerUrl } from "@/lib/leaflet";
+import { catMarkerIcon, defaultMapCenter, tileLayerAttribution, tileLayerUrl } from "@/lib/leaflet";
 
 interface ReportMapOverviewProps {
   reports?: Report[];
@@ -48,7 +48,7 @@ const ReportMapOverview = ({
       {points.map((report) => (
         <Marker
           key={report.id}
-          icon={defaultMarkerIcon}
+          icon={catMarkerIcon}
           position={{ lat: report.latitude!, lng: report.longitude! }}
         >
           <Popup>

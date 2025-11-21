@@ -3,6 +3,7 @@ import L from "leaflet";
 const iconRetinaUrl = new URL("leaflet/dist/images/marker-icon-2x.png", import.meta.url).toString();
 const iconUrl = new URL("leaflet/dist/images/marker-icon.png", import.meta.url).toString();
 const shadowUrl = new URL("leaflet/dist/images/marker-shadow.png", import.meta.url).toString();
+const catIconUrl = new URL("../assets/cat-pin.svg", import.meta.url).toString();
 
 export const defaultMarkerIcon = L.icon({
   iconRetinaUrl,
@@ -12,6 +13,13 @@ export const defaultMarkerIcon = L.icon({
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
   shadowSize: [41, 41],
+});
+
+export const catMarkerIcon = L.icon({
+  iconUrl: catIconUrl,
+  iconSize: [44, 44],
+  iconAnchor: [22, 40],
+  popupAnchor: [0, -32],
 });
 
 export const defaultMapCenter: L.LatLngLiteral = {
