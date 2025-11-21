@@ -53,6 +53,27 @@ const Forum = () => {
     toggleReaction.mutate({ postId, userId: user.id, isLiked: Boolean(isLiked) });
   };
 
+  const renderImagePreview = (imageUrls?: string[]) => {
+    if (!imageUrls || imageUrls.length === 0) return null;
+    const preview = imageUrls.slice(0, 3);
+    const remaining = imageUrls.length - preview.length;
+
+    return (
+      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+        {preview.map((url, index) => (
+          <div key={`${url}-${index}`} className="relative overflow-hidden rounded-xl border bg-muted/40">
+            <img src={url} alt={`แนบรูปที่ ${index + 1}`} className="h-32 w-full object-cover" />
+            {index === preview.length - 1 && remaining > 0 && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/60 text-lg font-semibold text-white">
+                +{remaining}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       {/* Header */}
@@ -161,6 +182,7 @@ const Forum = () => {
                           <CardDescription className="line-clamp-2">
                             {post.content}
                           </CardDescription>
+                          {renderImagePreview(post.image_urls)}
                         </div>
                       </div>
                     </CardHeader>

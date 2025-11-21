@@ -16,6 +16,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { th } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import { ImageGallery } from '@/components/ImageGallery';
 
 const commentSchema = z.object({
   content: z.string().min(1, 'กรุณาใส่ความคิดเห็น').max(2000, 'ความคิดเห็นต้องไม่เกิน 2000 ตัวอักษร'),
@@ -43,6 +44,8 @@ const ForumPost = () => {
   const deleteComment = useDeleteComment();
 
   const [commentContent, setCommentContent] = useState('');
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -239,8 +242,38 @@ const ForumPost = () => {
           <div className="prose dark:prose-invert max-w-none">
             <p className="whitespace-pre-wrap">{post.content}</p>
           </div>
+
+          {post.image_urls && post.image_urls.length > 0 && (
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold text-muted-foreground">รูปภาพประกอบ ({post.image_urls.length})</h3>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {post.image_urls.map((url, index) => (
+                  <button
+                    key={`${url}-${index}`}
+                    type="button"
+                    onClick={() => {
+                      setActiveImageIndex(index);
+                      setIsGalleryOpen(true);
+                    }}
+                    className="group relative overflow-hidden rounded-xl border bg-muted/40"
+                  >
+                    <img src={url} alt={`รูปประกอบที่ ${index + 1}`} className="h-40 w-full object-cover transition duration-200 group-hover:scale-105" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
+
+      {post.image_urls && post.image_urls.length > 0 && (
+        <ImageGallery
+          images={post.image_urls}
+          open={isGalleryOpen}
+          onOpenChange={setIsGalleryOpen}
+          initialIndex={activeImageIndex}
+        />
+      )}
 
       {/* Comments Section */}
       <Card>
