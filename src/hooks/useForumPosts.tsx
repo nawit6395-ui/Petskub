@@ -350,6 +350,7 @@ export interface ForumPost {
   title: string;
   content: string;
   category: string;
+  image_urls?: string[];
   views: number;
   is_pinned: boolean;
   is_locked: boolean;
@@ -409,10 +410,15 @@ export const useCreatePost = () => {
       content: string;
       category: string;
       user_id: string;
+      image_urls?: string[];
     }) => {
+      const payload = {
+        ...newPost,
+        image_urls: newPost.image_urls ?? [],
+      };
       const { data, error } = await supabase
         .from('forum_posts')
-        .insert([newPost])
+        .insert([payload])
         .select()
         .single();
 
@@ -464,6 +470,7 @@ export const useUpdatePost = () => {
       title: string;
       content: string;
       category: string;
+      image_urls?: string[];
     }) => {
       const { id, ...updates } = payload;
       const { data, error } = await supabase

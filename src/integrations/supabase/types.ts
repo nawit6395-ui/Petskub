@@ -124,6 +124,7 @@ export type Database = {
           content: string
           created_at: string
           id: string
+          image_urls: string[]
           is_locked: boolean
           is_pinned: boolean
           title: string
@@ -136,6 +137,7 @@ export type Database = {
           content: string
           created_at?: string
           id?: string
+          image_urls?: string[]
           is_locked?: boolean
           is_pinned?: boolean
           title: string
@@ -148,6 +150,7 @@ export type Database = {
           content?: string
           created_at?: string
           id?: string
+          image_urls?: string[]
           is_locked?: boolean
           is_pinned?: boolean
           title?: string
