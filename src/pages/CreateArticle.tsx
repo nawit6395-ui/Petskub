@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useCreateArticle } from "@/hooks/useArticles";
+import { useArticle, useCreateArticle, useUpdateArticle } from "@/hooks/useArticles";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useUserRole";
 import { ArrowLeft, Save, FileText } from "lucide-react";
@@ -68,9 +68,13 @@ type ArticleFormData = z.infer<typeof articleSchema>;
 
 const CreateArticle = () => {
   const navigate = useNavigate();
+  const { id: articleId } = useParams<{ id?: string }>();
+  const isEditing = Boolean(articleId);
   const { user } = useAuth();
   const isAdmin = useIsAdmin();
   const createArticle = useCreateArticle();
+  const updateArticle = useUpdateArticle();
+  const { data: articleToEdit, isLoading: isLoadingArticle } = useArticle(articleId);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -85,11 +89,50 @@ const CreateArticle = () => {
 
   const selectedCategory = watch("category");
 
+  useEffect(() => {
+    if (isEditing && articleToEdit) {
+      setValue("title", articleToEdit.title || "");
+      setValue("meta_title", articleToEdit.meta_title || "");
+      setValue("meta_description", articleToEdit.meta_description || "");
+      setValue("keywords", articleToEdit.keywords?.join(", ") || "");
+      setValue("content", articleToEdit.content || "");
+      setValue("category", articleToEdit.category || "");
+      setValue("image_url", articleToEdit.image_url || "");
+      setValue("image_alt", articleToEdit.image_alt || "");
+      setValue("og_title", articleToEdit.og_title || "");
+      setValue("og_description", articleToEdit.og_description || "");
+      setValue("og_image", articleToEdit.og_image || "");
+    }
+  }, [isEditing, articleToEdit, setValue]);
+
   // Redirect if not admin
   if (!isAdmin) {
     navigate("/knowledge");
     toast.error("คุณไม่มีสิทธิ์เข้าถึงหน้านี้");
     return null;
+  }
+
+  if (isEditing && isLoadingArticle) {
+    return (
+      <div className="min-h-screen bg-background py-8">
+        <div className="container mx-auto px-4 max-w-4xl text-center">
+          <p className="text-muted-foreground font-prompt">กำลังโหลดข้อมูลบทความ...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isEditing && !isLoadingArticle && !articleToEdit) {
+    return (
+      <div className="min-h-screen bg-background py-8">
+        <div className="container mx-auto px-4 max-w-4xl text-center">
+          <p className="text-muted-foreground font-prompt">ไม่พบบทความที่ต้องการแก้ไข</p>
+          <Button onClick={() => navigate("/knowledge")} className="mt-4 font-prompt">
+            กลับหน้าความรู้
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   const onSubmit = async (data: ArticleFormData) => {
@@ -100,12 +143,11 @@ const CreateArticle = () => {
 
     setIsSubmitting(true);
     try {
-      // Parse keywords from comma-separated string to array
       const keywordsArray = data.keywords 
         ? data.keywords.split(',').map(k => k.trim()).filter(k => k.length > 0)
         : undefined;
 
-      await createArticle.mutateAsync({
+      const sharedPayload = {
         title: data.title,
         meta_title: data.meta_title || undefined,
         meta_description: data.meta_description || undefined,
@@ -117,13 +159,23 @@ const CreateArticle = () => {
         og_title: data.og_title || undefined,
         og_description: data.og_description || undefined,
         og_image: data.og_image || undefined,
-        author_id: user.id,
-        published: true,
-      });
-      toast.success("สร้างบทความสำเร็จ");
+      };
+
+      if (isEditing && articleId) {
+        await updateArticle.mutateAsync({ id: articleId, ...sharedPayload });
+        toast.success("อัปเดตบทความสำเร็จ");
+      } else {
+        await createArticle.mutateAsync({
+          ...sharedPayload,
+          author_id: user.id,
+          published: true,
+        });
+        toast.success("สร้างบทความสำเร็จ");
+      }
+
       navigate("/knowledge");
     } catch (error) {
-      toast.error("เกิดข้อผิดพลาดในการสร้างบทความ");
+      toast.error("เกิดข้อผิดพลาดในการบันทึกบทความ");
     } finally {
       setIsSubmitting(false);
     }
@@ -144,9 +196,11 @@ const CreateArticle = () => {
             <ArrowLeft className="w-4 h-4 mr-2" />
             กลับไปหน้าความรู้
           </Button>
-          <h1 className="text-4xl font-bold mb-2 font-prompt">สร้างบทความใหม่ 📝</h1>
+          <h1 className="text-4xl font-bold mb-2 font-prompt">
+            {isEditing ? "แก้ไขบทความ" : "สร้างบทความใหม่ 📝"}
+          </h1>
           <p className="text-muted-foreground font-prompt">
-            แบ่งปันความรู้เกี่ยวกับการดูแลแมวให้กับชุมชน
+            {isEditing ? "ปรับปรุงข้อมูลบทความให้ทันสมัย" : "แบ่งปันความรู้เกี่ยวกับการดูแลแมวให้กับชุมชน"}
           </p>
         </header>
 
@@ -473,7 +527,11 @@ const CreateArticle = () => {
                 className="font-prompt flex-1"
               >
                 <Save className="w-4 h-4 mr-2" />
-                {isSubmitting ? "กำลังบันทึก..." : "เผยแพร่บทความ"}
+                {isSubmitting
+                  ? "กำลังบันทึก..."
+                  : isEditing
+                  ? "บันทึกการแก้ไข"
+                  : "เผยแพร่บทความ"}
               </Button>
               <Button
                 type="button"

@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, BookOpen, Plus } from "lucide-react";
+import { Search, BookOpen, Plus, PenSquare } from "lucide-react";
 import { useArticles } from "@/hooks/useArticles";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useUserRole";
@@ -112,15 +112,27 @@ const Knowledge = () => {
                   <p className="text-sm text-muted-foreground mb-4 line-clamp-2 font-prompt">
                     {article.content.substring(0, 100)}...
                   </p>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-3">
                     <span className="text-xs text-muted-foreground font-prompt">
                       👁️ {article.views} ครั้ง
                     </span>
-                    <Link to={`/knowledge/${article.id}`}>
-                      <Button variant="ghost" size="sm" className="font-prompt">
-                        อ่านต่อ →
+                    <div className="flex items-center gap-2">
+                      {isAdmin && (
+                        <Button
+                          asChild
+                          variant="outline"
+                          size="sm"
+                          className="font-prompt gap-1"
+                        >
+                          <Link to={`/knowledge/${article.id}/edit`}>
+                            <PenSquare className="w-4 h-4" /> แก้ไข
+                          </Link>
+                        </Button>
+                      )}
+                      <Button asChild variant="ghost" size="sm" className="font-prompt">
+                        <Link to={`/knowledge/${article.id}`}>อ่านต่อ →</Link>
                       </Button>
-                    </Link>
+                    </div>
                   </div>
                 </div>
               </Card>

@@ -73,11 +73,37 @@ export const useCreateArticle = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['knowledge_articles'] });
-      toast.success('เพิ่มบทความสำเร็จ');
     },
     onError: (error: any) => {
       toast.error('เกิดข้อผิดพลาด', {
         description: error.message
+      });
+    },
+  });
+};
+
+export const useUpdateArticle = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, ...article }: { id: string } & Partial<Article>) => {
+      const { data, error } = await supabase
+        .from('knowledge_articles')
+        .update(article)
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data as Article;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['knowledge_articles'] });
+      queryClient.invalidateQueries({ queryKey: ['knowledge_article', variables.id] });
+    },
+    onError: (error: any) => {
+      toast.error('เกิดข้อผิดพลาด', {
+        description: error.message,
       });
     },
   });
