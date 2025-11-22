@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 import { Loader2, Upload, User, Lock } from 'lucide-react';
+import PasswordInput from '@/components/PasswordInput';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -259,23 +260,23 @@ const Profile = () => {
             <form onSubmit={handleChangePassword} className="space-y-4">
               <div>
                 <Label htmlFor="newPassword" className="font-prompt">รหัสผ่านใหม่</Label>
-                <Input
+                <PasswordInput
                   id="newPassword"
-                  type="password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="รหัสผ่านใหม่ (อย่างน้อย 6 ตัวอักษร)"
+                  startIcon={<Lock className="h-4 w-4" />}
                 />
               </div>
 
               <div>
                 <Label htmlFor="confirmPassword" className="font-prompt">ยืนยันรหัสผ่านใหม่</Label>
-                <Input
+                <PasswordInput
                   id="confirmPassword"
-                  type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="ยืนยันรหัสผ่านใหม่"
+                  startIcon={<Lock className="h-4 w-4" />}
                 />
               </div>
 

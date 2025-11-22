@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { buildAppUrl } from "@/lib/utils";
 import Logo from "@/assets/Logo.png";
+import PasswordInput from "@/components/PasswordInput";
 
 const loginSchema = z.object({
   email: z.string().email("กรุณากรอกอีเมลให้ถูกต้อง"),
@@ -224,36 +225,30 @@ const Login = () => {
                 <Label htmlFor="password" className="font-prompt">รหัสผ่าน</Label>
                 <button type="button" className="text-xs font-semibold text-primary hover:underline">ลืมรหัสผ่าน?</button>
               </div>
-              <div className="relative">
-                <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  className="pl-10 font-prompt"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
+              <PasswordInput
+                id="password"
+                placeholder="••••••••"
+                className="font-prompt"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                startIcon={<Lock className="h-4 w-4" />}
+              />
               {errors.password && <p className="text-sm text-urgent font-prompt">{errors.password}</p>}
             </div>
 
             {!isLogin && (
               <div className="space-y-2">
                 <Label htmlFor="confirm-password" className="font-prompt">ยืนยันรหัสผ่าน</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="confirm-password"
-                    type="password"
-                    placeholder="••••••••"
-                    className="pl-10 font-prompt"
-                    required
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                  />
-                </div>
+                <PasswordInput
+                  id="confirm-password"
+                  placeholder="••••••••"
+                  className="font-prompt"
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  startIcon={<Lock className="h-4 w-4" />}
+                />
                 {errors.confirmPassword && <p className="text-sm text-urgent font-prompt">{errors.confirmPassword}</p>}
               </div>
             )}
