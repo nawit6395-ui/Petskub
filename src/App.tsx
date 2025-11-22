@@ -7,6 +7,7 @@ import { AuthProvider } from "./hooks/useAuth";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import CookieConsent from "./components/CookieConsent";
+import BackToTopButton from "./components/BackToTopButton";
 import Home from "./pages/Home";
 import Adopt from "./pages/Adopt";
 import Report from "./pages/Report";
@@ -35,6 +36,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => (
     <Navbar />
     <main className="flex-1">{children}</main>
     <Footer />
+    <BackToTopButton />
     <CookieConsent />
   </div>
 );

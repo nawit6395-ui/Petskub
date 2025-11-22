@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -16,6 +16,7 @@ const Navbar = () => {
   const isAdmin = useIsAdmin();
   const { profile } = useProfile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const mobileNavScrollRef = useRef<HTMLDivElement | null>(null);
   
   const isActive = (path: string) => location.pathname === path;
   
@@ -29,8 +30,217 @@ const Navbar = () => {
     { path: "/forum", iconClass: "fa-regular fa-comments", color: "#F97316", label: "เว็บบอร์ด" },
   ];
 
+  const mobileNavItems = [...navLinks, ...navLinks];
+
   const adminLinks = isAdmin ? [{ path: "/admin", label: "Admin" }] : [];
   const quickAction = { path: "/report", label: "แจ้งสัตว์จรทันที" };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const container = mobileNavScrollRef.current;
+    if (!container) return;
+
+    const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const mobileWidthQuery = window.matchMedia("(max-width: 640px)");
+    let rafId: number | null = null;
+    let resumeTimeout: number | null = null;
+    let lastTimestamp: number | null = null;
+    let isAutoScrolling = false;
+    let isPaused = false;
+    let loopWidth = 0;
+
+    const SCROLL_DURATION = 20000; // ~20s per loop
+    const RESUME_DELAY = 2500;
+
+    const measureLoopWidth = () => {
+      if (!container) return 0;
+      const children = Array.from(container.children);
+      if (children.length === 0) return 0;
+      const half = Math.floor(children.length / 2);
+      if (half === 0) return 0;
+      let total = 0;
+      for (let i = 0; i < half; i++) {
+        const child = children[i] as HTMLElement;
+        total += child.getBoundingClientRect().width;
+      }
+      loopWidth = total;
+      return total;
+    };
+
+    const hasOverflow = () => {
+      const baseWidth = loopWidth || measureLoopWidth();
+      return container.clientWidth < baseWidth;
+    };
+
+    const ensureInitialPosition = () => {
+      if (!loopWidth) return;
+      if (container.scrollLeft <= 0 || container.scrollLeft >= loopWidth * 2) {
+        container.scrollLeft = loopWidth;
+      }
+    };
+
+    const stopAnimation = () => {
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+      lastTimestamp = null;
+    };
+
+    const startAnimation = () => {
+      if (!mobileWidthQuery.matches || reduceMotionQuery.matches) {
+        stopAnimation();
+        return;
+      }
+      if (!hasOverflow()) {
+        stopAnimation();
+        container.scrollLeft = 0;
+        return;
+      }
+      if (rafId !== null || isPaused) return;
+      ensureInitialPosition();
+      lastTimestamp = null;
+      const step = (timestamp: number) => {
+        if (!container || isPaused || !mobileWidthQuery.matches || reduceMotionQuery.matches) {
+          stopAnimation();
+          return;
+        }
+        if (!hasOverflow()) {
+          stopAnimation();
+          container.scrollLeft = 0;
+          return;
+        }
+        if (!lastTimestamp) {
+          lastTimestamp = timestamp;
+        }
+        const delta = timestamp - lastTimestamp;
+        lastTimestamp = timestamp;
+        const cycleWidth = loopWidth || measureLoopWidth();
+        const increment = (cycleWidth / SCROLL_DURATION) * delta;
+        isAutoScrolling = true;
+        let nextPosition = container.scrollLeft - increment;
+        while (nextPosition < 0) {
+          nextPosition += cycleWidth;
+        }
+        container.scrollLeft = nextPosition;
+        isAutoScrolling = false;
+        rafId = requestAnimationFrame(step);
+      };
+      rafId = requestAnimationFrame(step);
+    };
+
+    const pauseAnimation = () => {
+      isPaused = true;
+      stopAnimation();
+    };
+
+    const scheduleResume = () => {
+      if (reduceMotionQuery.matches) return;
+      if (resumeTimeout) {
+        window.clearTimeout(resumeTimeout);
+      }
+      resumeTimeout = window.setTimeout(() => {
+        if (!hasOverflow()) return;
+        isPaused = false;
+        startAnimation();
+      }, RESUME_DELAY);
+    };
+
+    const handlePointerDown = () => {
+      pauseAnimation();
+      if (resumeTimeout) {
+        window.clearTimeout(resumeTimeout);
+      }
+    };
+
+    const handlePointerUp = () => {
+      scheduleResume();
+    };
+
+    const handleWheel = () => {
+      pauseAnimation();
+      scheduleResume();
+    };
+
+    const handleScroll = () => {
+      if (isAutoScrolling) return;
+      pauseAnimation();
+      scheduleResume();
+    };
+
+    const handleMediaChange = () => {
+      if (mobileWidthQuery.matches && !reduceMotionQuery.matches) {
+        measureLoopWidth();
+        isPaused = false;
+        startAnimation();
+      } else {
+        pauseAnimation();
+      }
+    };
+
+    const handleReduceMotionChange = () => {
+      if (reduceMotionQuery.matches) {
+        pauseAnimation();
+      } else {
+        scheduleResume();
+      }
+    };
+
+    const addMediaListener = (mediaQuery: MediaQueryList, listener: () => void) => {
+      if (mediaQuery.addEventListener) {
+        mediaQuery.addEventListener("change", listener);
+      } else {
+        // Safari <14 fallback
+        mediaQuery.addListener(listener);
+      }
+    };
+
+    const removeMediaListener = (mediaQuery: MediaQueryList, listener: () => void) => {
+      if (mediaQuery.removeEventListener) {
+        mediaQuery.removeEventListener("change", listener);
+      } else {
+        mediaQuery.removeListener(listener);
+      }
+    };
+
+    container.addEventListener("pointerdown", handlePointerDown);
+    container.addEventListener("pointerup", handlePointerUp);
+    container.addEventListener("pointerleave", handlePointerUp);
+    container.addEventListener("touchend", handlePointerUp);
+    container.addEventListener("wheel", handleWheel, { passive: true });
+    container.addEventListener("scroll", handleScroll);
+    addMediaListener(mobileWidthQuery, handleMediaChange);
+    addMediaListener(reduceMotionQuery, handleReduceMotionChange);
+
+    const resizeObserver = new ResizeObserver(() => {
+      loopWidth = 0;
+      if (!hasOverflow()) {
+        pauseAnimation();
+        container.scrollLeft = 0;
+      } else {
+        scheduleResume();
+      }
+    });
+    resizeObserver.observe(container);
+
+    handleMediaChange();
+
+    return () => {
+      container.removeEventListener("pointerdown", handlePointerDown);
+      container.removeEventListener("pointerup", handlePointerUp);
+      container.removeEventListener("pointerleave", handlePointerUp);
+      container.removeEventListener("touchend", handlePointerUp);
+      container.removeEventListener("wheel", handleWheel);
+      container.removeEventListener("scroll", handleScroll);
+      removeMediaListener(mobileWidthQuery, handleMediaChange);
+      removeMediaListener(reduceMotionQuery, handleReduceMotionChange);
+      resizeObserver.disconnect();
+      if (resumeTimeout) {
+        window.clearTimeout(resumeTimeout);
+      }
+      stopAnimation();
+    };
+  }, []);
 
   const getNavClasses = (path: string) =>
     cn(
@@ -54,36 +264,43 @@ const Navbar = () => {
                   className="h-10 w-10 rounded-2xl border-2 border-emerald-100 bg-emerald-600 text-white shadow-[0_5px_15px_rgba(16,185,129,0.35)] transition hover:scale-105 hover:bg-emerald-500"
                   aria-label="เปิดเมนูนำทาง"
                 >
-                  <Menu className="w-5 h-5 text-white" strokeWidth={2.2} />
+                  <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[280px]">
-                <div className="flex flex-col gap-4 mt-8">
-                  {navLinks.map((link) => (
-                    <Link key={link.path} to={link.path} onClick={() => setMobileMenuOpen(false)}>
-                      <Button
-                        variant={isActive(link.path) ? "secondary" : "ghost"}
-                        className="w-full justify-start font-prompt gap-2"
-                      >
-                        <i
-                          className={`${link.iconClass} text-base`}
-                          style={{ color: link.color, minWidth: "1rem" }}
-                          aria-hidden="true"
-                        />
-                        {link.label}
-                      </Button>
-                    </Link>
-                  ))}
-                  {adminLinks.map((link) => (
-                    <Link key={link.path} to={link.path} onClick={() => setMobileMenuOpen(false)}>
-                      <Button
-                        variant={isActive(link.path) ? "secondary" : "ghost"}
-                        className="w-full justify-start font-prompt"
-                      >
-                        {link.label}
-                      </Button>
-                    </Link>
-                  ))}
+              <SheetContent side="left" className="w-[85vw] max-w-sm overflow-y-auto bg-white/95">
+                <div className="flex flex-col gap-4 py-4">
+                  <div className="flex flex-col gap-2">
+                    {navLinks.map((link) => (
+                      <Link key={link.path} to={link.path} onClick={() => setMobileMenuOpen(false)}>
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start font-prompt gap-2"
+                          aria-current={isActive(link.path) ? "page" : undefined}
+                        >
+                          <i
+                            className={`${link.iconClass} text-base`}
+                            style={{ color: link.color, minWidth: "1rem" }}
+                            aria-hidden="true"
+                          />
+                          {link.label}
+                        </Button>
+                      </Link>
+                    ))}
+                  </div>
+                  {adminLinks.length > 0 && (
+                    <div className="flex flex-col gap-2 border-t pt-4">
+                      {adminLinks.map((link) => (
+                        <Link key={link.path} to={link.path} onClick={() => setMobileMenuOpen(false)}>
+                          <Button
+                            variant={isActive(link.path) ? "secondary" : "ghost"}
+                            className="w-full justify-start font-prompt"
+                          >
+                            {link.label}
+                          </Button>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
                   <div className="pt-4 border-t">
                     <Button
                       asChild
@@ -194,19 +411,32 @@ const Navbar = () => {
           </div>
 
           <div className="md:hidden flex flex-col gap-2">
-            <div className="flex items-center gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
-              {navLinks.map((link) => (
-                <Link key={link.path} to={link.path} className="flex-shrink-0 w-[140px]">
-                  <Button
-                    variant="ghost"
-                    className={cn(getNavClasses(link.path), "w-full justify-center text-xs")}
-                    aria-current={isActive(link.path) ? "page" : undefined}
+            <div
+              ref={mobileNavScrollRef}
+              className="flex items-center gap-2 overflow-x-auto pb-1"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            >
+              {mobileNavItems.map((link, index) => {
+                const isClone = index >= navLinks.length;
+                return (
+                  <Link
+                    key={`${link.path}-${index}`}
+                    to={link.path}
+                    className="flex-shrink-0 w-[140px]"
+                    tabIndex={isClone ? -1 : undefined}
+                    aria-hidden={isClone ? "true" : undefined}
                   >
-                    <i className={`${link.iconClass} text-sm`} style={{ color: link.color }} aria-hidden="true" />
-                    {link.label}
-                  </Button>
-                </Link>
-              ))}
+                    <Button
+                      variant="ghost"
+                      className={cn(getNavClasses(link.path), "w-full justify-center text-xs")}
+                      aria-current={!isClone && isActive(link.path) ? "page" : undefined}
+                    >
+                      <i className={`${link.iconClass} text-sm`} style={{ color: link.color }} aria-hidden="true" />
+                      {link.label}
+                    </Button>
+                  </Link>
+                );
+              })}
             </div>
             <Button
               asChild

@@ -155,16 +155,22 @@ const Report = () => {
     <div className="min-h-screen bg-background py-8">
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 font-prompt">แจ้งเจอสัตว์จร 📍</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold mb-2 font-prompt">แจ้งเจอสัตว์จร 📍</h1>
           <p className="text-muted-foreground font-prompt">ช่วยกันบันทึกข้อมูลการพบแมวและสุนัขจรในพื้นที่</p>
-          <div className="mt-4 flex flex-wrap gap-3">
-            <Button asChild className={`gap-2 font-prompt ${mapButtonClass}`}>
+          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <Button asChild className={`w-full sm:w-auto gap-2 font-prompt ${mapButtonClass}`}>
               <Link to="/reports/map">
                 <MapIcon className="h-4 w-4" />
                 ดูรายงานบนแผนที่
               </Link>
             </Button>
-            <Button type="button" variant="secondary" className="gap-2 font-prompt" onClick={handleGetLocation} disabled={isLocating}>
+            <Button
+              type="button"
+              variant="secondary"
+              className="w-full sm:w-auto gap-2 font-prompt"
+              onClick={handleGetLocation}
+              disabled={isLocating}
+            >
               <Navigation className="h-4 w-4" />
               {isLocating ? "กำลังระบุตำแหน่ง..." : "ใช้ตำแหน่งปัจจุบัน"}
             </Button>
@@ -205,7 +211,7 @@ const Report = () => {
             </div>
 
             <div className="space-y-3">
-              <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <Label className="font-prompt">ตำแหน่งบนแผนที่ *</Label>
                 <div className="flex flex-wrap items-center gap-3 text-xs font-prompt text-muted-foreground">
                   {geoStatus && <span>{geoStatus}</span>}
@@ -215,7 +221,7 @@ const Report = () => {
                   </Button>
                 </div>
               </div>
-              <div className="h-64 overflow-hidden rounded-2xl border">
+              <div className="h-[260px] sm:h-[320px] lg:h-80 overflow-hidden rounded-2xl border">
                 <MapContainer
                   key={`${coordinates?.lat ?? defaultMapCenter.lat}-${coordinates?.lng ?? defaultMapCenter.lng}`}
                   center={coordinates ?? defaultMapCenter}
@@ -253,34 +259,34 @@ const Report = () => {
 
         {reports && reports.length > 0 && (
           <Card className="p-6 shadow-card mb-8 space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-muted-foreground font-prompt">ภาพรวมจาก {reports.length} รายงาน</p>
                 <h2 className="text-xl sm:text-2xl font-bold font-prompt">แผนที่จุดพบสัตว์จรล่าสุด</h2>
               </div>
-              <Button asChild className={`gap-2 font-prompt ${mapButtonClass}`}>
+              <Button asChild className={`w-full sm:w-auto gap-2 font-prompt ${mapButtonClass}`}>
                 <Link to="/reports/map">
                   <MapIcon className="h-4 w-4" />
                   ดูแผนที่เต็ม
                 </Link>
               </Button>
             </div>
-            <ReportMapOverview reports={reports} heightClass="h-[420px]" />
+            <ReportMapOverview reports={reports} heightClass="h-[300px] sm:h-[380px] lg:h-[420px]" />
           </Card>
         )}
 
         {reports && reports.length > 0 && (
           <div>
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <div className="flex flex-col gap-3 mb-4 sm:flex-row sm:items-center sm:justify-between">
               <h2 className="text-xl sm:text-2xl font-bold font-prompt">รายงานล่าสุด</h2>
-              <Button asChild variant="ghost" className="gap-2 font-prompt">
+              <Button asChild variant="ghost" className="w-full sm:w-auto gap-2 font-prompt">
                 <Link to="/reports/map">
                   <MapIcon className="h-4 w-4" />
                   ดูทั้งหมดบนแผนที่
                 </Link>
               </Button>
             </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
               {reports.slice(0, 3).map((report) => (
                 <Card key={report.id} className="p-4 shadow-card space-y-3">
                   {report.latitude && report.longitude ? (

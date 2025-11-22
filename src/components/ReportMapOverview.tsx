@@ -12,7 +12,7 @@ interface ReportMapOverviewProps {
 
 const ReportMapOverview = ({
   reports,
-  heightClass = "h-96",
+  heightClass = "h-[280px] sm:h-[360px] lg:h-[420px]",
   limit,
   scrollWheelZoom = true,
 }: ReportMapOverviewProps) => {

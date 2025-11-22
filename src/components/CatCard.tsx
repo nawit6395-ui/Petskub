@@ -1,7 +1,8 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Heart, MessageCircle, Eye, Check, RotateCcw, ShieldCheck } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { MapPin, Heart, MessageCircle, Eye, Check, RotateCcw, ShieldCheck, Share2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
 import { ImageGallery } from "@/components/ImageGallery";
@@ -10,6 +11,7 @@ import { useIsAdmin } from "@/hooks/useUserRole";
 import { toast } from "sonner";
 import { useCreateConversation } from "@/hooks/useConversations";
 import { useNavigate } from "react-router-dom";
+import { FaFacebookF, FaLine } from "react-icons/fa";
 
 interface CatCardProps {
   id?: string;
@@ -71,6 +73,49 @@ const CatCard = ({ id, name, age, province, district, image, images, story, gend
       });
     }
   };
+
+  const buildShareUrl = () => {
+    if (typeof window === "undefined") return "";
+    return id ? `${window.location.origin}/adopt?pet=${id}` : `${window.location.origin}/adopt`;
+  };
+
+  const buildShareText = () =>
+    `ช่วยกันแชร์ให้น้อง${name}ได้บ้านใหม่\n• อายุ: ${age}\n• พื้นที่: ${province}${district ? ` - ${district}` : ""}\n• สุขภาพ: ${healthStatus || "แข็งแรง"}\nติดต่อ: ${contactName || "เจ้าของ"}${contactPhone ? ` (${contactPhone})` : ""}`.trim();
+
+  const shareOnFacebook = () => {
+    if (typeof window === "undefined") return;
+    const url = buildShareUrl();
+    if (!url) return;
+    const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+    window.open(shareUrl, "_blank", "noopener,noreferrer");
+  };
+
+  const shareOnLine = () => {
+    if (typeof window === "undefined") return;
+    const url = buildShareUrl();
+    if (!url) return;
+    const text = buildShareText();
+    const shareUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(`${text}\n${url}`)}`;
+    window.open(shareUrl, "_blank", "noopener,noreferrer");
+  };
+
+  const copyShareLink = async () => {
+    if (typeof navigator === "undefined") return;
+    const url = buildShareUrl();
+    const text = `${buildShareText()}\n${url}`;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+        toast.success("คัดลอกข้อความสำหรับแชร์แล้ว");
+      } else {
+        throw new Error("Clipboard API unavailable");
+      }
+    } catch (error) {
+      toast.error("คัดลอกไม่สำเร็จ", {
+        description: (error as Error)?.message || "พยายามอีกครั้ง",
+      });
+    }
+  };
   
   // Use new images array if available, fallback to old image prop
   const displayImages = images && images.length > 0 
@@ -82,7 +127,7 @@ const CatCard = ({ id, name, age, province, district, image, images, story, gend
   
   return (
     <>
-      <Card className={`overflow-hidden shadow-card hover:shadow-hover transition-all duration-300 ${isAdopted ? 'relative' : ''}`}>
+      <Card className={`overflow-hidden border-none rounded-[28px] bg-white/95 shadow-[0_15px_35px_rgba(15,23,42,0.08)] hover:shadow-[0_20px_45px_rgba(15,23,42,0.12)] transition-all duration-300 ${isAdopted ? 'relative' : ''}`}>
         <div className="relative">
           <img 
             src={firstImage} 
@@ -104,7 +149,7 @@ const CatCard = ({ id, name, age, province, district, image, images, story, gend
 
           {displayImages.length > 1 && (
             <Badge 
-              className="absolute bottom-2 left-2 bg-background/80 text-foreground border-0 font-prompt cursor-pointer z-10 text-xs px-2 py-0.5"
+              className="absolute bottom-3 left-3 bg-white/90 text-foreground border-0 font-prompt cursor-pointer z-10 text-[11px] px-2.5 py-0.5 shadow-sm"
               onClick={() => setGalleryOpen(true)}
             >
               📷 {displayImages.length}
@@ -112,17 +157,22 @@ const CatCard = ({ id, name, age, province, district, image, images, story, gend
           )}
 
           {urgent && !isAdopted && (
-            <Badge className="absolute top-2 right-2 bg-urgent text-white border-0 font-prompt animate-pulse text-xs px-2 py-0.5">
+            <Badge className="absolute top-3 right-3 bg-gradient-to-r from-rose-500 to-orange-500 text-white border-0 font-prompt animate-pulse text-[11px] px-2.5 py-0.5 shadow-soft">
               ⚠️ ด่วน
             </Badge>
           )}
         </div>
-      
-      <div className="p-2 sm:p-3">
-        <div className="flex items-start justify-between mb-1.5">
-          <h3 className="font-semibold text-sm sm:text-base font-prompt">{name}</h3>
+
+      <div className="p-3 sm:p-5 space-y-3">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <div className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 text-[11px] font-prompt text-primary">
+              <Heart className="w-3 h-3" /> กำลังหาบ้าน
+            </div>
+            <h3 className="mt-1 font-semibold text-base sm:text-lg font-prompt text-slate-900">{name}</h3>
+          </div>
           <div className="flex gap-1 flex-wrap">
-            <Badge variant="secondary" className="font-prompt text-[10px] sm:text-xs px-1.5 py-0">
+            <Badge variant="secondary" className="font-prompt text-[11px] sm:text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
               {gender}
             </Badge>
             {isSterilized && (
@@ -133,23 +183,23 @@ const CatCard = ({ id, name, age, province, district, image, images, story, gend
           </div>
         </div>
         
-        <div className="space-y-0.5 mb-2">
-          <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground font-prompt">
-            <MapPin className="w-3 h-3" />
+        <div className="space-y-1">
+          <div className="flex items-center gap-1.5 text-xs sm:text-sm text-muted-foreground font-prompt">
+            <MapPin className="w-3 h-3 flex-shrink-0 text-primary" />
             <span className="truncate">{province}{district ? ` • ${district}` : ''}</span>
           </div>
-          <div className="text-xs sm:text-sm text-muted-foreground font-prompt">
-            อายุ: {age}
+          <div className="text-xs sm:text-sm text-slate-600 font-prompt">
+            อายุ: <span className="font-medium text-slate-900">{age}</span>
           </div>
           {healthStatus && (
-            <div className="text-xs sm:text-sm text-muted-foreground font-prompt truncate">
-              สุขภาพ: {healthStatus}
+            <div className="text-xs sm:text-sm text-slate-600 font-prompt truncate">
+              สุขภาพ: <span className="font-medium text-slate-900">{healthStatus}</span>
             </div>
           )}
         </div>
         
         {story && (
-          <p className="text-xs sm:text-sm text-muted-foreground mb-2 line-clamp-2 font-prompt">
+          <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 font-prompt bg-slate-50/80 rounded-2xl px-3 py-2">
             {story}
           </p>
         )}
@@ -201,11 +251,11 @@ const CatCard = ({ id, name, age, province, district, image, images, story, gend
           
           {/* Contact Buttons */}
           {!isAdopted && (
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               {!showContact ? (
                 <Button 
                   size="sm"
-                  className="flex-1 font-prompt gap-1 text-xs sm:text-sm h-7 sm:h-9" 
+                  className="flex-1 font-prompt gap-2 text-xs sm:text-sm min-h-[44px] sm:min-h-[48px] rounded-2xl bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 text-white shadow-[0_10px_24px_rgba(249,115,22,0.3)] hover:scale-[1.01]" 
                   onClick={() => {
                     if (!user) {
                       toast.error('กรุณาเข้าสู่ระบบเพื่อดูข้อมูลติดต่อ');
@@ -221,7 +271,7 @@ const CatCard = ({ id, name, age, province, district, image, images, story, gend
               ) : (
                 <Button 
                   size="sm"
-                  className="flex-1 font-prompt gap-1 text-xs sm:text-sm h-7 sm:h-9" 
+                  className="flex-1 font-prompt gap-2 text-xs sm:text-sm min-h-[44px] sm:min-h-[48px] rounded-2xl bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600 text-white shadow-[0_10px_24px_rgba(16,185,129,0.35)] hover:scale-[1.01]" 
                   asChild
                 >
                   <a href={`tel:${contactPhone}`}>
@@ -235,7 +285,7 @@ const CatCard = ({ id, name, age, province, district, image, images, story, gend
                 <Button 
                   variant="outline" 
                   size="sm"
-                  className="flex-1 font-prompt gap-1 text-xs sm:text-sm h-7 sm:h-9"
+                  className="flex-1 font-prompt gap-2 text-xs sm:text-sm min-h-[44px] sm:min-h-[48px] rounded-2xl border-primary/20 text-primary bg-white shadow-[0_10px_18px_rgba(59,130,246,0.18)] hover:bg-primary/5"
                   disabled={createConversation.isPending}
                   onClick={() => {
                     if (!user) {
@@ -263,6 +313,52 @@ const CatCard = ({ id, name, age, province, district, image, images, story, gend
                   <span className="sm:hidden">แชท</span>
                 </Button>
               )}
+              <div className="flex flex-1">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="flex-1 font-prompt gap-2 text-[11px] sm:text-sm leading-snug text-center min-h-[44px] sm:min-h-[48px] rounded-2xl border border-amber-100 bg-gradient-to-r from-amber-50 to-white text-amber-600 shadow-[0_10px_24px_rgba(251,191,36,0.25)] hover:bg-amber-50"
+                      aria-label="แชร์ช่วยหาบ้าน"
+                    >
+                      <Share2 className="w-4 h-4" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent align="end" className="w-48 rounded-2xl border border-amber-100 bg-white shadow-xl p-2 space-y-1">
+                    <button
+                      type="button"
+                      className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-prompt text-slate-700 hover:bg-amber-50"
+                      onClick={shareOnFacebook}
+                    >
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white">
+                        <FaFacebookF className="text-sm" />
+                      </span>
+                      แชร์ผ่าน Facebook
+                    </button>
+                    <button
+                      type="button"
+                      className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-prompt text-slate-700 hover:bg-amber-50"
+                      onClick={shareOnLine}
+                    >
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500 text-white">
+                        <FaLine className="text-lg" />
+                      </span>
+                      แชร์ผ่าน LINE
+                    </button>
+                    <button
+                      type="button"
+                      className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-prompt text-slate-700 hover:bg-amber-50"
+                      onClick={copyShareLink}
+                    >
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-amber-700">
+                        <Share2 className="w-4 h-4" />
+                      </span>
+                      คัดลอกลิงก์
+                    </button>
+                  </PopoverContent>
+                </Popover>
+              </div>
             </div>
           )}
 
