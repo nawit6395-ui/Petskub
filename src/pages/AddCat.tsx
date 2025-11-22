@@ -12,7 +12,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Heart } from "lucide-react";
 import { MultiImageUpload } from "@/components/MultiImageUpload";
 import { z } from "zod";
-import { toast } from "sonner";
+import { alert } from "@/lib/alerts";
 import { THAI_PROVINCES } from "@/constants/thaiProvinces";
 
 const catSchema = z.object({
@@ -98,7 +98,7 @@ const AddCat = () => {
     } catch (error) {
       if (error instanceof z.ZodError) {
         error.errors.forEach((err) => {
-          toast.error(err.message);
+          alert.error(err.message);
         });
       }
     }

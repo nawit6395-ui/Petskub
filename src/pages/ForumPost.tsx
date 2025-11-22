@@ -14,7 +14,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { ArrowLeft, Eye, Pin, Lock, Trash2, MessageSquare, Pencil, Heart } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { th } from 'date-fns/locale';
-import { toast } from 'sonner';
+import { alert } from '@/lib/alerts';
 import { z } from 'zod';
 import { ImageGallery } from '@/components/ImageGallery';
 
@@ -51,7 +51,7 @@ const ForumPost = () => {
     e.preventDefault();
 
     if (!user) {
-      toast.error('กรุณาเข้าสู่ระบบก่อนแสดงความคิดเห็น');
+      alert.error('กรุณาเข้าสู่ระบบก่อนแสดงความคิดเห็น');
       navigate('/login');
       return;
     }
@@ -61,7 +61,7 @@ const ForumPost = () => {
       commentSchema.parse({ content: commentContent });
     } catch (error) {
       if (error instanceof z.ZodError) {
-        toast.error(error.errors[0].message);
+        alert.error(error.errors[0].message);
         return;
       }
     }
@@ -96,7 +96,7 @@ const ForumPost = () => {
 
   const handleToggleLike = () => {
     if (!post || !user) {
-      toast.error('กรุณาเข้าสู่ระบบเพื่อกดถูกใจ');
+      alert.error('กรุณาเข้าสู่ระบบเพื่อกดถูกใจ');
       navigate('/login');
       return;
     }

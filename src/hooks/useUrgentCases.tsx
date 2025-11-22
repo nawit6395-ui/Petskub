@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import { alert } from '@/lib/alerts';
 
 export interface UrgentCase {
   id: string;
@@ -60,10 +60,10 @@ export const useCreateUrgentCase = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['urgent_cases'] });
-      toast.success('แจ้งกรณีฉุกเฉินสำเร็จ');
+      alert.success('แจ้งกรณีฉุกเฉินสำเร็จ');
     },
     onError: (error: any) => {
-      toast.error('เกิดข้อผิดพลาด', {
+      alert.error('เกิดข้อผิดพลาด', {
         description: error.message
       });
     },
@@ -87,10 +87,10 @@ export const useUpdateUrgentCase = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['urgent_cases'] });
-      toast.success('อัพเดทสำเร็จ');
+      alert.success('อัพเดทสำเร็จ');
     },
     onError: (error: any) => {
-      toast.error('เกิดข้อผิดพลาด', {
+      alert.error('เกิดข้อผิดพลาด', {
         description: error.message
       });
     },

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { X, Upload, Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
+import { alert } from '@/lib/alerts';
 
 interface MultiImageUploadProps {
   maxImages?: number;
@@ -25,7 +25,7 @@ export const MultiImageUpload = ({
 
     // Check if adding these files would exceed max images
     if (imageUrls.length + files.length > maxImages) {
-      toast.error(`สามารถอัพโหลดได้สูงสุด ${maxImages} รูปเท่านั้น`);
+      alert.error(`สามารถอัพโหลดได้สูงสุด ${maxImages} รูปเท่านั้น`);
       return;
     }
 
@@ -38,13 +38,13 @@ export const MultiImageUpload = ({
         
         // Validate file type
         if (!file.type.startsWith('image/')) {
-          toast.error(`ไฟล์ ${file.name} ไม่ใช่รูปภาพ`);
+          alert.error(`ไฟล์ ${file.name} ไม่ใช่รูปภาพ`);
           continue;
         }
 
         // Validate file size (5MB)
         if (file.size > 5 * 1024 * 1024) {
-          toast.error(`รูป ${file.name} มีขนาดใหญ่เกิน 5MB`);
+          alert.error(`รูป ${file.name} มีขนาดใหญ่เกิน 5MB`);
           continue;
         }
 
@@ -65,9 +65,9 @@ export const MultiImageUpload = ({
       }
 
       onImagesChange([...imageUrls, ...newUrls]);
-      toast.success(`อัพโหลดรูปภาพสำเร็จ ${newUrls.length} รูป`);
+      alert.success(`อัพโหลดรูปภาพสำเร็จ ${newUrls.length} รูป`);
     } catch (error: any) {
-      toast.error('เกิดข้อผิดพลาดในการอัพโหลดรูปภาพ', {
+      alert.error('เกิดข้อผิดพลาดในการอัพโหลดรูปภาพ', {
         description: error.message
       });
     } finally {
@@ -92,9 +92,9 @@ export const MultiImageUpload = ({
 
       // Remove from list
       onImagesChange(imageUrls.filter(url => url !== urlToRemove));
-      toast.success('ลบรูปภาพสำเร็จ');
+      alert.success('ลบรูปภาพสำเร็จ');
     } catch (error: any) {
-      toast.error('เกิดข้อผิดพลาดในการลบรูปภาพ', {
+      alert.error('เกิดข้อผิดพลาดในการลบรูปภาพ', {
         description: error.message
       });
     }

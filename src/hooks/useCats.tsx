@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import { alert } from '@/lib/alerts';
 
 export interface Cat {
   id: string;
@@ -57,10 +57,10 @@ export const useCreateCat = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cats'] });
-      toast.success('เพิ่มข้อมูลสัตว์เลี้ยงสำเร็จ');
+      alert.success('เพิ่มข้อมูลสัตว์เลี้ยงสำเร็จ');
     },
     onError: (error: any) => {
-      toast.error('เกิดข้อผิดพลาด', {
+      alert.error('เกิดข้อผิดพลาด', {
         description: error.message
       });
     },
@@ -84,10 +84,10 @@ export const useUpdateCat = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cats'] });
-      toast.success('อัพเดทข้อมูลสำเร็จ');
+      alert.success('อัพเดทข้อมูลสำเร็จ');
     },
     onError: (error: any) => {
-      toast.error('เกิดข้อผิดพลาด', {
+      alert.error('เกิดข้อผิดพลาด', {
         description: error.message
       });
     },

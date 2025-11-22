@@ -3,7 +3,7 @@ import { useSearchParams, Navigate } from 'react-router-dom';
 import { handleLineCallback } from '@/integrations/line/client';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import { alert } from '@/lib/alerts';
 import { Card } from '@/components/ui/card';
 import { buildAppUrl } from '@/lib/utils';
 import Logo from '@/assets/Logo.png';
@@ -27,7 +27,7 @@ const LineCallback = () => {
         if (errorParam) {
           const errorMsg = errorDescription || errorParam;
           console.error('LINE OAuth error:', errorMsg);
-          toast.error('เกิดข้อผิดพลาดจาก LINE', {
+          alert.error('เกิดข้อผิดพลาดจาก LINE', {
             description: errorMsg
           });
           setError(errorMsg);
@@ -38,7 +38,7 @@ const LineCallback = () => {
         if (!code) {
           const msg = 'ไม่ได้รับรหัสจาก LINE';
           console.error(msg);
-          toast.error('ไม่สามารถเข้าสู่ระบบได้', {
+          alert.error('ไม่สามารถเข้าสู่ระบบได้', {
             description: msg
           });
           setError(msg);
@@ -131,7 +131,7 @@ const LineCallback = () => {
           }
 
           console.log('Successfully signed in');
-          toast.success('เข้าสู่ระบบสำเร็จ!', {
+          alert.success('เข้าสู่ระบบสำเร็จ!', {
             description: `ยินดีต้อนรับ ${lineUserInfo.displayName}`
           });
 
@@ -208,7 +208,7 @@ const LineCallback = () => {
                   }
                 }
 
-                toast.success('เข้าสู่ระบบสำเร็จ!', {
+                alert.success('เข้าสู่ระบบสำเร็จ!', {
                   description: `ยินดีต้อนรับ ${lineUserInfo.displayName}`
                 });
 
@@ -236,7 +236,7 @@ const LineCallback = () => {
               }
             }
 
-            toast.success('สมัครสมาชิกสำเร็จ!', {
+            alert.success('สมัครสมาชิกสำเร็จ!', {
               description: 'ยินดีต้อนรับสู่ baanpet'
             });
 
@@ -250,7 +250,7 @@ const LineCallback = () => {
       } catch (error: any) {
         console.error('Error processing LINE callback:', error);
         const errorMsg = error.message || 'โปรดลองอีกครั้ง';
-        toast.error('เกิดข้อผิดพลาดในการเข้าสู่ระบบ', {
+        alert.error('เกิดข้อผิดพลาดในการเข้าสู่ระบบ', {
           description: errorMsg
         });
         setError(errorMsg);

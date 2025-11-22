@@ -9,7 +9,7 @@ import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { alert } from "@/lib/alerts";
 import { buildAppUrl } from "@/lib/utils";
 import Logo from "@/assets/Logo.png";
 import PasswordInput from "@/components/PasswordInput";
@@ -54,7 +54,7 @@ const Login = () => {
       if (error) throw error;
       await syncProfileFromUser();
     } catch (error: any) {
-      toast.error("ไม่สามารถเข้าสู่ระบบด้วย Google ได้", {
+      alert.error("ไม่สามารถเข้าสู่ระบบด้วย Google ได้", {
         description: error.message,
       });
     }
@@ -72,7 +72,7 @@ const Login = () => {
       if (error) throw error;
       await syncProfileFromUser();
     } catch (error: any) {
-      toast.error("ไม่สามารถเข้าสู่ระบบด้วย Facebook ได้", {
+      alert.error("ไม่สามารถเข้าสู่ระบบด้วย Facebook ได้", {
         description: error.message,
       });
     }
@@ -108,7 +108,12 @@ const Login = () => {
           setErrors(fieldErrors);
           return;
         }
-        await signUp(email, password, fullName || undefined);
+        const { error } = await signUp(email, password, fullName || undefined);
+        if (!error) {
+          setIsLogin(true);
+          setPassword("");
+          setConfirmPassword("");
+        }
       }
     } catch (error) {
       console.error("Auth error:", error);
@@ -170,7 +175,7 @@ const Login = () => {
             <Sparkles className="hidden h-8 w-8 text-primary lg:block" />
           </div>
 
-          <div className="mb-6 flex rounded-full bg-muted/40 p-1 text-sm font-semibold text-slate-500">
+          <div className="mb-4 flex rounded-full bg-muted/40 p-1 text-sm font-semibold text-slate-500">
             {[{ label: "ฉันมีบัญชีอยู่แล้ว", value: true }, { label: "ฉันยังไม่มีบัญชี", value: false }].map((tab) => (
               <button
                 key={tab.label}
@@ -187,6 +192,10 @@ const Login = () => {
               </button>
             ))}
           </div>
+
+          <p className="mb-6 rounded-2xl bg-amber-50 px-4 py-3 text-xs font-semibold text-amber-700">
+            จำเป็นต้องสมัครสมาชิกและยืนยันอีเมลก่อน จึงจะเข้าสู่ระบบด้วยอีเมลและรหัสผ่านได้
+          </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {!isLogin && (

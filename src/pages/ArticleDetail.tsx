@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, Eye, Share2, Facebook, Twitter, Copy, CheckCheck, BookOpen } from "lucide-react";
-import { toast } from "sonner";
+import { alert } from "@/lib/alerts";
 import type { Article } from "@/hooks/useArticles";
 
 type ContentBlock =
@@ -237,7 +237,7 @@ const ArticleDetail = () => {
       case "copy":
         navigator.clipboard.writeText(shareTargetUrl);
         setCopied(true);
-        toast.success("คัดลอกลิงก์แล้ว");
+        alert.success("คัดลอกลิงก์แล้ว");
         setTimeout(() => setCopied(false), 2000);
         break;
     }

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Hash, ImagePlus, Loader2, Shield, Sparkles, AlertCircle, Clock3 } from 'lucide-react';
 import { z } from 'zod';
-import { toast } from 'sonner';
+import { alert } from '@/lib/alerts';
 
 import { useAuth } from '@/hooks/useAuth';
 import { useCreatePost, useForumPost, useUpdatePost } from '@/hooks/useForumPosts';
@@ -236,13 +236,13 @@ const CreateForumPost = () => {
     if (loadingEditablePost || rolesLoading) return;
 
     if (!editablePost) {
-      toast.error('ไม่พบกระทู้ที่ต้องการแก้ไข');
+      alert.error('ไม่พบกระทู้ที่ต้องการแก้ไข');
       navigate('/forum');
       return;
     }
 
     if (user && user.id !== editablePost.user_id && !isAdmin) {
-      toast.error('คุณไม่มีสิทธิ์แก้ไขกระทู้นี้');
+      alert.error('คุณไม่มีสิทธิ์แก้ไขกระทู้นี้');
       navigate(`/forum/${editablePost.id}`);
       return;
     }
@@ -311,14 +311,14 @@ const CreateForumPost = () => {
       localStorage.removeItem(draftStorageKey);
     }
     if (!options?.silent) {
-      toast.info('ล้างฉบับร่างเรียบร้อยแล้ว');
+      alert.info('ล้างฉบับร่างเรียบร้อยแล้ว');
     }
   }, [draftStorageKey]);
 
   const handleFilesUpload = useCallback(
     async (files: FileList | File[]) => {
       if (!user) {
-        toast.error('กรุณาเข้าสู่ระบบก่อนอัพโหลดรูปภาพ');
+        alert.error('กรุณาเข้าสู่ระบบก่อนอัพโหลดรูปภาพ');
         return;
       }
 
@@ -326,7 +326,7 @@ const CreateForumPost = () => {
 
       const availableSlots = MAX_IMAGES - imageUrls.length;
       if (availableSlots <= 0) {
-        toast.error(`สามารถอัพโหลดได้สูงสุด ${MAX_IMAGES} รูปเท่านั้น`);
+        alert.error(`สามารถอัพโหลดได้สูงสุด ${MAX_IMAGES} รูปเท่านั้น`);
         return;
       }
 
@@ -337,11 +337,11 @@ const CreateForumPost = () => {
       try {
         for (const file of selectedFiles) {
           if (!file.type.startsWith('image/')) {
-            toast.error(`ไฟล์ ${file.name} ไม่ใช่รูปภาพ`);
+            alert.error(`ไฟล์ ${file.name} ไม่ใช่รูปภาพ`);
             continue;
           }
           if (file.size > 5 * 1024 * 1024) {
-            toast.error(`รูป ${file.name} มีขนาดใหญ่เกิน 5MB`);
+            alert.error(`รูป ${file.name} มีขนาดใหญ่เกิน 5MB`);
             continue;
           }
 
@@ -358,10 +358,10 @@ const CreateForumPost = () => {
 
         if (uploadedUrls.length) {
           setImageUrls((prev) => [...prev, ...uploadedUrls]);
-          toast.success(`อัพโหลดรูปภาพสำเร็จ ${uploadedUrls.length} รูป`);
+          alert.success(`อัพโหลดรูปภาพสำเร็จ ${uploadedUrls.length} รูป`);
         }
       } catch (error: any) {
-        toast.error('เกิดข้อผิดพลาดในการอัพโหลดรูปภาพ', {
+        alert.error('เกิดข้อผิดพลาดในการอัพโหลดรูปภาพ', {
           description: error.message,
         });
       } finally {
@@ -411,14 +411,14 @@ const CreateForumPost = () => {
     setShowValidationHints(true);
 
     if (!user) {
-      toast.error('กรุณาเข้าสู่ระบบก่อนใช้งาน');
+      alert.error('กรุณาเข้าสู่ระบบก่อนใช้งาน');
       navigate('/login');
       return;
     }
 
     const parsed = postSchema.safeParse({ ...formData, image_urls: imageUrls });
     if (!parsed.success) {
-      parsed.error.issues.forEach((issue) => toast.error(issue.message));
+      parsed.error.issues.forEach((issue) => alert.error(issue.message));
       return;
     }
 

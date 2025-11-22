@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
-import { toast } from 'sonner';
+import { alert } from '@/lib/alerts';
 import { Loader2, Upload, User, Lock } from 'lucide-react';
 import PasswordInput from '@/components/PasswordInput';
 
@@ -46,7 +46,7 @@ const Profile = () => {
     if (!file) return;
 
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('ไฟล์ใหญ่เกินไป', {
+      alert.error('ไฟล์ใหญ่เกินไป', {
         description: 'กรุณาเลือกไฟล์ที่มีขนาดไม่เกิน 5MB'
       });
       return;
@@ -71,12 +71,12 @@ const Profile = () => {
     e.preventDefault();
     
     if (newPassword !== confirmPassword) {
-      toast.error('รหัสผ่านไม่ตรงกัน');
+      alert.error('รหัสผ่านไม่ตรงกัน');
       return;
     }
 
     if (newPassword.length < 6) {
-      toast.error('รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร');
+      alert.error('รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร');
       return;
     }
 
@@ -87,11 +87,11 @@ const Profile = () => {
 
       if (error) throw error;
 
-      toast.success('เปลี่ยนรหัสผ่านสำเร็จ');
+      alert.success('เปลี่ยนรหัสผ่านสำเร็จ');
       setNewPassword('');
       setConfirmPassword('');
     } catch (error: any) {
-      toast.error('เกิดข้อผิดพลาด', {
+      alert.error('เกิดข้อผิดพลาด', {
         description: error.message
       });
     }

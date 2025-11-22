@@ -8,7 +8,7 @@ import { useConversations, useMessages, useSendMessage } from '@/hooks/useConver
 import { formatDistanceToNow } from 'date-fns';
 import { th } from 'date-fns/locale';
 import { MessageCircle, SendHorizontal } from 'lucide-react';
-import { toast } from 'sonner';
+import { alert } from '@/lib/alerts';
 
 const Chat = () => {
   const { user } = useAuth();
@@ -43,7 +43,7 @@ const Chat = () => {
   const handleSendMessage = (event: React.FormEvent) => {
     event.preventDefault();
     if (!user || !activeConversation) {
-      toast.error('ไม่สามารถส่งข้อความได้');
+      alert.error('ไม่สามารถส่งข้อความได้');
       return;
     }
 

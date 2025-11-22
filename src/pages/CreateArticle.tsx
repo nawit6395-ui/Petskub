@@ -13,7 +13,7 @@ import { useArticle, useCreateArticle, useUpdateArticle } from "@/hooks/useArtic
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useUserRole";
 import { ArrowLeft, Save, FileText } from "lucide-react";
-import { toast } from "sonner";
+import { alert } from "@/lib/alerts";
 
 // SEO-optimized validation schema
 const articleSchema = z.object({
@@ -148,7 +148,7 @@ const CreateArticle = () => {
   const handleSlugFromTitle = () => {
     const generatedSlug = slugifyValue(titleValue);
     if (!generatedSlug) {
-      toast.error("กรุณากรอกหัวข้อบทความเพื่อสร้าง URL");
+      alert.error("กรุณากรอกหัวข้อบทความเพื่อสร้าง URL");
       return;
     }
     setValue("slug", generatedSlug, { shouldValidate: true, shouldDirty: true });
@@ -157,7 +157,7 @@ const CreateArticle = () => {
   // Redirect if not admin
   if (!isAdmin) {
     navigate("/knowledge");
-    toast.error("คุณไม่มีสิทธิ์เข้าถึงหน้านี้");
+    alert.error("คุณไม่มีสิทธิ์เข้าถึงหน้านี้");
     return null;
   }
 
@@ -186,7 +186,7 @@ const CreateArticle = () => {
 
   const onSubmit = async (data: ArticleFormData) => {
     if (!user) {
-      toast.error("กรุณาเข้าสู่ระบบก่อน");
+      alert.error("กรุณาเข้าสู่ระบบก่อน");
       return;
     }
 
@@ -213,19 +213,19 @@ const CreateArticle = () => {
 
       if (isEditing && articleId) {
         await updateArticle.mutateAsync({ id: articleId, ...sharedPayload });
-        toast.success("อัปเดตบทความสำเร็จ");
+        alert.success("อัปเดตบทความสำเร็จ");
       } else {
         await createArticle.mutateAsync({
           ...sharedPayload,
           author_id: user.id,
           published: true,
         });
-        toast.success("สร้างบทความสำเร็จ");
+        alert.success("สร้างบทความสำเร็จ");
       }
 
       navigate("/knowledge");
     } catch (error) {
-      toast.error("เกิดข้อผิดพลาดในการบันทึกบทความ");
+      alert.error("เกิดข้อผิดพลาดในการบันทึกบทความ");
     } finally {
       setIsSubmitting(false);
     }

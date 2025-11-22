@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import { alert } from '@/lib/alerts';
 
 export interface ForumComment {
   id: string;
@@ -69,10 +69,10 @@ export const useCreateComment = () => {
       queryClient.invalidateQueries({ queryKey: ['forum-posts'] });
       queryClient.invalidateQueries({ queryKey: ['forum-post', variables.post_id] });
       queryClient.invalidateQueries({ queryKey: ['forum-trending'] });
-      toast.success('แสดงความคิดเห็นสำเร็จ!');
+      alert.success('แสดงความคิดเห็นสำเร็จ!');
     },
     onError: (error: any) => {
-      toast.error('เกิดข้อผิดพลาด', {
+      alert.error('เกิดข้อผิดพลาด', {
         description: error.message,
       });
     },
@@ -97,10 +97,10 @@ export const useDeleteComment = () => {
       queryClient.invalidateQueries({ queryKey: ['forum-posts'] });
       queryClient.invalidateQueries({ queryKey: ['forum-post', postId] });
       queryClient.invalidateQueries({ queryKey: ['forum-trending'] });
-      toast.success('ลบความคิดเห็นสำเร็จ');
+      alert.success('ลบความคิดเห็นสำเร็จ');
     },
     onError: (error: any) => {
-      toast.error('เกิดข้อผิดพลาด', {
+      alert.error('เกิดข้อผิดพลาด', {
         description: error.message,
       });
     },

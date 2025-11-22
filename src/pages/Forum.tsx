@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MessageSquare, Eye, Pin, Lock, Plus, Flame, Heart } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { toast } from 'sonner';
+import { alert } from '@/lib/alerts';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import { th } from 'date-fns/locale';
@@ -45,7 +45,7 @@ const Forum = () => {
     event.stopPropagation();
 
     if (!user) {
-      toast.error('กรุณาเข้าสู่ระบบเพื่อกดถูกใจ');
+      alert.error('กรุณาเข้าสู่ระบบเพื่อกดถูกใจ');
       navigate('/login');
       return;
     }

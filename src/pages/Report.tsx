@@ -10,7 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useCreateReport, useReports } from "@/hooks/useReports";
 import { Link } from "react-router-dom";
 import { z } from "zod";
-import { toast } from "sonner";
+import { alert } from "@/lib/alerts";
 import { THAI_PROVINCES } from "@/constants/thaiProvinces";
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
 import type { Coordinates } from "@/lib/leaflet";
@@ -76,7 +76,7 @@ const Report = () => {
 
   const handleGetLocation = useCallback(() => {
     if (!navigator.geolocation) {
-      toast.error("เบราว์เซอร์ไม่รองรับการระบุตำแหน่ง");
+      alert.error("เบราว์เซอร์ไม่รองรับการระบุตำแหน่ง");
       return;
     }
 
@@ -91,7 +91,7 @@ const Report = () => {
       },
       (error) => {
         setIsLocating(false);
-        toast.error("ไม่สามารถดึงตำแหน่งได้", {
+        alert.error("ไม่สามารถดึงตำแหน่งได้", {
           description: error.message,
         });
       },
@@ -112,7 +112,7 @@ const Report = () => {
     }
 
     if (!coordinates) {
-      toast.error("กรุณาเลือกตำแหน่งบนแผนที่ก่อนส่งรายงาน");
+      alert.error("กรุณาเลือกตำแหน่งบนแผนที่ก่อนส่งรายงาน");
       return;
     }
 
@@ -145,7 +145,7 @@ const Report = () => {
     } catch (error) {
       if (error instanceof z.ZodError) {
         error.errors.forEach((err) => {
-          toast.error(err.message);
+          alert.error(err.message);
         });
       }
     }

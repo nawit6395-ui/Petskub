@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
-import { toast } from 'sonner';
+import { alert } from '@/lib/alerts';
 
 interface ProfileData {
   full_name?: string;
@@ -46,10 +46,10 @@ export const useProfile = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['profile', user?.id] });
-      toast.success('อัปเดตโปรไฟล์สำเร็จ');
+      alert.success('อัปเดตโปรไฟล์สำเร็จ');
     },
     onError: (error: any) => {
-      toast.error('เกิดข้อผิดพลาด', {
+      alert.error('เกิดข้อผิดพลาด', {
         description: error.message
       });
     },
@@ -84,10 +84,10 @@ export const useProfile = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['profile', user?.id] });
-      toast.success('อัปโหลดรูปโปรไฟล์สำเร็จ');
+      alert.success('อัปโหลดรูปโปรไฟล์สำเร็จ');
     },
     onError: (error: any) => {
-      toast.error('เกิดข้อผิดพลาด', {
+      alert.error('เกิดข้อผิดพลาด', {
         description: error.message
       });
     },

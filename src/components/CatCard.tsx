@@ -8,7 +8,7 @@ import { useState } from "react";
 import { ImageGallery } from "@/components/ImageGallery";
 import { useUpdateCat } from "@/hooks/useCats";
 import { useIsAdmin } from "@/hooks/useUserRole";
-import { toast } from "sonner";
+import { alert } from "@/lib/alerts";
 import { useCreateConversation } from "@/hooks/useConversations";
 import { useNavigate } from "react-router-dom";
 import { FaFacebookF, FaLine } from "react-icons/fa";
@@ -50,11 +50,11 @@ const CatCard = ({ id, name, age, province, district, image, images, story, gend
     if (!id || !canManageStatus) return;
     try {
       await updateCat.mutateAsync({ id, is_adopted: true });
-      toast.success('🎉 ยินดีด้วย!', {
+      alert.success('🎉 ยินดีด้วย!', {
         description: `${name} ได้บ้านใหม่แล้ว ขอบคุณที่ให้ความรักกับน้อง ๆ`
       });
     } catch (error) {
-      toast.error('เกิดข้อผิดพลาด', {
+      alert.error('เกิดข้อผิดพลาด', {
         description: 'ไม่สามารถอัพเดทสถานะได้'
       });
     }
@@ -64,11 +64,11 @@ const CatCard = ({ id, name, age, province, district, image, images, story, gend
     if (!id || !canManageStatus) return;
     try {
       await updateCat.mutateAsync({ id, is_adopted: false });
-      toast.success('อัพเดทสถานะสำเร็จ', {
+      alert.success('อัพเดทสถานะสำเร็จ', {
         description: `${name} พร้อมรับเลี้ยงอีกครั้ง`
       });
     } catch (error) {
-      toast.error('เกิดข้อผิดพลาด', {
+      alert.error('เกิดข้อผิดพลาด', {
         description: 'ไม่สามารถอัพเดทสถานะได้'
       });
     }
@@ -106,12 +106,12 @@ const CatCard = ({ id, name, age, province, district, image, images, story, gend
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(text);
-        toast.success("คัดลอกข้อความสำหรับแชร์แล้ว");
+        alert.success("คัดลอกข้อความสำหรับแชร์แล้ว");
       } else {
         throw new Error("Clipboard API unavailable");
       }
     } catch (error) {
-      toast.error("คัดลอกไม่สำเร็จ", {
+      alert.error("คัดลอกไม่สำเร็จ", {
         description: (error as Error)?.message || "พยายามอีกครั้ง",
       });
     }
@@ -261,7 +261,7 @@ const CatCard = ({ id, name, age, province, district, image, images, story, gend
                   className="flex-1 font-prompt gap-2 text-xs sm:text-sm min-h-[44px] sm:min-h-[48px] rounded-2xl bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 text-white shadow-[0_10px_24px_rgba(249,115,22,0.3)] hover:scale-[1.01]" 
                   onClick={() => {
                     if (!user) {
-                      toast.error('กรุณาเข้าสู่ระบบเพื่อดูข้อมูลติดต่อ');
+                      alert.error('กรุณาเข้าสู่ระบบเพื่อดูข้อมูลติดต่อ');
                       return;
                     }
                     setShowContact(true);
@@ -292,19 +292,19 @@ const CatCard = ({ id, name, age, province, district, image, images, story, gend
                   disabled={createConversation.isPending}
                   onClick={() => {
                     if (!user) {
-                      toast.error('กรุณาเข้าสู่ระบบเพื่อเริ่มแชท');
+                      alert.error('กรุณาเข้าสู่ระบบเพื่อเริ่มแชท');
                       navigate('/login');
                       return;
                     }
                     if (!id || !userId) {
-                      toast.error('ไม่พบข้อมูลเจ้าของสัตว์เลี้ยง');
+                      alert.error('ไม่พบข้อมูลเจ้าของสัตว์เลี้ยง');
                       return;
                     }
                     createConversation.mutate(
                       { catId: id, ownerId: userId, adopterId: user.id },
                       {
                         onSuccess: (conversation) => {
-                          toast.success('เปิดห้องแชทกับเจ้าของแล้ว');
+                          alert.success('เปิดห้องแชทกับเจ้าของแล้ว');
                           navigate(`/chat?conversationId=${conversation.id}`);
                         },
                       }

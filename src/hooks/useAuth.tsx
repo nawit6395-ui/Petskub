@@ -1,8 +1,8 @@
 import { useState, useEffect, createContext, useContext, ReactNode, useCallback } from 'react';
-import { User, Session } from '@supabase/supabase-js';
+import { User, Session, AuthApiError } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
+import { alert } from '@/lib/alerts';
 import { buildAppUrl } from '@/lib/utils';
 
 interface AuthContextType {
@@ -76,9 +76,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signUp = async (email: string, password: string, fullName?: string) => {
     try {
-      const redirectUrl = buildAppUrl('/');
-      
-      const { error } = await supabase.auth.signUp({
+      const redirectUrl = buildAppUrl('/login');
+
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -91,14 +91,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (error) throw error;
 
-      toast.success('สมัครสมาชิกสำเร็จ!', {
-        description: 'ยินดีต้อนรับสู่ Petskub Community'
-      });
+      if (data.session) {
+        await supabase.auth.signOut();
+      }
 
-      navigate('/');
+      alert.success('สมัครสมาชิกสำเร็จ!', {
+        description: 'กรุณายืนยันอีเมลก่อนเข้าสู่ระบบครั้งแรก'
+      });
       return { error: null };
     } catch (error: any) {
-      toast.error('เกิดข้อผิดพลาด', {
+      alert.error('เกิดข้อผิดพลาด', {
         description: error.message
       });
       return { error };
@@ -107,14 +109,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signIn = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) throw error;
 
-      toast.success('เข้าสู่ระบบสำเร็จ!', {
+      if (!data.user?.email_confirmed_at) {
+        await supabase.auth.signOut();
+        throw new Error('EMAIL_NOT_CONFIRMED');
+      }
+
+      alert.success('เข้าสู่ระบบสำเร็จ!', {
         description: 'ยินดีต้อนรับกลับ'
       });
 
@@ -123,9 +130,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       navigate('/');
       return { error: null };
     } catch (error: any) {
-      toast.error('เข้าสู่ระบบไม่สำเร็จ', {
-        description: error.message
+      let description = error.message;
+
+      if (error.message === 'EMAIL_NOT_CONFIRMED') {
+        description = 'โปรดยืนยันอีเมลในกล่องจดหมายก่อนเข้าสู่ระบบ';
+      } else if (error instanceof AuthApiError && error.status === 400) {
+        description = 'ไม่พบบัญชีนี้หรือรหัสผ่านไม่ถูกต้อง กรุณาสมัครสมาชิกใหม่ก่อน';
+      }
+
+      alert.error('เข้าสู่ระบบไม่สำเร็จ', {
+        description,
       });
+
       return { error };
     }
   };
@@ -135,10 +151,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
 
-      toast.success('ออกจากระบบสำเร็จ');
+      alert.success('ออกจากระบบสำเร็จ');
       navigate('/');
     } catch (error: any) {
-      toast.error('เกิดข้อผิดพลาด', {
+      alert.error('เกิดข้อผิดพลาด', {
         description: error.message
       });
     }

@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { PostgrestError } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import { alert } from '@/lib/alerts';
 
 const normalizeStats = (post: any) => ({
   ...post,
@@ -427,12 +427,12 @@ export const useCreatePost = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['forum-posts'] });
-      toast.success('สร้างกระทู้สำเร็จ!');
+        alert.success('สร้างกระทู้สำเร็จ!');
     },
     onError: (error: any) => {
-      toast.error('เกิดข้อผิดพลาด', {
-        description: error.message,
-      });
+        alert.error('เกิดข้อผิดพลาด', {
+          description: error.message,
+        });
     },
   });
 };
@@ -451,12 +451,12 @@ export const useDeletePost = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['forum-posts'] });
-      toast.success('ลบกระทู้สำเร็จ');
+        alert.success('ลบกระทู้สำเร็จ');
     },
     onError: (error: any) => {
-      toast.error('เกิดข้อผิดพลาด', {
-        description: error.message,
-      });
+        alert.error('เกิดข้อผิดพลาด', {
+          description: error.message,
+        });
     },
   });
 };
@@ -489,12 +489,12 @@ export const useUpdatePost = () => {
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['forum-posts'] });
       queryClient.invalidateQueries({ queryKey: ['forum-post', variables.id] });
-      toast.success('อัปเดตกระทู้สำเร็จ');
+        alert.success('อัปเดตกระทู้สำเร็จ');
     },
     onError: (error: any) => {
-      toast.error('เกิดข้อผิดพลาด', {
-        description: error.message,
-      });
+        alert.error('เกิดข้อผิดพลาด', {
+          description: error.message,
+        });
     },
   });
 };
@@ -545,9 +545,9 @@ export const useTogglePostReaction = () => {
       queryClient.invalidateQueries({ queryKey: ['forum-trending'] });
     },
     onError: (error: any) => {
-      toast.error('ไม่สามารถอัปเดตการกดถูกใจได้', {
-        description: error.message,
-      });
+        alert.error('ไม่สามารถอัปเดตการกดถูกใจได้', {
+          description: error.message,
+        });
     },
   });
 };

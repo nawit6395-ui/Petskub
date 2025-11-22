@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import { alert } from '@/lib/alerts';
 
 export interface Article {
   id: string;
@@ -76,7 +76,7 @@ export const useCreateArticle = () => {
       queryClient.invalidateQueries({ queryKey: ['knowledge_articles'] });
     },
     onError: (error: any) => {
-      toast.error('เกิดข้อผิดพลาด', {
+      alert.error('เกิดข้อผิดพลาด', {
         description: error.message
       });
     },
@@ -103,7 +103,7 @@ export const useUpdateArticle = () => {
       queryClient.invalidateQueries({ queryKey: ['knowledge_article', variables.id] });
     },
     onError: (error: any) => {
-      toast.error('เกิดข้อผิดพลาด', {
+      alert.error('เกิดข้อผิดพลาด', {
         description: error.message,
       });
     },

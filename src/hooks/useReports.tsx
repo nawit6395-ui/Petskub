@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import { alert } from '@/lib/alerts';
 
 export interface Report {
   id: string;
@@ -52,12 +52,12 @@ export const useCreateReport = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reports'] });
-      toast.success('ส่งรายงานสำเร็จ!', {
+      alert.success('ส่งรายงานสำเร็จ!', {
         description: 'ขอบคุณที่ช่วยแจ้งจุดพบสัตว์จร'
       });
     },
     onError: (error: any) => {
-      toast.error('เกิดข้อผิดพลาด', {
+      alert.error('เกิดข้อผิดพลาด', {
         description: error.message
       });
     },

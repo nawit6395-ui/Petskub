@@ -7,7 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useUserRole";
 import { useUpdateUrgentCase } from "@/hooks/useUrgentCases";
 import { ImageGallery } from "./ImageGallery";
-import { toast } from "sonner";
+import { alert } from "@/lib/alerts";
 
 interface UrgentCaseCardProps {
   id: string;
@@ -152,7 +152,7 @@ export const UrgentCaseCard = ({
             <Button
               onClick={() => {
                 if (!user) {
-                  toast.error('กรุณาเข้าสู่ระบบเพื่อดูข้อมูลติดต่อ');
+                  alert.error('กรุณาเข้าสู่ระบบเพื่อดูข้อมูลติดต่อ');
                   return;
                 }
                 setShowContact(true);
