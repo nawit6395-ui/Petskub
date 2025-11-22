@@ -12,6 +12,7 @@ import { AlertCircle } from "lucide-react";
 import { MultiImageUpload } from "@/components/MultiImageUpload";
 import { z } from "zod";
 import { toast } from "sonner";
+import { THAI_PROVINCES } from "@/constants/thaiProvinces";
 
 const urgentCaseSchema = z.object({
   title: z.string().trim().min(1, "กรุณากรอกหัวข้อ").max(200, "หัวข้อต้องไม่เกิน 200 ตัวอักษร"),
@@ -145,12 +146,12 @@ const AddUrgentCase = () => {
                   <SelectTrigger className="font-prompt">
                     <SelectValue placeholder="เลือกจังหวัด" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="กรุงเทพมหานคร" className="font-prompt">กรุงเทพมหานคร</SelectItem>
-                    <SelectItem value="เชียงใหม่" className="font-prompt">เชียงใหม่</SelectItem>
-                    <SelectItem value="ภูเก็ต" className="font-prompt">ภูเก็ต</SelectItem>
-                    <SelectItem value="ขอนแก่น" className="font-prompt">ขอนแก่น</SelectItem>
-                    <SelectItem value="สงขลา" className="font-prompt">สงขลา</SelectItem>
+                  <SelectContent className="max-h-64 overflow-y-auto">
+                    {THAI_PROVINCES.map((provinceName) => (
+                      <SelectItem key={provinceName} value={provinceName} className="font-prompt">
+                        {provinceName}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>

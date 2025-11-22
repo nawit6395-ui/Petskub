@@ -13,6 +13,7 @@ import { Heart } from "lucide-react";
 import { MultiImageUpload } from "@/components/MultiImageUpload";
 import { z } from "zod";
 import { toast } from "sonner";
+import { THAI_PROVINCES } from "@/constants/thaiProvinces";
 
 const catSchema = z.object({
   name: z.string().trim().min(1, "กรุณากรอกชื่อสัตว์เลี้ยง").max(100, "ชื่อต้องไม่เกิน 100 ตัวอักษร"),
@@ -142,12 +143,12 @@ const AddCat = () => {
                 <Label htmlFor="province" className="font-prompt">จังหวัด *</Label>
                 <Select value={province} onValueChange={setProvince} required>
                   <SelectTrigger className="font-prompt"><SelectValue placeholder="เลือกจังหวัด" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="กรุงเทพมหานคร" className="font-prompt">กรุงเทพมหานคร</SelectItem>
-                    <SelectItem value="เชียงใหม่" className="font-prompt">เชียงใหม่</SelectItem>
-                    <SelectItem value="ภูเก็ต" className="font-prompt">ภูเก็ต</SelectItem>
-                    <SelectItem value="ขอนแก่น" className="font-prompt">ขอนแก่น</SelectItem>
-                    <SelectItem value="สงขลา" className="font-prompt">สงขลา</SelectItem>
+                  <SelectContent className="max-h-64 overflow-y-auto">
+                    {THAI_PROVINCES.map((provinceName) => (
+                      <SelectItem key={provinceName} value={provinceName} className="font-prompt">
+                        {provinceName}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>

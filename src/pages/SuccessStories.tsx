@@ -4,6 +4,7 @@ import { Heart, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { THAI_PROVINCES } from "@/constants/thaiProvinces";
 
 const SuccessStories = () => {
   const { data: cats, isLoading } = useCats();
@@ -19,9 +20,6 @@ const SuccessStories = () => {
     const matchesProvince = provinceFilter === "all" || cat.province === provinceFilter;
     return matchesSearch && matchesProvince;
   });
-
-  // Get unique provinces from adopted cats
-  const provinces = Array.from(new Set(adoptedCats.map(cat => cat.province))).sort();
 
   return (
     <div className="min-h-screen bg-background py-8">
@@ -59,9 +57,9 @@ const SuccessStories = () => {
                 <SelectTrigger className="font-prompt">
                   <SelectValue placeholder="เลือกจังหวัด" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="max-h-64 overflow-y-auto">
                   <SelectItem value="all" className="font-prompt">ทุกจังหวัด</SelectItem>
-                  {provinces.map((province) => (
+                  {THAI_PROVINCES.map((province) => (
                     <SelectItem key={province} value={province} className="font-prompt">
                       {province}
                     </SelectItem>

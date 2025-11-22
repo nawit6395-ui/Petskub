@@ -11,6 +11,7 @@ import { useCreateReport, useReports } from "@/hooks/useReports";
 import { Link } from "react-router-dom";
 import { z } from "zod";
 import { toast } from "sonner";
+import { THAI_PROVINCES } from "@/constants/thaiProvinces";
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
 import type { Coordinates } from "@/lib/leaflet";
 import { defaultMapCenter, tileLayerUrl, tileLayerOptions, locationMarkerIcon } from "@/lib/leaflet";
@@ -183,10 +184,12 @@ const Report = () => {
               <Label htmlFor="province" className="font-prompt">จังหวัด *</Label>
               <Select value={province} onValueChange={setProvince} required>
                 <SelectTrigger className="font-prompt"><SelectValue placeholder="เลือกจังหวัด" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="กรุงเทพมหานคร" className="font-prompt">กรุงเทพมหานคร</SelectItem>
-                  <SelectItem value="เชียงใหม่" className="font-prompt">เชียงใหม่</SelectItem>
-                  <SelectItem value="ภูเก็ต" className="font-prompt">ภูเก็ต</SelectItem>
+                <SelectContent className="max-h-64 overflow-y-auto">
+                  {THAI_PROVINCES.map((provinceName) => (
+                    <SelectItem key={provinceName} value={provinceName} className="font-prompt">
+                      {provinceName}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
