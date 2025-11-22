@@ -34,13 +34,14 @@ const handler: Handler = async (event) => {
 
   const { data, error } = await supabase
     .from("knowledge_articles")
-    .select("id, title, meta_description, image_url, image_alt")
+    .select("id, slug, title, meta_title, meta_description, og_title, og_description, og_image, image_url, image_alt")
     .eq("id", id)
     .eq("published", true)
     .single();
 
   const siteUrl = (siteFromEnv || fallbackSite).replace(/\/$/, "");
-  const articleUrl = `${siteUrl}/knowledge/${encodeURIComponent(id)}`;
+  const articlePath = data?.slug ? `/knowledge/${data.slug}` : `/knowledge/${encodeURIComponent(id)}`;
+  const articleUrl = `${siteUrl}${articlePath}`;
 
   if (error || !data) {
     const html = generateHtml({
@@ -62,15 +63,21 @@ const handler: Handler = async (event) => {
     };
   }
 
+  const shareTitle = data.og_title || data.meta_title || data.title || "Petskub - บทความ";
+  const shareDescription =
+    data.og_description ||
+    data.meta_description ||
+    "สำรวจบทความแมวจากชุมชน Petskub ช่วยกันดูแลน้องแมวให้มีชีวิตที่ดีขึ้น";
+  const shareImage =
+    data.og_image ||
+    data.image_url ||
+    "https://images.unsplash.com/photo-1543852786-1cf6624b9987?auto=format&fit=crop&w=1200&q=80";
+
   const html = generateHtml({
-    title: data.title || "Petskub - บทความ",
-    description:
-      data.meta_description ||
-      "สำรวจบทความแมวจากชุมชน Petskub ช่วยกันดูแลน้องแมวให้มีชีวิตที่ดีขึ้น",
-    image:
-      data.image_url ||
-      "https://images.unsplash.com/photo-1543852786-1cf6624b9987?auto=format&fit=crop&w=1200&q=80",
-    imageAlt: data.image_alt || data.title || "Petskub Article",
+    title: shareTitle,
+    description: shareDescription,
+    image: shareImage,
+    imageAlt: data.image_alt || shareTitle || "Petskub Article",
     articleUrl,
   });
 
