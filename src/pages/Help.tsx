@@ -5,11 +5,12 @@ import { useUrgentCases } from "@/hooks/useUrgentCases";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router-dom";
 import { UrgentCaseCard } from "@/components/UrgentCaseCard";
-import rescuePrimary from "@/assets/knowledge-sick-cat.jpg";
-import rescueSecondary from "@/assets/knowledge-parasite-check.jpg";
-import rescueSupport from "@/assets/knowledge-dangerous-foods.jpg";
-import rescueCare from "@/assets/knowledge-cat-adjusting.jpg";
-import rescueFocus from "@/assets/knowledge-trimming-nails.jpg";
+import rescuePrimaryPicture from "@/assets/knowledge-sick-cat.jpg?w=640;960;1280&format=avif;webp;jpg&as=picture";
+import rescueSecondaryPicture from "@/assets/knowledge-parasite-check.jpg?w=360;540;720&format=avif;webp;jpg&as=picture";
+import rescueSupportPicture from "@/assets/knowledge-dangerous-foods.jpg?w=320;480;640&format=avif;webp;jpg&as=picture";
+import rescueCarePicture from "@/assets/knowledge-cat-adjusting.jpg?w=320;480;640&format=avif;webp;jpg&as=picture";
+import rescueFocusPicture from "@/assets/knowledge-trimming-nails.jpg?w=360;540;720&format=avif;webp;jpg&as=picture";
+import { ResponsivePicture } from "@/components/ResponsivePicture";
 
 const Help = () => {
   const { data: urgentCases, isLoading } = useUrgentCases({ includeResolved: true });
@@ -89,13 +90,14 @@ const Help = () => {
               <div className="absolute inset-0 -z-10 rounded-[48px] bg-gradient-to-br from-rose-200/40 via-transparent to-emerald-200/40 blur-3xl" />
               <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_220px]">
                 <div className="media-frame h-[260px] sm:h-[320px] w-full">
-                  <img
-                    src={rescuePrimary}
+                  <ResponsivePicture
+                    picture={rescuePrimaryPicture}
                     alt="อาสาช่วยเหลือสัตว์บาดเจ็บ"
-                    loading="lazy"
-                    width={900}
-                    height={600}
-                    className="h-full w-full object-cover"
+                    sizes="(max-width: 1024px) 100vw, 640px"
+                    loading="eager"
+                    decoding="async"
+                    className="block h-full w-full"
+                    imgClassName="h-full w-full object-cover"
                   />
                   <div className="absolute left-4 top-4 rounded-2xl bg-black/55 px-3 py-2 text-[11px] font-prompt text-white shadow-lg">
                     ปฏิบัติการอยู่ {activeCases.length ? `${activeCases.length} เคส` : "พร้อมรับแจ้ง"}
@@ -113,13 +115,14 @@ const Help = () => {
                 </div>
                 <div className="flex flex-col gap-4">
                   <div className="media-frame-sm h-[150px]">
-                    <img
-                      src={rescueSecondary}
+                    <ResponsivePicture
+                      picture={rescueSecondaryPicture}
                       alt="การปฐมพยาบาลเบื้องต้นให้สัตว์"
+                      sizes="(max-width: 640px) 90vw, 360px"
                       loading="lazy"
-                      width={360}
-                      height={240}
-                      className="h-full w-full object-cover"
+                      decoding="async"
+                      className="block h-full w-full"
+                      imgClassName="h-full w-full object-cover"
                     />
                   </div>
                   <div className="rounded-3xl border border-emerald-100 bg-white/95 p-4 text-center font-prompt shadow-lg">
@@ -128,36 +131,39 @@ const Help = () => {
                     <p className="text-xs text-muted-foreground">แจ้งทีมอาสาใกล้ที่สุดทันที</p>
                   </div>
                   <div className="media-frame-sm h-[120px]">
-                    <img
-                      src={rescueFocus}
+                    <ResponsivePicture
+                      picture={rescueFocusPicture}
                       alt="การดูแลสัตว์บาดเจ็บ"
+                      sizes="(max-width: 640px) 90vw, 320px"
                       loading="lazy"
-                      width={360}
-                      height={240}
-                      className="h-full w-full object-cover"
+                      decoding="async"
+                      className="block h-full w-full"
+                      imgClassName="h-full w-full object-cover"
                     />
                   </div>
                 </div>
               </div>
               <div className="mt-4 grid grid-cols-2 gap-3 sm:hidden">
                 <div className="media-frame-sm h-[120px]">
-                  <img
-                    src={rescueSupport}
+                  <ResponsivePicture
+                    picture={rescueSupportPicture}
                     alt="อุปกรณ์ช่วยสัตว์"
+                    sizes="(max-width: 640px) 50vw, 220px"
                     loading="lazy"
-                    width={320}
-                    height={220}
-                    className="h-full w-full object-cover"
+                    decoding="async"
+                    className="block h-full w-full"
+                    imgClassName="h-full w-full object-cover"
                   />
                 </div>
                 <div className="media-frame-sm h-[120px]">
-                  <img
-                    src={rescueCare}
+                  <ResponsivePicture
+                    picture={rescueCarePicture}
                     alt="ทีมช่วยเหลือเตรียมอุปกรณ์"
+                    sizes="(max-width: 640px) 50vw, 220px"
                     loading="lazy"
-                    width={320}
-                    height={220}
-                    className="h-full w-full object-cover"
+                    decoding="async"
+                    className="block h-full w-full"
+                    imgClassName="h-full w-full object-cover"
                   />
                 </div>
               </div>

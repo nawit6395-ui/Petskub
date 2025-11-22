@@ -5,19 +5,52 @@ import { Plus, MapPin, Heart, TrendingUp } from "lucide-react";
 import { FaHeart, FaCat, FaMapMarkerAlt, FaExclamationTriangle } from "react-icons/fa";
 import CatCard from "@/components/CatCard";
 import { Link } from "react-router-dom";
-import heroImageCozy from "@/assets/hero-cat.jpg";
+import heroImageCozyPicture from "@/assets/hero-cat.jpg?w=480;768;1024;1440&format=webp;avif&as=picture";
 import { useCats } from "@/hooks/useCats";
 import { useReports } from "@/hooks/useReports";
 import ReportMapOverview from "@/components/ReportMapOverview";
+import { ResponsivePicture } from "@/components/ResponsivePicture";
+import type { Picture } from "imagetools-core";
 
-const heroSlides = [
+const HERO_IMAGE_SIZES = "(max-width: 640px) 95vw, (max-width: 1024px) 70vw, 560px";
+
+const buildSrcSet = (base: string, widths: number[]) => widths.map((width) => `${base}&w=${width} ${width}w`).join(", ");
+
+type HeroSlide =
+  | {
+      id: string;
+      alt: string;
+      kind: "remote";
+      src: string;
+      srcSet: string;
+      width: number;
+      height: number;
+    }
+  | {
+      id: string;
+      alt: string;
+      kind: "picture";
+      picture: Picture;
+    };
+
+const HERO_REMOTE_BASE =
+  "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&q=80";
+
+const heroSlides: HeroSlide[] = [
   {
-    src: "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=1400&q=80",
+    id: "hero-dog-window",
     alt: "น้องหมานั่งอยู่ริมหน้าต่างแสงแดดอ่อน",
+    kind: "remote",
+    src: `${HERO_REMOTE_BASE}&w=1400`,
+    srcSet: buildSrcSet(HERO_REMOTE_BASE, [640, 960, 1400]),
+    width: 1400,
+    height: 1050,
   },
   {
-    src: heroImageCozy,
+    id: "hero-cozy-cat",
     alt: "น้องแมวมองกล้องอย่างอ่อนโยน",
+    kind: "picture",
+    picture: heroImageCozyPicture,
   },
 ];
 
@@ -163,16 +196,45 @@ const Home = () => {
               <div className="absolute -inset-4 rounded-[2.5rem] sm:rounded-[3rem] bg-gradient-warm opacity-20 blur-2xl"></div>
               <div className="relative overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] border-4 border-white/50 shadow-hover animate-float-slow">
                 <div className="relative aspect-[4/3] w-full">
-                  {heroSlides.map((slide, index) => (
-                    <img
-                      key={slide.src}
-                      src={slide.src}
-                      alt={slide.alt}
-                      className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[2000ms] ease-out ${
-                        index === activeHeroIndex ? "opacity-100" : "opacity-0"
-                      }`}
-                    />
-                  ))}
+                  {heroSlides.map((slide, index) => {
+                    const isActive = index === activeHeroIndex;
+                    const transitionClasses = `absolute inset-0 h-full w-full transition-opacity duration-[2000ms] ease-out ${
+                      isActive ? "opacity-100" : "opacity-0"
+                    }`;
+                    const loading = index === 0 ? "eager" : "lazy";
+
+                    if (slide.kind === "picture") {
+                      return (
+                        <ResponsivePicture
+                          key={slide.id}
+                          picture={slide.picture}
+                          alt={slide.alt}
+                          sizes={HERO_IMAGE_SIZES}
+                          loading={loading}
+                          decoding={index === 0 ? "sync" : "async"}
+                          className={`${transitionClasses} block`}
+                          imgClassName="h-full w-full object-cover"
+                          ariaHidden={!isActive}
+                        />
+                      );
+                    }
+
+                    return (
+                      <img
+                        key={slide.id}
+                        src={slide.src}
+                        srcSet={slide.srcSet}
+                        sizes={HERO_IMAGE_SIZES}
+                        width={slide.width}
+                        height={slide.height}
+                        alt={slide.alt}
+                        loading={loading}
+                        decoding="async"
+                        aria-hidden={!isActive}
+                        className={`${transitionClasses} object-cover`}
+                      />
+                    );
+                  })}
                 </div>
                 <div className="pointer-events-none absolute bottom-5 left-1/2 flex -translate-x-1/2 gap-2">
                   {heroSlides.map((_, index) => (

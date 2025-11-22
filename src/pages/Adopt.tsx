@@ -6,11 +6,12 @@ import CatCard from "@/components/CatCard";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { useCats } from "@/hooks/useCats";
 import { THAI_PROVINCES } from "@/constants/thaiProvinces";
-import adoptHeroPrimary from "@/assets/hero-cat.jpg";
-import adoptHeroSecondary from "@/assets/hero-cat-pastel.jpg";
-import adoptHeroDetail from "@/assets/knowledge-cat-relaxing.jpg";
-import adoptHeroMood from "@/assets/knowledge-cat-body-language.jpg";
-import adoptHeroSnack from "@/assets/knowledge-cat-food.jpg";
+import adoptHeroPrimaryPicture from "@/assets/hero-cat.jpg?w=640;960;1200&format=avif;webp;jpg&as=picture";
+import adoptHeroSecondaryPicture from "@/assets/hero-cat-pastel.jpg?w=360;540;720&format=avif;webp;jpg&as=picture";
+import adoptHeroDetailPicture from "@/assets/knowledge-cat-relaxing.jpg?w=320;480;640&format=avif;webp;jpg&as=picture";
+import adoptHeroMoodPicture from "@/assets/knowledge-cat-body-language.jpg?w=360;540;720&format=avif;webp;jpg&as=picture";
+import adoptHeroSnackPicture from "@/assets/knowledge-cat-food.jpg?w=320;480;640&format=avif;webp;jpg&as=picture";
+import { ResponsivePicture } from "@/components/ResponsivePicture";
 
 const Adopt = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -64,13 +65,14 @@ const Adopt = () => {
             <div className="absolute inset-0 -z-10 rounded-[48px] bg-gradient-to-br from-amber-50 via-white to-emerald-50 blur-2xl opacity-80" />
 
             <div className="media-frame h-[260px] sm:h-[320px] w-full max-w-[520px]">
-              <img
-                src={adoptHeroPrimary}
+              <ResponsivePicture
+                picture={adoptHeroPrimaryPicture}
                 alt="อาสาสมัครอุ้มน้องแมว"
-                loading="lazy"
-                width={900}
-                height={600}
-                className="h-full w-full object-cover"
+                sizes="(max-width: 1024px) 100vw, 520px"
+                loading="eager"
+                decoding="async"
+                className="block h-full w-full"
+                imgClassName="h-full w-full object-cover"
               />
               <div className="absolute inset-x-5 bottom-5 flex items-center justify-between rounded-2xl bg-black/55 px-4 py-3 text-[11px] text-white font-prompt sm:text-sm">
                 <span className="flex items-center gap-2">
@@ -83,23 +85,25 @@ const Adopt = () => {
 
             <div className="hidden sm:flex flex-col gap-3 absolute -left-10 top-4 w-[150px] -rotate-2 drop-shadow-lg">
               <div className="media-frame-sm h-[120px]">
-                <img
-                  src={adoptHeroSecondary}
+                <ResponsivePicture
+                  picture={adoptHeroSecondaryPicture}
                   alt="น้องแมวในบ้านใหม่"
+                  sizes="(max-width: 768px) 60vw, 180px"
                   loading="lazy"
-                  width={360}
-                  height={240}
-                  className="h-full w-full object-cover"
+                  decoding="async"
+                  className="block h-full w-full"
+                  imgClassName="h-full w-full object-cover"
                 />
               </div>
               <div className="media-frame-sm h-[110px] rotate-3">
-                <img
-                  src={adoptHeroDetail}
+                <ResponsivePicture
+                  picture={adoptHeroDetailPicture}
                   alt="น้องแมวกำลังพักผ่อน"
+                  sizes="(max-width: 768px) 60vw, 180px"
                   loading="lazy"
-                  width={360}
-                  height={240}
-                  className="h-full w-full object-cover"
+                  decoding="async"
+                  className="block h-full w-full"
+                  imgClassName="h-full w-full object-cover"
                 />
               </div>
             </div>
@@ -111,13 +115,15 @@ const Adopt = () => {
                 <p className="text-[11px] font-prompt text-emerald-600">+12% จากเดือนก่อน</p>
               </div>
               <div className="media-frame-sm h-[120px] rotate-3">
-                <img
-                  src={adoptHeroMood}
+                <ResponsivePicture
+                  picture={adoptHeroMoodPicture}
                   alt="น้องแมวกำลังเล่น"
+                  sizes="(max-width: 1024px) 60vw, 220px"
                   loading="lazy"
-                  width={360}
-                  height={240}
-                  className="h-full w-full object-cover" />
+                  decoding="async"
+                  className="block h-full w-full"
+                  imgClassName="h-full w-full object-cover"
+                />
               </div>
             </div>
 
@@ -128,13 +134,15 @@ const Adopt = () => {
 
             <div className="hidden lg:flex flex-col gap-3 absolute -left-6 -bottom-8 w-[170px] -rotate-3">
               <div className="media-frame-sm h-[110px]">
-                <img
-                  src={adoptHeroSnack}
+                <ResponsivePicture
+                  picture={adoptHeroSnackPicture}
                   alt="ของโปรดน้องแมว"
+                  sizes="(max-width: 1024px) 50vw, 200px"
                   loading="lazy"
-                  width={320}
-                  height={220}
-                  className="h-full w-full object-cover" />
+                  decoding="async"
+                  className="block h-full w-full"
+                  imgClassName="h-full w-full object-cover"
+                />
               </div>
               <div className="rounded-3xl border border-white/60 bg-white/90 p-3 text-center shadow-md">
                 <p className="text-[11px] font-prompt text-muted-foreground">พร้อมรับเลี้ยงทันที</p>
