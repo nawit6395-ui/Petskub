@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 
 export interface Article {
   id: string;
+  slug?: string | null;
   title: string;
   meta_title?: string;
   meta_description?: string;

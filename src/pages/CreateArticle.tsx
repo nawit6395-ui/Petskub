@@ -36,6 +36,12 @@ const articleSchema = z.object({
   keywords: z.string()
     .optional()
     .or(z.literal("")),
+  slug: z.string()
+    .trim()
+    .min(5, "URL ควรมีอย่างน้อย 5 ตัวอักษร")
+    .max(80, "URL ไม่ควรเกิน 80 ตัวอักษร")
+    .regex(/^[a-z0-9-]+$/i, "ใช้เฉพาะตัวอักษร a-z ตัวเลข และขีดกลาง (-)")
+    .transform((value) => value.toLowerCase()),
   content: z.string()
     .min(100, "เนื้อหาควรมีอย่างน้อย 100 ตัวอักษร")
     .max(10000, "เนื้อหาไม่ควรเกิน 10,000 ตัวอักษร")
@@ -64,6 +70,19 @@ const articleSchema = z.object({
     .or(z.literal("")),
 });
 
+const slugifyValue = (value: string) =>
+  value
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+
+const fallbackSiteUrl = "https://petskub.vercel.app";
+
 type ArticleFormData = z.infer<typeof articleSchema>;
 
 const CreateArticle = () => {
@@ -88,6 +107,26 @@ const CreateArticle = () => {
   });
 
   const selectedCategory = watch("category");
+  const titleValue = watch("title") || "";
+  const metaTitleValue = watch("meta_title") || "";
+  const metaDescriptionValue = watch("meta_description") || "";
+  const imageAltValue = watch("image_alt") || "";
+  const contentValue = watch("content") || "";
+  const slugValue = watch("slug") || "";
+  const contentWordCount = contentValue.trim()
+    ? contentValue
+        .trim()
+        .split(/\s+/)
+        .filter((word) => word.length > 0).length
+    : 0;
+
+  const siteBaseUrl = (
+    import.meta.env.VITE_SITE_URL ||
+    (typeof window !== "undefined" ? window.location.origin : fallbackSiteUrl)
+  ).replace(/\/$/, "");
+  const slugPreview = slugValue
+    ? `${siteBaseUrl}/knowledge/${slugValue}`
+    : `${siteBaseUrl}/knowledge/ชื่อ-url`;
 
   useEffect(() => {
     if (isEditing && articleToEdit) {
@@ -95,6 +134,7 @@ const CreateArticle = () => {
       setValue("meta_title", articleToEdit.meta_title || "");
       setValue("meta_description", articleToEdit.meta_description || "");
       setValue("keywords", articleToEdit.keywords?.join(", ") || "");
+      setValue("slug", articleToEdit.slug || "");
       setValue("content", articleToEdit.content || "");
       setValue("category", articleToEdit.category || "");
       setValue("image_url", articleToEdit.image_url || "");
@@ -104,6 +144,15 @@ const CreateArticle = () => {
       setValue("og_image", articleToEdit.og_image || "");
     }
   }, [isEditing, articleToEdit, setValue]);
+
+  const handleSlugFromTitle = () => {
+    const generatedSlug = slugifyValue(titleValue);
+    if (!generatedSlug) {
+      toast.error("กรุณากรอกหัวข้อบทความเพื่อสร้าง URL");
+      return;
+    }
+    setValue("slug", generatedSlug, { shouldValidate: true, shouldDirty: true });
+  };
 
   // Redirect if not admin
   if (!isAdmin) {
@@ -144,7 +193,7 @@ const CreateArticle = () => {
     setIsSubmitting(true);
     try {
       const keywordsArray = data.keywords 
-        ? data.keywords.split(',').map(k => k.trim()).filter(k => k.length > 0)
+        ? data.keywords.split(",").map((k) => k.trim()).filter((k) => k.length > 0)
         : undefined;
 
       const sharedPayload = {
@@ -152,6 +201,7 @@ const CreateArticle = () => {
         meta_title: data.meta_title || undefined,
         meta_description: data.meta_description || undefined,
         keywords: keywordsArray,
+        slug: data.slug,
         content: data.content,
         category: data.category,
         image_url: data.image_url || undefined,
@@ -209,9 +259,14 @@ const CreateArticle = () => {
           <form onSubmit={handleSubmit(onSubmit)}>
             {/* Title - H1 Tag */}
             <div className="mb-6">
-              <Label htmlFor="title" className="font-prompt text-base mb-2 block">
-                หัวข้อบทความ (H1) <span className="text-destructive">*</span>
-              </Label>
+              <div className="flex items-center justify-between mb-2">
+                <Label htmlFor="title" className="font-prompt text-base">
+                  หัวข้อบทความ (H1) <span className="text-destructive">*</span>
+                </Label>
+                <span className="text-xs text-muted-foreground font-prompt">
+                  {titleValue.length}/60
+                </span>
+              </div>
               <Input
                 id="title"
                 placeholder="หัวข้อควรชัดเจนและมีคำสำคัญ (10-60 ตัวอักษร)"
@@ -232,9 +287,14 @@ const CreateArticle = () => {
 
             {/* Meta Title - SEO Critical */}
             <div className="mb-6">
-              <Label htmlFor="meta_title" className="font-prompt text-base mb-2 block">
-                Meta Title
-              </Label>
+              <div className="flex items-center justify-between mb-2">
+                <Label htmlFor="meta_title" className="font-prompt text-base">
+                  Meta Title
+                </Label>
+                <span className="text-xs text-muted-foreground font-prompt">
+                  {metaTitleValue.length}/60
+                </span>
+              </div>
               <Input
                 id="meta_title"
                 placeholder="ชื่อที่จะแสดงในผลการค้นหา Google (50-60 ตัวอักษร)"
@@ -254,9 +314,14 @@ const CreateArticle = () => {
 
             {/* Meta Description - SEO Critical */}
             <div className="mb-6">
-              <Label htmlFor="meta_description" className="font-prompt text-base mb-2 block">
-                Meta Description
-              </Label>
+              <div className="flex items-center justify-between mb-2">
+                <Label htmlFor="meta_description" className="font-prompt text-base">
+                  Meta Description
+                </Label>
+                <span className="text-xs text-muted-foreground font-prompt">
+                  {metaDescriptionValue.length}/160
+                </span>
+              </div>
               <Textarea
                 id="meta_description"
                 placeholder="คำอธิบายสั้นๆ ที่จะแสดงใน Google (150-160 ตัวอักษร)"
@@ -320,6 +385,41 @@ const CreateArticle = () => {
               )}
             </div>
 
+            {/* Article URL / Slug */}
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <Label htmlFor="slug" className="font-prompt text-base">
+                  URL บทความ (ห้ามซ้ำ) <span className="text-destructive">*</span>
+                </Label>
+                <span className="text-xs text-muted-foreground font-prompt">{slugValue.length}/80</span>
+              </div>
+              <div className="flex flex-col gap-2 md:flex-row">
+                <Input
+                  id="slug"
+                  placeholder="care-guide-for-rescue-cats"
+                  className="font-prompt md:flex-1"
+                  {...register("slug")}
+                  aria-describedby="slug-help"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleSlugFromTitle}
+                  className="font-prompt md:w-auto"
+                >
+                  สร้างจากหัวข้อ
+                </Button>
+              </div>
+              {errors.slug && (
+                <p className="text-destructive text-sm mt-1 font-prompt" role="alert">
+                  {errors.slug.message}
+                </p>
+              )}
+              <p id="slug-help" className="text-xs text-muted-foreground mt-1 font-prompt">
+                URL ตัวอย่าง: <span className="text-foreground">{slugPreview}</span>
+              </p>
+            </div>
+
             {/* Image URL */}
             <div className="mb-6">
               <Label htmlFor="image_url" className="font-prompt text-base mb-2 block">
@@ -345,9 +445,14 @@ const CreateArticle = () => {
 
             {/* Image Alt Text - SEO Critical */}
             <div className="mb-6">
-              <Label htmlFor="image_alt" className="font-prompt text-base mb-2 block">
-                Alt Text รูปภาพ
-              </Label>
+              <div className="flex items-center justify-between mb-2">
+                <Label htmlFor="image_alt" className="font-prompt text-base">
+                  Alt Text รูปภาพ
+                </Label>
+                <span className="text-xs text-muted-foreground font-prompt">
+                  {imageAltValue.length}/125
+                </span>
+              </div>
               <Input
                 id="image_alt"
                 placeholder="คำอธิบายรูปภาพสำหรับ SEO และการเข้าถึง (10-125 ตัวอักษร)"
@@ -367,9 +472,14 @@ const CreateArticle = () => {
 
             {/* Content - Main SEO content */}
             <div className="mb-6">
-              <Label htmlFor="content" className="font-prompt text-base mb-2 block">
-                เนื้อหาบทความ <span className="text-destructive">*</span>
-              </Label>
+              <div className="flex items-center justify-between mb-2">
+                <Label htmlFor="content" className="font-prompt text-base">
+                  เนื้อหาบทความ <span className="text-destructive">*</span>
+                </Label>
+                <span className="text-xs text-muted-foreground font-prompt">
+                  {contentWordCount} คำ · {contentValue.length}/10000 ตัวอักษร
+                </span>
+              </div>
               <Textarea
                 id="content"
                 placeholder="เขียนเนื้อหาที่มีคุณค่าและมีรายละเอียดครบถ้วน (อย่างน้อย 100 ตัวอักษร)"
@@ -416,6 +526,34 @@ const CreateArticle = () => {
                 </div>
               </Card>
             </div>
+
+            {/* SEO Team Checklist */}
+            <Card className="mb-6 p-4 bg-gradient-to-r from-orange-50 to-rose-50 dark:from-orange-950/20 dark:to-rose-950/20 border border-orange-200 dark:border-orange-900">
+              <h3 className="font-semibold mb-2 font-prompt">ผู้เช็คลิสต์ของทีม SEO</h3>
+              <p className="text-sm text-muted-foreground mb-4 font-prompt">
+                ทีมจะตรวจตามหลัก E-E-A-T เพื่อให้บทความมีความน่าเชื่อถือ อ่านง่าย และได้อันดับที่ดีบน Google
+              </p>
+              <div className="grid md:grid-cols-2 gap-4 text-sm font-prompt">
+                <div>
+                  <div className="font-semibold mb-2">E-E-A-T Framework</div>
+                  <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                    <li>E (Experience): แชร์ประสบการณ์หรือเคสจริง</li>
+                    <li>E (Expertise): อ้างอิงผู้เชี่ยวชาญหรือแหล่งข้อมูล</li>
+                    <li>A (Authoritativeness): ใส่ข้อมูลที่ตรวจสอบได้และลิงก์อ้างอิง</li>
+                    <li>T (Trustworthiness): ข้อมูลต้องถูกต้องและอัปเดต</li>
+                  </ul>
+                </div>
+                <div>
+                  <div className="font-semibold mb-2">รายการตรวจสอบเพิ่มเติม</div>
+                  <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                    <li>มี H2 อย่างน้อย 3 หัวข้อ และ H3 รองรับ</li>
+                    <li>Meta Description 150-160 ตัวอักษร</li>
+                    <li>มี Internal และ External links</li>
+                    <li>Alt Text ครบทุกภาพสำคัญ</li>
+                  </ul>
+                </div>
+              </div>
+            </Card>
 
             {/* Open Graph Tags Section */}
             <div className="mb-6">

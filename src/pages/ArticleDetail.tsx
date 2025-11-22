@@ -137,40 +137,44 @@ const renderInlineText = (paragraph: string, keyPrefix: string) => {
 };
 
 const ArticleDetail = () => {
-  const { id } = useParams<{ id: string }>();
+  const { slugOrId } = useParams<{ slugOrId: string }>();
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
 
   // Fetch single article
   const { data: article, isLoading } = useQuery({
-    queryKey: ["knowledge_article", id],
+    queryKey: ["knowledge_article", slugOrId],
     queryFn: async () => {
+      if (!slugOrId) throw new Error("Article identifier is required");
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slugOrId);
+      const column = isUuid ? "id" : "slug";
+
       const { data, error } = await supabase
         .from("knowledge_articles")
         .select("*")
-        .eq("id", id)
+        .eq(column, slugOrId)
         .eq("published", true)
         .single();
 
       if (error) throw error;
       return data as Article;
     },
-    enabled: !!id,
+    enabled: !!slugOrId,
   });
 
   // Increment view count only once when article loads
   useEffect(() => {
-    if (!article || !id) return;
-    
+    if (!article?.id) return;
+
     let mounted = true;
-    
+
     const incrementViews = async () => {
       try {
         const { error } = await supabase
           .from("knowledge_articles")
           .update({ views: article.views + 1 })
-          .eq("id", id);
-        
+          .eq("id", article.id);
+
         if (error && mounted) {
           console.error("Error incrementing views:", error);
         }
@@ -180,11 +184,11 @@ const ArticleDetail = () => {
     };
 
     incrementViews();
-    
+
     return () => {
       mounted = false;
     };
-  }, [article?.id]); // Only run when article ID changes
+  }, [article?.id, article?.views]);
 
   // Fetch related articles
   const { data: relatedArticles } = useQuery({
@@ -207,7 +211,7 @@ const ArticleDetail = () => {
 
   const shareOrigin = typeof window !== "undefined" ? window.location.origin : "";
   const currentLocation = typeof window !== "undefined" ? window.location.href : "";
-  const articleId = article?.id || id;
+  const articleId = article?.id;
   const shareTargetUrl = articleId && shareOrigin
     ? `${shareOrigin}/share/article?id=${encodeURIComponent(articleId)}`
     : currentLocation;
@@ -475,7 +479,7 @@ const ArticleDetail = () => {
                 <Card
                   key={relatedArticle.id}
                   className="overflow-hidden shadow-card hover:shadow-hover transition-all cursor-pointer"
-                  onClick={() => navigate(`/knowledge/${relatedArticle.id}`)}
+                  onClick={() => navigate(`/knowledge/${relatedArticle.slug || relatedArticle.id}`)}
                 >
                   {relatedArticle.image_url && (
                     <img

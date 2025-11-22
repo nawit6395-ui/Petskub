@@ -175,6 +175,7 @@ export type Database = {
           og_description: string | null
           og_image: string | null
           og_title: string | null
+          slug: string | null
           published: boolean | null
           title: string
           updated_at: string
@@ -194,6 +195,7 @@ export type Database = {
           og_description?: string | null
           og_image?: string | null
           og_title?: string | null
+          slug?: string | null
           published?: boolean | null
           title: string
           updated_at?: string
@@ -213,6 +215,7 @@ export type Database = {
           og_description?: string | null
           og_image?: string | null
           og_title?: string | null
+          slug?: string | null
           published?: boolean | null
           title?: string
           updated_at?: string

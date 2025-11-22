@@ -130,7 +130,7 @@ const Knowledge = () => {
                         </Button>
                       )}
                       <Button asChild variant="ghost" size="sm" className="font-prompt">
-                        <Link to={`/knowledge/${article.id}`}>อ่านต่อ →</Link>
+                        <Link to={`/knowledge/${article.slug || article.id}`}>อ่านต่อ →</Link>
                       </Button>
                     </div>
                   </div>
