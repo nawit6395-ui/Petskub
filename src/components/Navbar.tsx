@@ -244,7 +244,7 @@ const Navbar = () => {
 
   const getNavClasses = (path: string) =>
     cn(
-      "group flex items-center gap-2 rounded-2xl px-3 py-2 text-sm font-prompt transition-all",
+      "group flex items-center gap-2 rounded-2xl px-3 py-2 text-sm font-prompt font-bold transition-all",
       isActive(path)
         ? "bg-white text-foreground shadow-sm border border-primary/10"
         : "text-muted-foreground hover:bg-white/60 hover:text-foreground"
@@ -274,7 +274,7 @@ const Navbar = () => {
                       <Link key={link.path} to={link.path} onClick={() => setMobileMenuOpen(false)}>
                         <Button
                           variant="ghost"
-                          className="w-full justify-start font-prompt gap-2"
+                          className="w-full justify-start font-prompt font-bold gap-2"
                           aria-current={isActive(link.path) ? "page" : undefined}
                         >
                           <i
@@ -293,7 +293,7 @@ const Navbar = () => {
                         <Link key={link.path} to={link.path} onClick={() => setMobileMenuOpen(false)}>
                           <Button
                             variant={isActive(link.path) ? "secondary" : "ghost"}
-                            className="w-full justify-start font-prompt"
+                            className="w-full justify-start font-prompt font-bold"
                           >
                             {link.label}
                           </Button>

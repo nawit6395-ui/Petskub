@@ -479,11 +479,11 @@ const ArticleDetail = () => {
           <section>
             <Separator className="mb-6" />
             <h2 className="text-2xl font-bold mb-6 font-prompt">บทความที่เกี่ยวข้อง</h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="flex gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-6 sm:overflow-visible sm:pb-0">
               {relatedArticles.map((relatedArticle) => (
                 <Card
                   key={relatedArticle.id}
-                  className="rounded-[22px] border border-white/70 bg-white/95 shadow-card hover:shadow-hover transition-all cursor-pointer"
+                  className="rounded-[22px] border border-white/70 bg-white/95 shadow-card hover:shadow-hover transition-all cursor-pointer min-w-[240px] flex-shrink-0 sm:min-w-0"
                   onClick={() => navigate(`/knowledge/${relatedArticle.slug || relatedArticle.id}`)}
                 >
                   <div className="p-4 pb-0">

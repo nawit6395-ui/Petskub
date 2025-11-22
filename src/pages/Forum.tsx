@@ -59,11 +59,11 @@ const Forum = () => {
     const remaining = imageUrls.length - preview.length;
 
     return (
-      <div className="mt-4 flex flex-wrap gap-3">
+      <div className="mt-4 -mx-1 flex gap-3 overflow-x-auto pb-2 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:pb-0">
         {preview.map((url, index) => (
           <div
             key={`${url}-${index}`}
-            className="relative overflow-hidden rounded-[12px] border border-white/40 bg-muted/50 shadow-sm w-full h-[185px] sm:w-[230px] sm:h-[155px]"
+            className="relative h-[185px] w-[240px] flex-shrink-0 overflow-hidden rounded-[12px] border border-white/40 bg-muted/50 shadow-sm sm:h-[155px] sm:w-[230px] sm:flex-shrink"
           >
             <img
               src={url}
