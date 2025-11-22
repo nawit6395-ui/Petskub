@@ -91,14 +91,23 @@ const Knowledge = () => {
         ) : filteredArticles && filteredArticles.length > 0 ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {filteredArticles.map((article) => (
-              <Card key={article.id} className="overflow-hidden shadow-card hover:shadow-hover transition-all">
-                {article.image_url && (
-                  <img
-                    src={article.image_url}
-                    alt={article.title}
-                    className="w-full h-48 object-cover"
-                  />
-                )}
+              <Card key={article.id} className="rounded-[28px] border border-white/70 bg-white/95 shadow-card hover:shadow-hover transition-all">
+                <div className="p-5 pb-0">
+                  {article.image_url ? (
+                    <div className="media-frame h-[190px] sm:h-[210px]">
+                      <img
+                        src={article.image_url}
+                        alt={article.title}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="media-frame h-[190px] sm:h-[210px] flex flex-col items-center justify-center gap-2 text-muted-foreground">
+                      <BookOpen className="w-8 h-8" />
+                      <p className="text-xs font-prompt">ยังไม่มีภาพหน้าปก</p>
+                    </div>
+                  )}
+                </div>
                 <div className="p-6">
                   <div className="flex items-center gap-2 mb-3">
                     <BookOpen className="w-4 h-4 text-primary" />

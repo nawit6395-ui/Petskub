@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Eye, Share2, Facebook, Twitter, Copy, CheckCheck } from "lucide-react";
+import { ArrowLeft, Eye, Share2, Facebook, Twitter, Copy, CheckCheck, BookOpen } from "lucide-react";
 import { toast } from "sonner";
 import type { Article } from "@/hooks/useArticles";
 
@@ -329,11 +329,13 @@ const ArticleDetail = () => {
 
           {/* Featured Image */}
           {article.image_url && (
-            <img
-              src={article.image_url}
-              alt={article.image_alt || article.title}
-              className="w-full rounded-lg mb-6 object-cover max-h-[500px]"
-            />
+            <div className="media-frame mb-6 h-[220px] sm:h-[320px] lg:h-[420px]">
+              <img
+                src={article.image_url}
+                alt={article.image_alt || article.title}
+                className="h-full w-full object-cover"
+              />
+            </div>
           )}
 
           {/* Share Buttons */}
@@ -478,16 +480,25 @@ const ArticleDetail = () => {
               {relatedArticles.map((relatedArticle) => (
                 <Card
                   key={relatedArticle.id}
-                  className="overflow-hidden shadow-card hover:shadow-hover transition-all cursor-pointer"
+                  className="rounded-[22px] border border-white/70 bg-white/95 shadow-card hover:shadow-hover transition-all cursor-pointer"
                   onClick={() => navigate(`/knowledge/${relatedArticle.slug || relatedArticle.id}`)}
                 >
-                  {relatedArticle.image_url && (
-                    <img
-                      src={relatedArticle.image_url}
-                      alt={relatedArticle.title}
-                      className="w-full h-32 object-cover"
-                    />
-                  )}
+                  <div className="p-4 pb-0">
+                    {relatedArticle.image_url ? (
+                      <div className="media-frame-sm h-[150px]">
+                        <img
+                          src={relatedArticle.image_url}
+                          alt={relatedArticle.title}
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                    ) : (
+                      <div className="media-frame-sm h-[150px] flex flex-col items-center justify-center gap-2 text-muted-foreground">
+                        <BookOpen className="w-6 h-6" />
+                        <p className="text-[10px] font-prompt">ไม่มีภาพหน้าปก</p>
+                      </div>
+                    )}
+                  </div>
                   <div className="p-4">
                     <Badge variant="secondary" className="font-prompt mb-2">
                       {relatedArticle.category}

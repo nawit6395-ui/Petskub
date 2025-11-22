@@ -84,30 +84,28 @@ export const UrgentCaseCard = ({
     <>
       <Card className="overflow-hidden hover:shadow-lg transition-shadow">
         {/* Image */}
-        <div className="relative h-40 sm:h-48 bg-muted">
+        <div className={`media-frame h-[185px] sm:h-[210px] ${is_resolved ? 'ring-2 ring-emerald-200' : ''}`}>
           {image_url && image_url.length > 0 ? (
-            <>
-              <img
-                src={image_url[0]}
-                alt={title}
-                className="w-full h-full object-cover"
-              />
-              {image_url.length > 1 && (
-                <div
-                  className="absolute inset-0 bg-black/40 flex items-center justify-center cursor-pointer hover:bg-black/50 transition-colors"
-                  onClick={() => setGalleryOpen(true)}
-                >
-                  <div className="text-white text-center">
-                    <ImageIcon className="w-12 h-12 mx-auto mb-2" />
-                    <p className="font-prompt">ดูรูปทั้งหมด {image_url.length} รูป</p>
-                  </div>
-                </div>
-              )}
-            </>
+            <img
+              src={image_url[0]}
+              alt={title}
+              className={`h-full w-full object-cover transition duration-300 ${image_url.length > 1 ? 'cursor-pointer hover:scale-[1.02]' : ''} ${is_resolved ? 'brightness-75' : ''}`}
+              onClick={() => image_url.length > 1 && setGalleryOpen(true)}
+            />
           ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <ImageIcon className="w-16 h-16 text-muted-foreground/30" />
+            <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground">
+              <ImageIcon className="w-10 h-10" />
+              <p className="text-xs font-prompt">ยังไม่มีรูปประกอบ</p>
             </div>
+          )}
+
+          {image_url && image_url.length > 1 && (
+            <Badge 
+              className="absolute bottom-3 left-3 bg-black/60 text-white border-0 font-prompt cursor-pointer text-[11px] px-2.5 py-0.5"
+              onClick={() => setGalleryOpen(true)}
+            >
+              📷 {image_url.length}
+            </Badge>
           )}
 
           {/* Status Badge */}

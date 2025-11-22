@@ -198,3 +198,13 @@ All colors MUST be HSL.
     animation: shimmer-soft 8s linear infinite;
   }
 }
+
+@layer components {
+  .media-frame {
+    @apply relative overflow-hidden rounded-[18px] border border-white/60 bg-gradient-to-br from-white via-[hsl(30_100%_97%)] to-[hsl(30_85%_92%)] shadow-[0_18px_32px_hsl(221_48%_11%_/_0.12)];
+  }
+
+  .media-frame-sm {
+    @apply relative overflow-hidden rounded-[14px] border border-white/50 bg-gradient-to-br from-white via-[hsl(28_95%_95%)] to-[hsl(28_80%_86%)] shadow-[0_12px_26px_hsl(221_48%_11%_/_0.1)];
+  }
+}

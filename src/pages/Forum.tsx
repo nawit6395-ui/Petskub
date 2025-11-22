@@ -59,17 +59,26 @@ const Forum = () => {
     const remaining = imageUrls.length - preview.length;
 
     return (
-      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
-        {preview.map((url, index) => (
-          <div key={`${url}-${index}`} className="relative overflow-hidden rounded-xl border bg-muted/40">
-            <img src={url} alt={`แนบรูปที่ ${index + 1}`} className="h-32 w-full object-cover" />
-            {index === preview.length - 1 && remaining > 0 && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/60 text-lg font-semibold text-white">
-                +{remaining}
-              </div>
-            )}
-          </div>
-        ))}
+      <div className="mt-4">
+        <div className="-mx-2 flex gap-3 overflow-x-auto px-2 pb-2 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
+          {preview.map((url, index) => (
+            <div
+              key={`${url}-${index}`}
+              className="relative flex-shrink-0 overflow-hidden rounded-[12px] border border-white/40 bg-muted/50 shadow-sm w-[220px] h-[150px] sm:w-[230px] sm:h-[155px]"
+            >
+              <img
+                src={url}
+                alt={`แนบรูปที่ ${index + 1}`}
+                className="h-full w-full object-cover transition duration-300 hover:scale-[1.02]"
+              />
+              {index === preview.length - 1 && remaining > 0 && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/60 text-lg font-semibold text-white">
+                  +{remaining}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     );
   };

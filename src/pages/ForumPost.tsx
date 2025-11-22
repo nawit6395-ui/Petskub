@@ -246,7 +246,7 @@ const ForumPost = () => {
           {post.image_urls && post.image_urls.length > 0 && (
             <div className="space-y-3">
               <h3 className="text-sm font-semibold text-muted-foreground">รูปภาพประกอบ ({post.image_urls.length})</h3>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              <div className="-mx-2 flex gap-4 overflow-x-auto px-2 pb-2 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
                 {post.image_urls.map((url, index) => (
                   <button
                     key={`${url}-${index}`}
@@ -255,9 +255,13 @@ const ForumPost = () => {
                       setActiveImageIndex(index);
                       setIsGalleryOpen(true);
                     }}
-                    className="group relative overflow-hidden rounded-xl border bg-muted/40"
+                    className="group relative flex-shrink-0 overflow-hidden rounded-[12px] border border-white/50 bg-muted/40 shadow-sm w-[240px] h-[160px] sm:w-[230px] sm:h-[155px]"
                   >
-                    <img src={url} alt={`รูปประกอบที่ ${index + 1}`} className="h-40 w-full object-cover transition duration-200 group-hover:scale-105" />
+                    <img
+                      src={url}
+                      alt={`รูปประกอบที่ ${index + 1}`}
+                      className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                    />
                   </button>
                 ))}
               </div>

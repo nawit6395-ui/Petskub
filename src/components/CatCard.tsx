@@ -128,11 +128,11 @@ const CatCard = ({ id, name, age, province, district, image, images, story, gend
   return (
     <>
       <Card className={`overflow-hidden border-none rounded-[28px] bg-white/95 shadow-[0_15px_35px_rgba(15,23,42,0.08)] hover:shadow-[0_20px_45px_rgba(15,23,42,0.12)] transition-all duration-300 ${isAdopted ? 'relative' : ''}`}>
-        <div className="relative">
+        <div className={`media-frame w-full h-[190px] sm:h-[230px] ${isAdopted ? 'ring-2 ring-success/30' : ''}`}>
           <img 
             src={firstImage} 
             alt={name}
-            className={`w-full h-40 sm:h-48 object-cover ${displayImages.length > 1 ? 'cursor-pointer' : ''} ${isAdopted ? 'brightness-75' : ''}`}
+            className={`h-full w-full object-cover transition duration-300 ${displayImages.length > 1 ? 'cursor-pointer hover:scale-[1.02]' : ''} ${isAdopted ? 'brightness-75' : ''}`}
             onClick={() => displayImages.length > 1 && setGalleryOpen(true)}
           />
           
