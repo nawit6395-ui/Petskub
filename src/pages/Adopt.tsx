@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -19,16 +19,20 @@ const Adopt = () => {
   const [statusFilter, setStatusFilter] = useState("available");
   const { data: cats, isLoading } = useCats();
 
-  const filteredCats = cats?.filter((cat) => {
-    const matchesSearch = cat.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesProvince = provinceFilter === "all" || cat.province === provinceFilter;
-    const matchesGender = genderFilter === "all" || cat.gender === genderFilter;
-    const matchesStatus =
-      statusFilter === "all" ||
-      (statusFilter === "available" && !cat.is_adopted) ||
-      (statusFilter === "adopted" && cat.is_adopted);
-    return matchesSearch && matchesProvince && matchesGender && matchesStatus;
-  });
+  const filteredCats = useMemo(() => {
+    if (!cats) return [];
+    const term = searchTerm.trim().toLowerCase();
+    return cats.filter((cat) => {
+      const matchesSearch = !term || cat.name.toLowerCase().includes(term);
+      const matchesProvince = provinceFilter === "all" || cat.province === provinceFilter;
+      const matchesGender = genderFilter === "all" || cat.gender === genderFilter;
+      const matchesStatus =
+        statusFilter === "all" ||
+        (statusFilter === "available" && !cat.is_adopted) ||
+        (statusFilter === "adopted" && cat.is_adopted);
+      return matchesSearch && matchesProvince && matchesGender && matchesStatus;
+    });
+  }, [cats, searchTerm, provinceFilter, genderFilter, statusFilter]);
 
   return (
     <div className="min-h-screen bg-background py-8">
@@ -42,10 +46,10 @@ const Adopt = () => {
               </p>
             </div>
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3">
-              <div className="rounded-2xl bg-amber-100/90 px-4 py-2 font-prompt text-amber-900 text-sm shadow-inner shadow-white/40">
+              <div className="chip-soft-amber">
                 📸 ภาพทุกใบใช้กรอบแสดงผลใหม่
               </div>
-              <div className="rounded-2xl bg-emerald-100 px-4 py-2 font-prompt text-emerald-900 text-sm shadow-inner shadow-white/30">
+              <div className="chip-soft-emerald">
                 ✅ ตรวจข้อมูลสุขภาพ &amp; สถานะฉีดวัคซีน
               </div>
             </div>
@@ -60,7 +64,14 @@ const Adopt = () => {
             <div className="absolute inset-0 -z-10 rounded-[48px] bg-gradient-to-br from-amber-50 via-white to-emerald-50 blur-2xl opacity-80" />
 
             <div className="media-frame h-[260px] sm:h-[320px] w-full max-w-[520px]">
-              <img src={adoptHeroPrimary} alt="อาสาสมัครอุ้มน้องแมว" className="h-full w-full object-cover" />
+              <img
+                src={adoptHeroPrimary}
+                alt="อาสาสมัครอุ้มน้องแมว"
+                loading="lazy"
+                width={900}
+                height={600}
+                className="h-full w-full object-cover"
+              />
               <div className="absolute inset-x-5 bottom-5 flex items-center justify-between rounded-2xl bg-black/55 px-4 py-3 text-[11px] text-white font-prompt sm:text-sm">
                 <span className="flex items-center gap-2">
                   🐾 โปรไฟล์ใหม่สัปดาห์นี้
@@ -72,10 +83,24 @@ const Adopt = () => {
 
             <div className="hidden sm:flex flex-col gap-3 absolute -left-10 top-4 w-[150px] -rotate-2 drop-shadow-lg">
               <div className="media-frame-sm h-[120px]">
-                <img src={adoptHeroSecondary} alt="น้องแมวในบ้านใหม่" className="h-full w-full object-cover" />
+                <img
+                  src={adoptHeroSecondary}
+                  alt="น้องแมวในบ้านใหม่"
+                  loading="lazy"
+                  width={360}
+                  height={240}
+                  className="h-full w-full object-cover"
+                />
               </div>
               <div className="media-frame-sm h-[110px] rotate-3">
-                <img src={adoptHeroDetail} alt="น้องแมวกำลังพักผ่อน" className="h-full w-full object-cover" />
+                <img
+                  src={adoptHeroDetail}
+                  alt="น้องแมวกำลังพักผ่อน"
+                  loading="lazy"
+                  width={360}
+                  height={240}
+                  className="h-full w-full object-cover"
+                />
               </div>
             </div>
 
@@ -86,7 +111,13 @@ const Adopt = () => {
                 <p className="text-[11px] font-prompt text-emerald-600">+12% จากเดือนก่อน</p>
               </div>
               <div className="media-frame-sm h-[120px] rotate-3">
-                <img src={adoptHeroMood} alt="น้องแมวกำลังเล่น" className="h-full w-full object-cover" />
+                <img
+                  src={adoptHeroMood}
+                  alt="น้องแมวกำลังเล่น"
+                  loading="lazy"
+                  width={360}
+                  height={240}
+                  className="h-full w-full object-cover" />
               </div>
             </div>
 
@@ -97,7 +128,13 @@ const Adopt = () => {
 
             <div className="hidden lg:flex flex-col gap-3 absolute -left-6 -bottom-8 w-[170px] -rotate-3">
               <div className="media-frame-sm h-[110px]">
-                <img src={adoptHeroSnack} alt="ของโปรดน้องแมว" className="h-full w-full object-cover" />
+                <img
+                  src={adoptHeroSnack}
+                  alt="ของโปรดน้องแมว"
+                  loading="lazy"
+                  width={320}
+                  height={220}
+                  className="h-full w-full object-cover" />
               </div>
               <div className="rounded-3xl border border-white/60 bg-white/90 p-3 text-center shadow-md">
                 <p className="text-[11px] font-prompt text-muted-foreground">พร้อมรับเลี้ยงทันที</p>

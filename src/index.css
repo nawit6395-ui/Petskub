@@ -207,4 +207,16 @@ All colors MUST be HSL.
   .media-frame-sm {
     @apply relative overflow-hidden rounded-[14px] border border-white/50 bg-gradient-to-br from-white via-[hsl(28_95%_95%)] to-[hsl(28_80%_86%)] shadow-[0_12px_26px_hsl(221_48%_11%_/_0.1)];
   }
+
+  .chip-soft {
+    @apply rounded-2xl px-4 py-2 text-sm font-prompt shadow-inner;
+  }
+
+  .chip-soft-amber {
+    @apply chip-soft bg-amber-100/90 text-amber-900;
+  }
+
+  .chip-soft-emerald {
+    @apply chip-soft bg-emerald-100 text-emerald-900;
+  }
 }

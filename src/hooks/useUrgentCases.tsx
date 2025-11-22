@@ -19,19 +19,28 @@ export interface UrgentCase {
   updated_at: string;
 }
 
-export const useUrgentCases = () => {
+export const useUrgentCases = (options?: { includeResolved?: boolean }) => {
+  const includeResolved = options?.includeResolved ?? false;
+
   return useQuery({
-    queryKey: ['urgent_cases'],
+    queryKey: ['urgent_cases', includeResolved ? 'all' : 'active'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const query = supabase
         .from('urgent_cases')
         .select('*')
-        .eq('is_resolved', false)
         .order('created_at', { ascending: false });
 
+      if (!includeResolved) {
+        query.eq('is_resolved', false);
+      }
+
+      const { data, error } = await query;
       if (error) throw error;
       return data as UrgentCase[];
     },
+    staleTime: 1000 * 60,
+    select: (data) => data ?? [],
+    placeholderData: (prev) => prev,
   });
 };
 

@@ -333,6 +333,9 @@ const ArticleDetail = () => {
               <img
                 src={article.image_url}
                 alt={article.image_alt || article.title}
+                loading="lazy"
+                width={960}
+                height={540}
                 className="h-full w-full object-cover"
               />
             </div>
@@ -489,6 +492,9 @@ const ArticleDetail = () => {
                         <img
                           src={relatedArticle.image_url}
                           alt={relatedArticle.title}
+                          loading="lazy"
+                          width={480}
+                          height={320}
                           className="h-full w-full object-cover"
                         />
                       </div>

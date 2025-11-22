@@ -89,6 +89,9 @@ export const UrgentCaseCard = ({
             <img
               src={image_url[0]}
               alt={title}
+              loading="lazy"
+              width={640}
+              height={420}
               className={`h-full w-full object-cover transition duration-300 ${image_url.length > 1 ? 'cursor-pointer hover:scale-[1.02]' : ''} ${is_resolved ? 'brightness-75' : ''}`}
               onClick={() => image_url.length > 1 && setGalleryOpen(true)}
             />

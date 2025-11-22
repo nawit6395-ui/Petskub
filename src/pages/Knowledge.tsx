@@ -98,6 +98,9 @@ const Knowledge = () => {
                       <img
                         src={article.image_url}
                         alt={article.title}
+                        loading="lazy"
+                        width={640}
+                        height={420}
                         className="h-full w-full object-cover"
                       />
                     </div>

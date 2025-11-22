@@ -246,7 +246,7 @@ const ForumPost = () => {
           {post.image_urls && post.image_urls.length > 0 && (
             <div className="space-y-3">
               <h3 className="text-sm font-semibold text-muted-foreground">รูปภาพประกอบ ({post.image_urls.length})</h3>
-              <div className="-mx-2 flex gap-4 overflow-x-auto px-2 pb-2 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
+              <div className="flex flex-wrap gap-4">
                 {post.image_urls.map((url, index) => (
                   <button
                     key={`${url}-${index}`}
@@ -255,7 +255,7 @@ const ForumPost = () => {
                       setActiveImageIndex(index);
                       setIsGalleryOpen(true);
                     }}
-                    className="group relative flex-shrink-0 overflow-hidden rounded-[12px] border border-white/50 bg-muted/40 shadow-sm w-[240px] h-[160px] sm:w-[230px] sm:h-[155px]"
+                    className="group relative overflow-hidden rounded-[12px] border border-white/50 bg-muted/40 shadow-sm w-full h-[190px] sm:w-[230px] sm:h-[155px]"
                   >
                     <img
                       src={url}

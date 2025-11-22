@@ -117,7 +117,14 @@ const Admin = () => {
                   <Card key={cat.id} className="p-4 shadow-card">
                     <div className="flex items-start gap-4">
                       {cat.image_url && cat.image_url.length > 0 && (
-                        <img src={cat.image_url[0]} alt={cat.name} className="w-24 h-24 rounded-lg object-cover" />
+                        <img
+                          src={cat.image_url[0]}
+                          alt={cat.name}
+                          loading="lazy"
+                          width={160}
+                          height={160}
+                          className="w-24 h-24 rounded-lg object-cover"
+                        />
                       )}
                       <div className="flex-1">
                         <div className="flex items-start justify-between mb-2">

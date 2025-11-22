@@ -12,7 +12,7 @@ import rescueCare from "@/assets/knowledge-cat-adjusting.jpg";
 import rescueFocus from "@/assets/knowledge-trimming-nails.jpg";
 
 const Help = () => {
-  const { data: urgentCases, isLoading } = useUrgentCases();
+  const { data: urgentCases, isLoading } = useUrgentCases({ includeResolved: true });
   const { user } = useAuth();
   const activeCases = urgentCases?.filter((urgentCase) => !urgentCase.is_resolved) ?? [];
   const resolvedCases = urgentCases?.filter((urgentCase) => urgentCase.is_resolved) ?? [];
@@ -89,7 +89,14 @@ const Help = () => {
               <div className="absolute inset-0 -z-10 rounded-[48px] bg-gradient-to-br from-rose-200/40 via-transparent to-emerald-200/40 blur-3xl" />
               <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_220px]">
                 <div className="media-frame h-[260px] sm:h-[320px] w-full">
-                  <img src={rescuePrimary} alt="อาสาช่วยเหลือสัตว์บาดเจ็บ" className="h-full w-full object-cover" />
+                  <img
+                    src={rescuePrimary}
+                    alt="อาสาช่วยเหลือสัตว์บาดเจ็บ"
+                    loading="lazy"
+                    width={900}
+                    height={600}
+                    className="h-full w-full object-cover"
+                  />
                   <div className="absolute left-4 top-4 rounded-2xl bg-black/55 px-3 py-2 text-[11px] font-prompt text-white shadow-lg">
                     ปฏิบัติการอยู่ {activeCases.length ? `${activeCases.length} เคส` : "พร้อมรับแจ้ง"}
                   </div>
@@ -106,7 +113,14 @@ const Help = () => {
                 </div>
                 <div className="flex flex-col gap-4">
                   <div className="media-frame-sm h-[150px]">
-                    <img src={rescueSecondary} alt="การปฐมพยาบาลเบื้องต้นให้สัตว์" className="h-full w-full object-cover" />
+                    <img
+                      src={rescueSecondary}
+                      alt="การปฐมพยาบาลเบื้องต้นให้สัตว์"
+                      loading="lazy"
+                      width={360}
+                      height={240}
+                      className="h-full w-full object-cover"
+                    />
                   </div>
                   <div className="rounded-3xl border border-emerald-100 bg-white/95 p-4 text-center font-prompt shadow-lg">
                     <p className="text-xs text-muted-foreground">ระบบจับพิกัดอัตโนมัติ</p>
@@ -114,16 +128,37 @@ const Help = () => {
                     <p className="text-xs text-muted-foreground">แจ้งทีมอาสาใกล้ที่สุดทันที</p>
                   </div>
                   <div className="media-frame-sm h-[120px]">
-                    <img src={rescueFocus} alt="การดูแลสัตว์บาดเจ็บ" className="h-full w-full object-cover" />
+                    <img
+                      src={rescueFocus}
+                      alt="การดูแลสัตว์บาดเจ็บ"
+                      loading="lazy"
+                      width={360}
+                      height={240}
+                      className="h-full w-full object-cover"
+                    />
                   </div>
                 </div>
               </div>
               <div className="mt-4 grid grid-cols-2 gap-3 sm:hidden">
                 <div className="media-frame-sm h-[120px]">
-                  <img src={rescueSupport} alt="อุปกรณ์ช่วยสัตว์" className="h-full w-full object-cover" />
+                  <img
+                    src={rescueSupport}
+                    alt="อุปกรณ์ช่วยสัตว์"
+                    loading="lazy"
+                    width={320}
+                    height={220}
+                    className="h-full w-full object-cover"
+                  />
                 </div>
                 <div className="media-frame-sm h-[120px]">
-                  <img src={rescueCare} alt="ทีมช่วยเหลือเตรียมอุปกรณ์" className="h-full w-full object-cover" />
+                  <img
+                    src={rescueCare}
+                    alt="ทีมช่วยเหลือเตรียมอุปกรณ์"
+                    loading="lazy"
+                    width={320}
+                    height={220}
+                    className="h-full w-full object-cover"
+                  />
                 </div>
               </div>
             </div>

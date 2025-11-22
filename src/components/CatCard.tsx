@@ -132,6 +132,9 @@ const CatCard = ({ id, name, age, province, district, image, images, story, gend
           <img 
             src={firstImage} 
             alt={name}
+            loading="lazy"
+            width={640}
+            height={480}
             className={`h-full w-full object-cover transition duration-300 ${displayImages.length > 1 ? 'cursor-pointer hover:scale-[1.02]' : ''} ${isAdopted ? 'brightness-75' : ''}`}
             onClick={() => displayImages.length > 1 && setGalleryOpen(true)}
           />

@@ -35,6 +35,9 @@ export const useCats = () => {
       if (error) throw error;
       return data as Cat[];
     },
+    staleTime: 1000 * 60 * 5,
+    select: (data) => data ?? [],
+    placeholderData: (prev) => prev,
   });
 };
 

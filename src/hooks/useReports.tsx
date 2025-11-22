@@ -30,6 +30,9 @@ export const useReports = () => {
       if (error) throw error;
       return data as Report[];
     },
+    staleTime: 1000 * 60 * 2,
+    select: (data) => data ?? [],
+    placeholderData: (prev) => prev,
   });
 };
 
